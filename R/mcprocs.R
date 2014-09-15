@@ -14,39 +14,40 @@ crps.edf <- function(dat, y, w = NULL){
   
   # Set uniform weights unless specified otherwise
   if (is.null(w)){
-    p <- (1:(n-1))/n
+    dat <- .Internal(sort(dat,FALSE))
+    out <- 2 / n^2 * sum((n * (y < dat) - 1:n + 0.5) * (dat - y))
   } 
   if (!is.null(w)) {
     if (length(w) != length(dat)) stop()
     w <- w[ord]
     p <- cumsum(w[1:(length(w)-1)])
-  }
   
   # Compute score
-  if (y < x[1]){
+    if (y < x[1]){
     
-    a <- x[2:n] - x[1:(n-1)]
-    out <- sum(a*(p^2)) + x[1] - y
+      a <- x[2:n] - x[1:(n-1)]
+      out <- sum(a*(p^2)) + x[1] - y
     
-  } else if (y >= x[1] & y <= x[n]){
+    } else if (y >= x[1] & y <= x[n]){
     
-    ind <- min(which(x > y)) - 2
-    a <- b <- rep(0, n-1)
-    if (ind > 0){
-      a[1:ind] <- x[2:(ind + 1)] - x[1:ind]
+      ind <- min(which(x > y)) - 2
+      a <- b <- rep(0, n-1)
+      if (ind > 0){
+        a[1:ind] <- x[2:(ind + 1)] - x[1:ind]
+      }
+      a[ind+1] <- y - x[ind+1]
+      b[ind+1] <- x[ind+2] - y
+      if (ind < (n-2)){
+        b[(ind+2):(n-1)] <- x[(ind+3):(n)] - x[(ind+2):(n-1)]
+      }
+      out <- sum( a*(p^2) + b*((1-p)^2) )
+    
+    } else if (y > x[n]) {
+    
+      b <- x[2:n] - x[1:(n-1)]
+      out <- sum(b*((1-p)^2)) + y - x[n]
+    
     }
-    a[ind+1] <- y - x[ind+1]
-    b[ind+1] <- x[ind+2] - y
-    if (ind < (n-2)){
-      b[(ind+2):(n-1)] <- x[(ind+3):(n)] - x[(ind+2):(n-1)]
-    }
-    out <- sum( a*(p^2) + b*((1-p)^2) )
-    
-  } else if (y > x[n]) {
-    
-    b <- x[2:n] - x[1:(n-1)]
-    out <- sum(b*((1-p)^2)) + y - x[n]
-    
   }
   
   return(out)
