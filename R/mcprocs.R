@@ -14,7 +14,8 @@ crps.edf <- function(dat, y, w = NULL){
   
   # Set uniform weights unless specified otherwise
   if (is.null(w)){
-    p <- (1:(n-1))/n
+    dat <- .Internal(sort(dat,FALSE))
+    out <- 2 / n^2 * sum((n * (y < dat) - 1:n + 0.5) * (dat - y))
   } 
   if (!is.null(w)) {
     if (length(w) != length(dat)) stop()
