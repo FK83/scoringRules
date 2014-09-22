@@ -1,3 +1,36 @@
+# Simulate Data from the Fox/West Model
+sim.fw <- function(f, s, n, ndraws){
+  # Compute parameters of marginal distribution (inverse Gamma)
+  beta.ig <- c(0.5*(n+2), 0.5*n*s)
+  # Compute parameters of corresponding t distribution
+  beta.t <- c(beta.ig[2]/beta.ig[1], 2*beta.ig[1]) # variance, degrees of freedom
+  # Simulate data
+  sig2 <- rep(0, ndraws)
+  sig2[1] <- 1
+  psi <- 1/rgamma(ndraws, 0.5*(n+3), 0.5*n*s*(1-f^2))
+  v <- f + sqrt( psi/(n*s) ) * rnorm(ndraws)
+  for (j in 2:ndraws){
+    sig2[j] <- psi[j] + (v[j]^2) * sig2[j-1]
+  }  
+  # Return list
+  return(list(par.ig = beta.ig, sim = sig2))
+}
+
+# Make the ergodic dist for our simulation design
+ergdist <- function(s, n){
+  # Make t distribution parameters
+  v <- n*s/(n + 2)
+  df <- n + 2
+  # Compute properties of ergodic dist
+  pdf <- function(z){
+    sapply(z, function(l) dt(l/sqrt(v), df)/sqrt(v))
+  }  
+  cdf <- function(z){
+    sapply(z, function(l) pt(l/sqrt(v), df))
+  } 
+  list(pdf = pdf, cdf = cdf, v = v, df = df)
+}
+
 # Numerical integration for CRPS
 crps.int <- function(F, y){
   s1 <- integrate(function(s) F(s)^2, -Inf, y)$value
@@ -7,22 +40,19 @@ crps.int <- function(F, y){
 
 # CRPS of a (weighted) empirical distribution
 crps.edf <- function(dat, y, w = NULL){
-  
   n <- length(dat)
-  
   # Set uniform weights unless specified otherwise
   if (is.null(w)){
     x <- .Internal(sort(dat, FALSE))
-    out <- 2 / n^2 * sum((n * (y < x) - 1:n + 0.5) * (x - y))
+    out <- sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
   } else {
     if (length(w) != n) stop()
     ord <- order(dat)
     x <- dat[ord]
     w <- w[ord]
     p <- c(0, cumsum(w))
-    out <- 2 * sum((w * (y < x) - 0.5 * (p[2:(n+1)]^2 - p[1:n]^2)) * (x - y))
+    out <- sapply(y, function(s) 2 * sum((w * (s < x) - 0.5 * (p[2:(n+1)]^2 - p[1:n]^2)) * (x - s)))
   }
-  
   return(out)
 }
 
@@ -38,10 +68,18 @@ crps.krep <- function(dat, y){
 }
 
 # CRPS for a mixture of normals
-crps.mixn <- function(m, v, y, w = NULL){
+crps.mixn = function (m, v, y, exact = TRUE, w = NULL){
   n <- length(m)
-  if (is.null(w)) w <- rep(1/n, n)
-  -crpsmixnC(w, m, sqrt(v), y)
+  if (is.null(w)) 
+    w <- rep(1/n, n)
+  if (exact == TRUE){
+    return(-crpsmixnC(w, m, sqrt(v), y))
+  } else {
+    Fmix = function(z){
+      sapply(z, function(r) sum(w*pnorm((r-m)/sqrt(v))))
+    }
+    return(crps.int(Fmix, y))
+  }
 }
 
 # CRPS for a t distribution
@@ -54,12 +92,13 @@ crps.t <- function(m, v, df, y){
 }
 
 # CRPS via kernel density estimation
-crps.kdens <- function(dat, y, bw = NULL){
+crps.kdens = function(dat, y, exact = TRUE, bw = NULL){
   n <- length(dat)
-  if (is.null(bw)){
+  if (is.null(bw)) {
     v <- rep(bw.SJ(dat)^2, n)
-  } else {
+  }
+  else {
     v <- rep(bw^2, n)
   }
-  return(crps.mixn(dat, v, y))
+  return(crps.mixn(dat, v, y, exact = exact))
 }
