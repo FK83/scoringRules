@@ -17,8 +17,8 @@ The crps (continuous ranked probability score) is a performance measure for dist
 crps.edf(dat, y, w = NULL)
 crps.int(F, y)
 crps.krep(dat, y)
-crps.mixn(m, v, y, w = NULL)
-crps.kdens(dat, y, bw = NULL)
+crps.mixn(m, v, y, exact = TRUE, w = NULL)
+crps.kdens(dat, y, exact = TRUE, bw = NULL)
 crps.t(m, v, df, y)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -29,6 +29,7 @@ Numeric vector of data (simulation draws from forecast distribution).
   \item{w}{\link{crps.edf}: Numeric vector of weights for \code{dat}. \link{crps.mixn}: Numeric vector of weights for mixture components. In both cases: Elements must be between zero and one and sum to one; default is equal weights.}
 \item{F}{R function \code{F(z)}, returning the cdf of the forecast distribution at a vector \code{z}}
 \item{m, v}{\link{crps.mixn}: Vectors of means and variances for all mixture components. Lengths must be equal, and equal to the length of \code{w}. \link{crps.t}: Mean and variance parameters, each of length one.}
+\item{exact}{logical, set to TRUE for exact analytical formula, and to FALSE for much quicker approximation using numerical integration. Applies to \link{crps.mixn} and \link{crps.kdens}.}
 \item{df}{Degrees of freedom parameter for the t distribution (numeric vector of length one).}
 \item{y}{Realizing observation (numeric vector of length one).}
 \item{bw}{Bandwidth parameter supplied to \link{crps.kdens} (numeric vector of length one, positive). Defaults to using \link{bw.SJ} for choosing the parameter.}
@@ -61,7 +62,7 @@ Matheson, J.E. and R.L. Winkler (1976), ``Scoring Rules for Continuous Probabili
 Fabian Krueger
 }
 \details{
-\link{crps.krep} is the empirical analogue of the kernel representation (Eq. 21 in Gneiting and Raftery, 2007); however, it performs a permutation of the draws in \eqn{dat} to correct for possible autocorrelation. \link{crps.edf} is based on the algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). \link{crps.kdens} is based on kernel density estimation, using a Gaussian kernel. It is possibly more accurate than the other two methods, but this may come at the cost of much longer computation time (especially when \code{dat} is large).
+\link{crps.krep} is the empirical analogue of the kernel representation (Eq. 21 in Gneiting and Raftery, 2007); however, it performs a permutation of the draws in \eqn{dat} to correct for possible autocorrelation. \link{crps.edf} is based on the algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). \link{crps.kdens} is based on kernel density estimation, using a Gaussian kernel. If \code{exact == TRUE}, the latter function is quite slow when \code{dat} is large. The quick approximation obtained when setting \code{exact == FALSE} is usually very accurate.
 }
 
 \examples{
