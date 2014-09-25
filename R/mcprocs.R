@@ -32,9 +32,9 @@ ergdist <- function(s, n){
 }
 
 # Numerical integration for CRPS
-crps.int <- function(F, y){
-  s1 <- integrate(function(s) F(s)^2, -Inf, y)$value
-  s2 <- integrate(function(s) (1-F(s))^2, y, Inf)$value
+crps.int <- function(F, y, subdivisions = 1000L, stop.on.error = TRUE){
+  s1 <- integrate(function(s) F(s)^2, -Inf, y, subdivisions = 1000L, stop.on.error = TRUE)$value
+  s2 <- integrate(function(s) (1-F(s))^2, y, Inf, subdivisions = 1000L, stop.on.error = TRUE)$value
   s1 + s2
 }
 
@@ -68,7 +68,7 @@ crps.krep <- function(dat, y){
 }
 
 # CRPS for a mixture of normals
-crps.mixn = function (m, v, y, exact = TRUE, w = NULL){
+crps.mixn = function (m, v, y, w = NULL, exact = TRUE, subdivisions = 1000L, stop.on.error = TRUE){
   n <- length(m)
   if (is.null(w)) 
     w <- rep(1/n, n)
@@ -78,7 +78,7 @@ crps.mixn = function (m, v, y, exact = TRUE, w = NULL){
     Fmix = function(z){
       sapply(z, function(r) sum(w*pnorm((r-m)/sqrt(v))))
     }
-    return(crps.int(Fmix, y))
+    return(crps.int(Fmix, y, subdivisions = 1000L, stop.on.error = TRUE))
   }
 }
 
@@ -92,7 +92,7 @@ crps.t <- function(m, v, df, y){
 }
 
 # CRPS via kernel density estimation
-crps.kdens = function(dat, y, exact = TRUE, bw = NULL){
+crps.kdens = function(dat, y, bw = NULL, exact = TRUE, subdivisions = 1000L, stop.on.error = TRUE){
   n <- length(dat)
   if (is.null(bw)) {
     v <- rep(bw.SJ(dat)^2, n)
@@ -100,5 +100,21 @@ crps.kdens = function(dat, y, exact = TRUE, bw = NULL){
   else {
     v <- rep(bw^2, n)
   }
-  return(crps.mixn(dat, v, y, exact = exact))
+  return(crps.mixn(dat, v, y, exact = exact, subdivisions = 1000L, stop.on.error = TRUE))
+}
+
+# Log Score for Mixture of Normals
+ls.mixn <- function(m, v, y, w = NULL) {
+  n <- length(m)
+  if (is.null(w)){
+    w <- rep(1/n, n)
+  }
+  lsmixnC(m, sqrt(v), w, y)
+}
+
+# Log Score for Kernel Density Estimate
+ls.kdens <- function(dat, y, bw = NULL) {
+  if (is.null(bw)) 
+    bw <- bw.SJ(dat)
+  ls.mixn(dat, rep(bw^2, length(dat)), y)
 }
