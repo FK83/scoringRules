@@ -15,10 +15,10 @@ The crps (continuous ranked probability score) is a performance measure for dist
 }
 \usage{
 crps.edf(dat, y, w = NULL)
-crps.int(F, y)
+crps.int(F, y, subdivisions = 1000L, stop.on.error = TRUE)
 crps.krep(dat, y)
-crps.mixn(m, v, y, exact = TRUE, w = NULL)
-crps.kdens(dat, y, exact = TRUE, bw = NULL)
+crps.mixn(m, v, y, w = NULL, exact = TRUE, subdivisions = 1000L, stop.on.error = TRUE)
+crps.kdens(dat, y, bw = NULL, exact = TRUE, subdivisions = 1000L, stop.on.error = TRUE)
 crps.t(m, v, df, y)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -33,6 +33,7 @@ Numeric vector of data (simulation draws from forecast distribution).
 \item{df}{Degrees of freedom parameter for the t distribution (numeric vector of length one).}
 \item{y}{Realizing observation (numeric vector of length one).}
 \item{bw}{Bandwidth parameter supplied to \link{crps.kdens} (numeric vector of length one, positive). Defaults to using \link{bw.SJ} for choosing the parameter.}
+\item{subdivisions, stop.on.error}{Control parameters for numerical integration, see help for \link{integrate}. For \link{crps.mixn} and \link{crps.kdens}, these parameters have an impact only if \code{exact = FALSE} is chosen.}
 }
 
 \value{
