@@ -25,25 +25,12 @@ Numeric vector of data (simulation draws from forecast distribution).
 \value{
 Value of the log score. 
 }
-\references{
-General background on scoring rules and probabilistic forecasting: 
 
-Gneiting, T. and A. Raftery (2007): ```Strictly Proper Scoring Rules, Prediction and Estimation'', Journal of the American Statistical Association 102, 359-378.
-
-Gneiting, T. and M. Katzfuss (2014): ``Probabilistic Forecasting'', Annual Review of Statistics and Its Application 1, 125-151. 
-
-Evaluating simulation based forecast distributions:
-
-Krueger, F., S. Lerch, T. Thorarinsdottir and T. Gneiting (2015), ``Evaluating MCMC-based Predictive Distributions'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
-
-Paper which first proposed the log score:
-
-Good, I.J. (1952): ``Rational Decisions'', Journal of the Royal Statistical Society (B) 14, 107-114.
-
-}
 \author{
 Fabian Krueger
 }
+
+\seealso{The documentation for \link{crps} contains references on scoring rules in general.}
 
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

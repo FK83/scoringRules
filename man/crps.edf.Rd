@@ -1,4 +1,5 @@
 \name{crps}
+\alias{crps}
 \alias{crps.edf}
 \alias{crps.int}
 \alias{crps.krep}
