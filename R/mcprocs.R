@@ -33,8 +33,8 @@ ergdist <- function(s, n){
 
 # Numerical integration for CRPS
 crps.int <- function(F, y, subdivisions = 1000L, stop.on.error = TRUE){
-  s1 <- integrate(function(s) F(s)^2, -Inf, y, subdivisions = 1000L, stop.on.error = TRUE)$value
-  s2 <- integrate(function(s) (1-F(s))^2, y, Inf, subdivisions = 1000L, stop.on.error = TRUE)$value
+  s1 <- integrate(function(s) F(s)^2, -Inf, y, subdivisions = subdivisions, stop.on.error = stop.on.error)$value
+  s2 <- integrate(function(s) (1-F(s))^2, y, Inf, subdivisions = subdivisions, stop.on.error = stop.on.error)$value
   s1 + s2
 }
 
@@ -60,7 +60,7 @@ crps.edf <- function(dat, y, w = NULL){
 crps.krep <- function(dat, y){
   
   n <- length(dat)
-  shift <- as.integer((n-1)/2)
+  shift <- (n-1) %/% 2
   shift <- c((shift+1):n, 1:shift)
   crps <- mean(abs(y-dat)) - 0.5*mean(abs(dat- dat[shift]))
   return(crps)
@@ -78,7 +78,7 @@ crps.mixn = function (m, v, y, w = NULL, exact = TRUE, subdivisions = 1000L, sto
     Fmix = function(z){
       sapply(z, function(r) sum(w*pnorm((r-m)/sqrt(v))))
     }
-    return(crps.int(Fmix, y, subdivisions = 1000L, stop.on.error = TRUE))
+    return(crps.int(Fmix, y, subdivisions = subdivisions, stop.on.error = stop.on.error))
   }
 }
 
@@ -100,7 +100,7 @@ crps.kdens = function(dat, y, bw = NULL, exact = TRUE, subdivisions = 1000L, sto
   else {
     v <- rep(bw^2, n)
   }
-  return(crps.mixn(dat, v, y, exact = exact, subdivisions = 1000L, stop.on.error = TRUE))
+  return(crps.mixn(dat, v, y, exact = exact, subdivisions = subdivisions, stop.on.error = stop.on.error))
 }
 
 # Log Score for Mixture of Normals
