@@ -1,0 +1,3 @@
+useDynLib(scoringrules)
+exportPattern(crps.t, crps.mixn, crps.int, crps.edf, crps.krep, crps.kdens, ergdist, sim.fw, ls.mixn, ls.kdens)
+importFrom(Rcpp, evalCpp)
