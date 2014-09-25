@@ -55,3 +55,18 @@ double crpsmixnC(NumericVector w, NumericVector m, NumericVector s, double y){
   }
   return crps;
 }
+
+// [[Rcpp::export]]
+NumericVector lsmixnC(NumericVector m, NumericVector s, NumericVector w, NumericVector y){
+  int N = m.size();
+  int nrow = y.size();
+  NumericVector ls(nrow);
+  
+  for (int j = 0; j < nrow; j++){
+	  for(int i = 0; i < N; i++) {
+		ls[j] += (w[i]/s[i])*dnormC((y[j]-m[i])/s[i]);
+	  }
+  }
+  
+  return log(ls);
+}  
