@@ -50,17 +50,13 @@ Evaluating simulation based forecast distributions:
 
 Krueger, F., S. Lerch, T. Thorarinsdottir and T. Gneiting (2015), ``Evaluating MCMC-based Predictive Distributions'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
 
-Overview on analytical and numerical ways to evaluate the crps:
-
-Jordan, A. (2015): ``Evaluating the CRPS'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
-
 Paper which first proposed the crps:
 
 Matheson, J.E. and R.L. Winkler (1976), ``Scoring Rules for Continuous Probability Distributions'', {Management Science} 22, 1087-1096.
 
 }
 \author{
-Fabian Krueger
+Alexander Jordan, Fabian Krueger
 }
 \details{
 \link{crps.krep} is the empirical analogue of the kernel representation (Eq. 21 in Gneiting and Raftery, 2007); however, it performs a permutation of the draws in \eqn{dat} to correct for possible autocorrelation. \link{crps.edf} is based on the algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). \link{crps.kdens} is based on kernel density estimation, using a Gaussian kernel. If \code{exact == TRUE}, the latter function is quite slow when \code{dat} is large. The quick approximation obtained when setting \code{exact == FALSE} is usually very accurate.
