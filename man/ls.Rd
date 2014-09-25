@@ -16,7 +16,7 @@ ls.kdens(dat, y, bw = NULL)
   \item{dat}{
 Numeric vector of data (simulation draws from forecast distribution).
 }
-  \item{w}{\link{crps.edf}: Numeric vector of weights for \code{dat}. \link{crps.mixn}: Numeric vector of weights for mixture components. In both cases: Elements must be between zero and one and sum to one; default is equal weights.}
+  \item{w}{Numeric vector of weights for mixture components. Elements must be between zero and one and sum to one; default is equal weights.}
 \item{m, v}{Vectors of means and variances for all mixture components. Lengths must be equal, and equal to the length of \code{w}.}
 \item{y}{Realizing observation (numeric vector of length one).}
 \item{bw}{Bandwidth parameter supplied to \link{ls.kdens} (numeric vector of length one, positive). Defaults to using \link{bw.SJ} for choosing the parameter.}
