@@ -57,7 +57,7 @@ double crpsmixnC(NumericVector w, NumericVector m, NumericVector s, double y){
 }
 
 // [[Rcpp::export]]
-NumericVector lsmixnC(NumericVector m, NumericVector s, NumericVector w, NumericVector y){
+NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, NumericVector y){
   int N = m.size();
   int nrow = y.size();
   NumericVector ls(nrow);
@@ -70,3 +70,21 @@ NumericVector lsmixnC(NumericVector m, NumericVector s, NumericVector w, Numeric
   
   return log(ls);
 }  
+
+// [[Rcpp::export]]
+double qsmixnC(NumericVector w, NumericVector m, NumericVector s, double y){
+  int N = m.size();
+  double qs = 0;
+  
+  for(int i = 0; i < N; i++) {
+	qs += 2*(w[i]/s[i])*dnormC((y-m[i])/s[i]);
+    for (int j = 0; j < (i+1); j++){ 
+	  double tmp = ((w[i]*w[j])/(sqrt(2*M_PI*(pow(s[i],2.0)+pow(s[j],2.0)))))*exp(-pow(m[i]-m[j],2.0)/(2*(pow(s[i],2.0)+pow(s[j],2.0))));
+	  qs -= tmp;
+	  if (i != j){
+		qs -= tmp;
+	  }
+	}
+  }
+  return qs;
+}

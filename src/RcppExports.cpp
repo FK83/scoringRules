@@ -70,17 +70,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // lsmixnC
-NumericVector lsmixnC(NumericVector m, NumericVector s, NumericVector w, NumericVector y);
-RcppExport SEXP scoringrules_lsmixnC(SEXP mSEXP, SEXP sSEXP, SEXP wSEXP, SEXP ySEXP) {
+NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, NumericVector y);
+RcppExport SEXP scoringrules_lsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
         Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP );
         Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
         Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP );
-        NumericVector __result = lsmixnC(m, s, w, y);
+        NumericVector __result = lsmixnC(w, m, s, y);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// qsmixnC
+double qsmixnC(NumericVector w, NumericVector m, NumericVector s, double y);
+RcppExport SEXP scoringrules_qsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP );
+        Rcpp::traits::input_parameter< double >::type y(ySEXP );
+        double __result = qsmixnC(w, m, s, y);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
