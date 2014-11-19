@@ -17,7 +17,11 @@ crpsmixnC <- function(w, m, s, y) {
     .Call('scoringrules_crpsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
 }
 
-lsmixnC <- function(m, s, w, y) {
-    .Call('scoringrules_lsmixnC', PACKAGE = 'scoringrules', m, s, w, y)
+lsmixnC <- function(w, m, s, y) {
+    .Call('scoringrules_lsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
+}
+
+qsmixnC <- function(w, m, s, y) {
+    .Call('scoringrules_qsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
 }
 
