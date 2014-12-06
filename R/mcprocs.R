@@ -1,6 +1,6 @@
 # !!! Important !!! Set orientation = 1 for positive orientation, to - 1 for negative orientation
 # (only used in functions that appear in the package: xx.parametric and xx.sample, where xx = (ls, crps, dss, qs)
-orientation <- 1
+orientation <- -1
 
 # Simulate Data from the Fox/West Model
 sim.fw <- function(a, s, n, ndraws){
@@ -83,6 +83,57 @@ crps.t <- function(m, s, df, y){
   return(- c1 + 0.5*c2)
 }
 
+# CRPS for a GEV distribution
+crps.gev <- function(loc, sc, sh, y){
+  if (abs(sh) < 1e-12) {message("Small shape parameter. Numerical integration was used for CPRS (tolerance = 1e-6)")
+                        pgev.tmp <- function(x){return(exp(-exp(-(x - loc)/sc)))}
+                        return(-integrate(function(x) (pgev.tmp(x) - (y <= x))^2, lower=-Inf, upper=Inf, rel.tol = 1e-6, subdivisions = 1000L, stop.on.error = TRUE)$value)
+  }
+  else if (y < loc-sc/sh) {pgev.tmp <- function(x){return(exp(-pmax(1 + sh * ((x - loc)/sc), 0)^(-1/sh)))}
+                           return(-integrate(function(x) (1-pgev.tmp(x))^2, lower=y, upper=Inf, rel.tol = 1e-6, subdivisions = 1000L, stop.on.error = TRUE)$value)
+  }
+  else {
+    logFy <- (1 + sh*(y - loc)/sc)^{-1/sh}
+    return(-((loc - sc/sh - y)*(1 - 2*exp(-logFy)) - 2*sc/sh * gamma(1-sh)*(2^(sh-1) - pgamma(logFy,shape=1-sh))))}
+}
+
+# CRPS for a GPD distribution
+crps.gpd <- function(loc, sc, sh, y){
+  z <- (y-loc)/sc
+  if (abs(sh) < 1e-12 & y > loc) {
+    Fy <- Fgpd(y,loc=loc,sc=sc,sh=sh) 
+    return(-(y-loc-sc*(2*Fy - 0.5)))
+  }
+  else if (abs(sh) < 1e-12 & y < loc) {(-1)*return((-1)*integrate(function(x) (Vectorize(Fgpd)(x,loc=loc,sc=sc,sh=sh) - (y <= x))^2, y, Inf, rel.tol=1e-6)$value )}
+  else if (sh > 1e-12 & y < loc) {return((-1)*integrate(function(x) (Vectorize(Fgpd)(x,loc=loc,sc=sc,sh=sh) - (y <= x))^2, -Inf, Inf, rel.tol=1e-6)$value)}
+  else if (sh == 1) {return((-1)*integrate(function(x) (Vectorize(Fgpd)(x,loc=loc,sc=sc,sh=sh) - (y <= x))^2, -Inf, Inf, rel.tol=1e-6)$value)}
+  else if (sh < -1e-12 & y >= loc-sc/sh) {return((-1)*integrate(function(x) (Vectorize(Fgpd)(x,loc=loc,sc=sc,sh=sh) - (y <= x))^2, -Inf, y, rel.tol=1e-6)$value)}
+  else if (sh < -1e-12 & y < loc) {return((-1)*integrate(function(x) (Vectorize(Fgpd)(x,loc=loc,sc=sc,sh=sh) - (y <= x))^2, y, Inf, rel.tol=1e-6)$value )}
+  else {
+    Fy <- Fgpd(y,loc=loc,sc=sc,sh=sh)
+    return(-((y - loc + sc/sh)*(2*Fy - 1) - 2*sc/(sh*(sh-1))*(1/(sh-2) + (1-Fy)*(1+sh*z))))
+  }
+}
+
+# CRPS for a truncated normal distribution
+crps.tn <- function(m, s, lb, y) {
+  z <- (y-m)/s; Phi.z <- pnorm(z)
+  x.lb <- (lb-m)/s; Phi.lb <- 1-pnorm(x.lb)
+  return(-(s/Phi.lb^2*(z*Phi.lb*(2*Phi.z+Phi.lb-2) + 2*dnorm(z)*Phi.lb - (1-pnorm(sqrt(2)*x.lb))/sqrt(pi))))
+}
+
+# CRPS for a log-normal distribution
+crps.ln <- function(loc, sh, y){
+  if (y < 0) {
+    return((-1)*integrate(function(x) (plnorm(x,meanlog=loc,sdlog=sh) - (y <= x))^2, y, Inf, rel.tol=1e-6, subdivisions=1000L)$value)
+  }
+  else {
+    z <- (log(y) - loc)/sh
+    m <- exp(loc + sh^2/2)
+    return(-(y*(2*pnorm(z)-1) - 2*m*(pnorm(z-sh) + pnorm(sh/sqrt(2))  - 1)))      
+  }   
+}
+
 # CRPS via kernel density estimation
 crps.kdens = function(dat, y, bw = NULL, exact = TRUE, rel.tol = 1e-6){
   n <- length(dat)
@@ -138,6 +189,54 @@ crps.2pnorm <- function(m, s1, s2, y){
   return(-sc)
 }
 
+##############################################
+# CDF and density functions of extreme value distributions, required for computation of LS, QS (GEV + GPD) and CRPS (GPD)
+##############################################
+# Density of a GEV distribution
+fgev <- function(x, loc, sc, sh){
+  z <- (x - loc)/sc 
+  if (!(abs(sh)<1e-12) & sh*z <= -1) {
+    return(0)
+  }
+  else if (abs(sh) < 1e-12) {
+    tmp <- log(1/sc) - z - exp(-z)
+    return(exp(tmp))
+  }
+  else {
+    tmp <- (1 + sh*z)
+    return(exp(log(1/sc) - tmp^(-1/sh) - (1/sh + 1)*log(tmp)))
+  }
+}
+
+# CDF of a GPD distribution
+Fgpd <- function(x, loc, sc, sh){
+  z <- (x-loc)/sc 
+  if (abs(sh) < 1e-12) {
+    if(x < loc) {return(0)}
+    else {return(1-exp(-z))} 
+  }
+  else {
+    if (sh > 0 & x > loc) {return(1 - (1 + sh*z)^(-1/sh))}
+    else if (sh < 0 & x > loc & x < loc - sc/sh) {return(1 - (1 + sh*z)^(-1/sh))}
+    else if (sh < 0 & x > loc & x > loc - sc/sh) {return(1)}
+    else {return(0)}
+  }
+}
+
+# Density of a GPD distribution
+fgpd <- function(x, loc, sc, sh){
+  z <- (x-loc)/sc
+  if (abs(sh) < 1e-12) {
+    if(x < loc) {return(0)}
+    else {return(1/sc*exp(-z))}
+  }
+  else {
+    if (sh > 0 & x > loc) {return( 1/sc*(1+sh*z)^(-(sh+1)/sh) )}
+    else if (sh < 0 & x > loc & x < loc - sc/sh) {return( 1/sc*(1+sh*z)^(-(sh+1)/sh))}
+    else {return(0)}
+  }
+}
+
 # Header function (CRPS based on sample of data)
 crps.sample <- function(dat, y, method = "edf", w = NULL, bw = NULL){
 	# Throw error if weights are not equal
@@ -175,37 +274,57 @@ d2pnorm <- function(x, m, s1, s2, lg=FALSE){
 
 # Header function (CRPS based on parametric family)
 crps.parametric <- function(family, parameters, y){
-	input.check.parametric(family, parameters, y)
-	if (family == "normal"){
-		out <- crps.mixn(m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "mixture-normal"){
-		xx <- (length(parameters$m) < 10000)
-		if (xx == FALSE) message("Large sample - used numerical integration for crps computation (tolerance = 1e-6).")
-		out <- crps.mixn(m = parameters$m, s = parameters$s, y = y, w = parameters$w, exact = xx)
-	} else if (family == "t"){
-		out <- crps.t(m = parameters$m, s = parameters$s, df = parameters$df, y)
-	} else if (family == "two-piece-normal"){
-		out <- crps.2pnorm(m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, y = y)
-	} 
-	return(orientation*out)
+  input.check.parametric(family, parameters, y)
+  if (family == "normal"){
+    out <- crps.mixn(m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "mixture-normal"){
+    xx <- (length(parameters$m) < 10000)
+    if (xx == FALSE) message("Large sample - used numerical integration for crps computation (tolerance = 1e-6).")
+    out <- crps.mixn(m = parameters$m, s = parameters$s, y = y, w = parameters$w, exact = xx)
+  } else if (family == "t"){
+    out <- crps.t(m = parameters$m, s = parameters$s, df = parameters$df, y)
+  } else if (family == "two-piece-normal"){
+    out <- crps.2pnorm(m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, y = y)
+  } else if (family == "truncated-normal"){
+    out <- crps.tn(m = parameters$m, s = parameters$s, lb = parameters$lb, y = y)
+  } else if (family == "log-normal"){
+    out <- crps.ln(loc = parameters$loc, sh = parameters$sh, y = y)
+  } else if (family == "gev"){
+    out <- crps.gev(loc = parameters$loc, sc = parameters$sc, sh = parameters$sh, y = y)
+  } else if (family == "gpd"){
+    out <- crps.gpd(loc = parameters$loc, sc = parameters$sc, sh = parameters$sh, y = y)
+  } 
+  return(orientation*out)
 }
 
 qs.parametric <- function(family, parameters, y){
-	input.check.parametric(family, parameters, y)
-	if (family == "normal"){
-		out <- qsmixnC(w = 1, m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "mixture-normal"){
-		out <- qsmixnC(w = rep(1/length(parameters$m), length(parameters$m)), m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "t"){
-		ff <- function(x){
-			z <- (x-parameters$m)/parameters$s
-			dt(z, parameters$df)/parameters$s
-		}
-		out <- 2*ff(y) - integrate(function(x) ff(x)^2, -Inf, Inf, rel.tol = 1e-6)$value
-	} else if (family == "two-piece-normal"){
-		out <- qs.2pnorm(m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, y = y)
-	} 
-	return(orientation*out)
+  input.check.parametric(family, parameters, y)
+  if (family == "normal"){
+    out <- qsmixnC(w = 1, m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "mixture-normal"){
+    out <- qsmixnC(w = rep(1/length(parameters$m), length(parameters$m)), m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "t"){
+    ff <- function(x){
+      z <- (x-parameters$m)/parameters$s
+      dt(z, parameters$df)/parameters$s
+    }
+    out <- 2*ff(y) - integrate(function(x) ff(x)^2, -Inf, Inf, rel.tol = 1e-6)$value 
+  } else if (family == "two-piece-normal"){
+    out <- qs.2pnorm(m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, y = y)
+  } else if (family == "truncated-normal"){
+    ff <- function(x){
+      if (x < parameters$lb) {return(0)}
+      else {return(dnorm(x,parameters$m,parameters$s)/(1-pnorm(parameters$lb,parameters$m,parameters$s)))} 
+    }
+    out <- 2*ff(y) - integrate(Vectorize(function(x) ff(x)^2), -Inf, Inf, rel.tol = 1e-6)$value    
+  } else if (family == "log-normal"){
+    out <- 2*dlnorm(y,meanlog=parameters$loc,sdlog=parameters$sh) - integrate(function(x) dlnorm(x,meanlog=parameters$loc,sdlog=parameters$sh)^2, -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
+  } else if (family == "gev"){
+    out <- 2*fgev(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh) - integrate(Vectorize(function(x) fgev(x, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh)^2), -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
+  } else if (family == "gpd"){
+    out <- 2*fgpd(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh) - integrate(Vectorize(function(x) fgpd(x, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh)^2), -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
+  } 
+  return(orientation*out)
 }
 
 qs.sample <- function(dat, y, bw = NULL){
@@ -223,21 +342,33 @@ qs.sample <- function(dat, y, bw = NULL){
 }
 
 ls.parametric <- function(family, parameters, y){
-	input.check.parametric(family, parameters, y)
-	if (family == "normal"){
-		out <- lsmixnC(w = 1, m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "mixture-normal"){
-		out <- lsmixnC(w = rep(1/length(parameters$m), length(parameters$m)), m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "t"){
-		ff <- function(x){
-			z <- (x-parameters$m)/parameters$s
-			dt(z, parameters$df)/parameters$s
-		}
-		out <- log(ff(y))
-	} else if (family == "two-piece-normal"){
-		out <- d2pnorm(x = y, m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, lg = TRUE)
-	} 
-	return(orientation*out)
+  input.check.parametric(family, parameters, y)
+  if (family == "normal"){
+    out <- lsmixnC(w = 1, m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "mixture-normal"){
+    out <- lsmixnC(w = rep(1/length(parameters$m), length(parameters$m)), m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "t"){
+    ff <- function(x){
+      z <- (x-parameters$m)/parameters$s
+      dt(z, parameters$df)/parameters$s
+    }
+    out <- log(ff(y))
+  } else if (family == "two-piece-normal"){
+    out <- d2pnorm(x = y, m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, lg = TRUE)
+  } else if (family == "truncated-normal"){
+    ff <- function(x){
+      if (x < parameters$lb) {return(0)}
+      else {return(dnorm(x,parameters$m,parameters$s)/(1-pnorm(parameters$lb,parameters$m,parameters$s)))} 
+    }
+    out <- log(ff(y))
+  } else if (family == "log-normal"){
+    out <- log(dlnorm(y,meanlog=parameters$loc,sdlog=parameters$sh))
+  } else if (family == "gev"){
+    out <- log(fgev(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh)) 
+  } else if (family == "gpd"){
+    out <- log(fgpd(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh))  
+  } 
+  return(orientation*out)
 }
 
 ls.sample <- function(dat, y, bw = NULL){
@@ -250,49 +381,92 @@ ls.sample <- function(dat, y, bw = NULL){
 dss <- function(m, s, y) return(dnorm(y, mean = m, sd = s, log = TRUE))
 
 dss.sample <- function(dat, y){
+	message("Note: The DS Score considers only the first two moments of the simulated distribution.")
 	out <- dss(mean(dat), sd(dat), y)
 	return(orientation*out)
 }
 
 dss.parametric <- function(family, parameters, y){
-	input.check.parametric(family, parameters, y)
-	if (family == "normal"){
-		out <- dss(m = parameters$m, s = parameters$s, y = y)
-	} else if (family == "mixture-normal"){
-		m <- sum(parameters$m * parameters$w)
-		v <- sum( ( (parameters$s^2) + (parameters$m - m)^2 ) * parameters$w )
-		out <- dss(m = m, s = sqrt(v), y = y)
-	} else if (family == "t"){
-		s <- sqrt( (parameters$s^2) * (parameters$df/(parameters$df - 2)) )
-		out <- dss(m = parameters$m, s = s, y = y)
-	} else if (family == "two-piece-normal"){
-		# Mean and variance, see eq. (A.2) and (A.3) in Box A of Wallis (2004)
-		m <- parameters$m + sqrt(2/pi)*(parameters$s2 - parameters$s1)
-		v <- (1-2/pi) * (parameters$s2 - parameters$s1)^2 + parameters$s1 * parameters$s2
-		out <- dss(m = m, s = sqrt(v), y = y)
-	} 
-	return(orientation*out)
+  input.check.parametric(family, parameters, y)
+  if (family == "normal"){
+    out <- dss(m = parameters$m, s = parameters$s, y = y)
+  } else if (family == "mixture-normal"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    m <- sum(parameters$m * parameters$w)
+    v <- sum( ( (parameters$s^2) + (parameters$m - m)^2 ) * parameters$w )
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } else if (family == "t"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    s <- sqrt( (parameters$s^2) * (parameters$df/(parameters$df - 2)) )
+    out <- dss(m = parameters$m, s = s, y = y)
+  } else if (family == "two-piece-normal"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    # Mean and variance, see eq. (A.2) and (A.3) in Box A of Wallis (2004)
+    m <- parameters$m + sqrt(2/pi)*(parameters$s2 - parameters$s1)
+    v <- (1-2/pi) * (parameters$s2 - parameters$s1)^2 + parameters$s1 * parameters$s2
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } else if (family == "truncated-normal"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    z <- (parameters$lb-parameters$m)/parameters$s
+    m <- parameters$m + parameters$s*dnorm(z)/(1-pnorm(z))
+    v <- parameters$s^2*(1 - dnorm(z)/(1-pnorm(z))*(dnorm(z)/(1-pnorm(z))-z))
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } else if (family == "log-normal"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    m <- exp(parameters$loc + parameters$sh^2/2)
+    v <- exp(2*parameters$loc + parameters$sh^2)*(exp(parameters$sh^2)-1)
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } else if (family == "gev"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    if (parameters$sh < 1 & abs(parameters$sh) > 1e-12) {m <- parameters$loc + parameters$sc*(gamma(1-parameters$sh)-1)/parameters$sh} 
+    else if (abs(parameters$sh) <= 1e-12) {m <- parameters$loc + parameters$sc*0.5772157}
+    else if (parameters$sh >= 1) {m <- Inf; message("First moment does not exist for this shape parameter.")}
+    if (parameters$sh < 0.5 & abs(parameters$sh) > 1e-12) {v <- parameters$sc^2*(gamma(1-2*parameters$sh) - gamma(1-parameters$sh)^2)/parameters$sh^2}
+    else if (abs(parameters$sh) <= 1e-12) {v <- parameters$sc^2*(pi^2)/6}
+    else if (parameters$sh >= 0.5) {v <- Inf; message("Second moment does not exist for this shape parameter.")}
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } else if (family == "gpd"){
+    message("Note: The DS Score considers only the first two moments of the chosen distribution.")
+    if (parameters$sh < 1) {m <- parameters$loc + parameters$sc/(1-parameters$sh)} 
+    else if (parameters$sh >= 1) {m <- Inf; message("First moment does not exist for this shape parameter.")}
+    if (parameters$sh < 0.5) {v <- parameters$sc^2/((1-parameters$sh)^2*(1-2*parameters$sh))}
+    else if (parameters$sh >= 0.5) {v <- Inf; message("Second moment does not exist for this shape parameter.")}
+    out <- dss(m = m, s = sqrt(v), y = y)
+  } 
+  return(orientation*out)
 }
 
+# Add error checks for parameters (positivity etc)
 input.check.parametric <- function(family, parameters, y){
-	# Check 1: Length of parameter vectors
-	if (family != "mixture-normal" & any(sapply(parameters, function(x) length(x)) != 1)) stop("All elements of list 'parameters' must be numeric vectors of length one - please see ?crps.parametric for details.")
-	if (family == "mixture-normal" & (sd(sapply(parameters, function(x) length(x))) > 0) ) stop("Parameter vectors for mixture-normal must have the same length - please see ?crps.parametric for details.")
-	
-	# Check 2: Consistency of family and parameter list
-	if (family == "normal"){
-		if (any(sort(names(parameters)) != c("m", "s"))) stop("Unexpected input format -- Family 'normal' requires parameters 'm' and 's'. Please see ?crps.parametric for details.")
-	} else if (family == "two-piece-normal"){
-		if (any(sort(names(parameters)) != c("m", "s1", "s2"))) stop("Unexpected input format -- Family 'two-piece-normal' requires parameters 'm', 's1'	and 's2'. Please see ?crps.parametric for details.")
-	} else if (family == "mixture-normal"){
-		if (any(sort(names(parameters)) != c("m", "s", "w"))) stop("Unexpected input format -- Family 'mixture-normal' requires parameters 'm', 's' and 'w'. Please see ?crps.parametric for details.")
-	} else if (family == "t"){
-		if (any(sort(names(parameters)) != c("df", "m", "s"))) stop("Unexpected input format -- Family 't' requires parameters 'm', 's' and 'df'. Please see ?crps.parametric for details.")
-	} else {
-		stop("Unexpected choice of parametric family - see details section of ?crps.parametric for a list of available choices")
-	}
+  # Check 1: Length of parameter vectors
+  if (family != "mixture-normal" & any(sapply(parameters, function(x) length(x)) != 1)) stop("All elements of list 'parameters' must be numeric vectors of length one - please see ?crps.parametric for details.")
+  if (family == "mixture-normal" & (sd(sapply(parameters, function(x) length(x))) > 0) ) stop("Parameter vectors for mixture-normal must have the same length - please see ?crps.parametric for details.")
   
-	# Check 3: Length of y
+  # Check 2: Consistency of family and parameter list
+  if (family == "normal"){
+    if (any(sort(names(parameters)) != c("m", "s"))) stop("Unexpected input format -- Family 'normal' requires parameters 'm' and 's'. Please see ?crps.parametric for details.")
+  } else if (family == "two-piece-normal"){
+    if (any(sort(names(parameters)) != c("m", "s1", "s2"))) stop("Unexpected input format -- Family 'two-piece-normal' requires parameters 'm', 's1'  and 's2'. Please see ?crps.parametric for details.")
+  } else if (family == "mixture-normal"){
+    if (any(sort(names(parameters)) != c("m", "s", "w"))) stop("Unexpected input format -- Family 'mixture-normal' requires parameters 'm', 's' and 'w'. Please see ?crps.parametric for details.")
+  } else if (family == "t"){
+    if (any(sort(names(parameters)) != c("df", "m", "s"))) stop("Unexpected input format -- Family 't' requires parameters 'm', 's' and 'df'. Please see ?crps.parametric for details.")
+  } else if (family == "gev"){
+    if (any(sort(names(parameters)) != c("loc", "sc", "sh"))) stop("Unexpected input format -- Family 'gev' requires parameters 'loc', 'sc' and 'sh'. Please see ?crps.parametric for details.")
+    if (parameters$sc <= 0) stop("Invalid scale parameter")
+  } else if (family == "truncated-normal"){
+    if (any(sort(names(parameters)) != c("lb", "m", "s"))) stop("Unexpected input format -- Family 'truncated-normal' requires parameters 'lb', 'm' and 's'. Please see ?crps.parametric for details.")
+    if (parameters$s <= 0) stop("Invalid scale parameter")
+  } else if (family == "log-normal"){
+    if (any(sort(names(parameters)) != c("loc", "sh"))) stop("Unexpected input format -- Family 'log-normal' requires parameters 'loc' and 'sh'. Please see ?crps.parametric for details.")
+    if (parameters$sh <= 0) stop("Invalid shape parameter")
+  } else if (family == "gpd"){
+    if (any(sort(names(parameters)) != c("loc", "sc", "sh"))) stop("Unexpected input format -- Family 'gpd' requires parameters 'loc', 'sc' and 'sh'. Please see ?crps.parametric for details.")
+    if (parameters$sc <= 0) stop("Invalid scale parameter")
+  } else {
+    stop("Unexpected choice of parametric family - see details section of ?crps.parametric for a list of available choices")
+  }
+  
+  # Check 3: Length of y
   if (length(y) != 1) stop("y must be of length one - a vectorized version is _not_ implemented to avoid ambiguities.")
-  
 }
