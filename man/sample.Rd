@@ -24,7 +24,7 @@ qs.sample(dat, y, bw = NULL)
 \item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one)}
 }
 
-\value{Value of the score. \emph{A higher score indicates a better forecast.}}
+\value{Value of the score. \emph{A lower score indicates a better forecast.}}
 
 \references{
 
