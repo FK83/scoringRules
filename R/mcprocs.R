@@ -89,8 +89,8 @@ crps.gev <- function(loc, sc, sh, y){
                         pgev.tmp <- function(x){return(exp(-exp(-(x - loc)/sc)))}
                         return(-integrate(function(x) (pgev.tmp(x) - (y <= x))^2, lower=-Inf, upper=Inf, rel.tol = 1e-6, subdivisions = 1000L, stop.on.error = TRUE)$value)
   }
-  else if (y < loc-sc/sh) {pgev.tmp <- function(x){return(exp(-pmax(1 + sh * ((x - loc)/sc), 0)^(-1/sh)))}
-                           return(-integrate(function(x) (1-pgev.tmp(x))^2, lower=y, upper=Inf, rel.tol = 1e-6, subdivisions = 1000L, stop.on.error = TRUE)$value)
+  else if (y < loc-sc/sh) {
+    return(-((loc - sc/sh - y) - sc/sh*( (2^sh-2)*gamma(1-sh))))
   }
   else {
     logFy <- (1 + sh*(y - loc)/sc)^{-1/sh}
