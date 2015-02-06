@@ -83,32 +83,26 @@ crps.parametric <- function(y, family, ...){
 }
 
 qs.parametric <- function(family, parameters, y){
-  input.check.parametric(family, parameters, y)
-  if (family == "normal"){
-    out <- qsmixnC(w = 1, m = parameters$m, s = parameters$s, y = y)
-  } else if (family == "mixture-normal"){
-    out <- qsmixnC(w = rep(1/length(parameters$m), length(parameters$m)), m = parameters$m, s = parameters$s, y = y)
-  } else if (family == "t"){
-    ff <- function(x){
-      z <- (x-parameters$m)/parameters$s
-      dt(z, parameters$df)/parameters$s
-    }
-    out <- 2*ff(y) - integrate(function(x) ff(x)^2, -Inf, Inf, rel.tol = 1e-6)$value 
-  } else if (family == "two-piece-normal"){
-    out <- qs.2pnorm(m = parameters$m, s1 = parameters$s1, s2 = parameters$s2, y = y)
-  } else if (family == "truncated-normal"){
-    ff <- function(x){
-      if (x < parameters$lb) {return(0)}
-      else {return(dnorm(x,parameters$m,parameters$s)/(1-pnorm(parameters$lb,parameters$m,parameters$s)))} 
-    }
-    out <- 2*ff(y) - integrate(Vectorize(function(x) ff(x)^2), -Inf, Inf, rel.tol = 1e-6)$value    
-  } else if (family == "log-normal"){
-    out <- 2*dlnorm(y,meanlog=parameters$loc,sdlog=parameters$sh) - integrate(function(x) dlnorm(x,meanlog=parameters$loc,sdlog=parameters$sh)^2, -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
-  } else if (family == "gev"){
-    out <- 2*fgev(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh) - integrate(Vectorize(function(x) fgev(x, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh)^2), -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
-  } else if (family == "gpd"){
-    out <- 2*fgpd(y, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh) - integrate(Vectorize(function(x) fgpd(x, loc=parameters$loc, sc=parameters$sc, sh=parameters$sh)^2), -Inf, Inf, subdivisions = 1000L, rel.tol = 1e-6)$value    
-  } 
+  ind <- c(match(family, names(list_qsFunctions)),
+           match(paste("crps.", family, sep=""), list_qsFunctions)
+  )
+  ind <- ind[!is.na(ind)]
+  ind <- unique(ind)
+  ind <- names(list_qsFunctions)[ind]
+  if (length(ind) > 1) {
+    stop("Ambiguous choice of parametric family - see details section of ?qs.parametric for a list of available choices.")
+  } else if (length(ind) == 0) {
+    stop("Could not find parametric family - see details section of ?qs.parametric for a list of available choices.")  
+  }
+  
+  input <- list(y = y, ...)
+  inputCheck <- eval(parse(text = list_inputChecks[ind]))
+  input <- inputCheck(input)
+  
+  qs <- eval(parse(text = list_qsFunctions[ind]))
+  formals(qs) <- input
+  out <- qs()
+  
   return(orientation*out)
 }
 
