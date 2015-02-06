@@ -90,9 +90,9 @@ qs.parametric <- function(family, parameters, y){
   ind <- unique(ind)
   ind <- names(list_qsFunctions)[ind]
   if (length(ind) > 1) {
-    stop("Ambiguous choice of parametric family - see details section of ?crps.parametric for a list of available choices.")
+    stop("Ambiguous choice of parametric family - see details section of ?qs.parametric for a list of available choices.")
   } else if (length(ind) == 0) {
-    stop("Could not find parametric family - see details section of ?crps.parametric for a list of available choices.")  
+    stop("Could not find parametric family - see details section of ?qs.parametric for a list of available choices.")  
   }
   
   input <- list(y = y, ...)
