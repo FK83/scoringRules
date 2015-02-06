@@ -84,7 +84,7 @@ crps.parametric <- function(y, family, ...){
 
 qs.parametric <- function(family, parameters, y){
   ind <- c(match(family, names(list_qsFunctions)),
-           match(paste("crps.", family, sep=""), list_qsFunctions)
+           match(paste("qs.", family, sep=""), list_qsFunctions)
   )
   ind <- ind[!is.na(ind)]
   ind <- unique(ind)
