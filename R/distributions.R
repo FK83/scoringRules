@@ -1,7 +1,7 @@
 ################################################################################
 list_inputChecks <- list()
 
-# for no choice of parameterization
+# for only one choice of parameterization
 checkNames1 <- function(input, reqinput) {
   ind <- match(reqinput, names(input), nomatch = 0)
   if (any(ind == 0)) {
@@ -175,6 +175,11 @@ check.lapl <- function(input) {
 }
 list_inputChecks$'laplace' <- "check.lapl"
 
+flapl <- function(x, location, scale) {
+  z <- (x - location)/scale
+  1/(2*scale) * exp(-abs(z))
+}
+
 ### logistic
 check.logis <- function(input) {
   reqinput <- c("y", "location", "scale")
@@ -252,6 +257,8 @@ check.2pnorm <- function(input) {
 }
 list_inputChecks$'two-piece-normal' <- "check.2pnorm"
 
+f2pnorm <- function(x, m, s1, s2) ifelse(x < m, 2*s1/(s1+s2)*dnorm(x, m, s1), 2*s2/(s1+s2)*dnorm(x, m, s2))
+
 ### t
 check.t <- function(input) {
   reqinput <- c("y", "df", "location", "scale")
@@ -270,6 +277,11 @@ check.t <- function(input) {
   return(list(y = y, df = df, location = location, scale = scale))
 }
 list_inputChecks$'t' <- "check.t"
+
+ft <- function(x, df, location, scale) {
+  z <- (x - location) / scale
+  1/scale * dt(z, df)
+}
 
 
 ################################################################################
@@ -337,6 +349,15 @@ check.llapl <- function(input) {
 }
 list_inputChecks$'log-laplace' <- "check.llapl"
 
+fllapl <- function(x, locationlog, scalelog) {
+  x1 <- log(pmax(y, 0))
+  ind <- is.infinite(y1)
+  d <- numeric(length(y))
+  d[ind] <- 0
+  d[!ind] <- 1/x1[!ind] * flapl(x1[!ind], locationlog[!ind], scalelog[!ind])
+  return(d)
+}
+
 ### log-logistic
 check.llogis <- function(input) {
   reqinput <- c("y", "locationlog", "scalelog")
@@ -354,6 +375,15 @@ check.llogis <- function(input) {
   return(list(y = y, locationlog = locationlog, scalelog = scalelog))
 }
 list_inputChecks$'log-logistic' <- "check.llogis"
+
+fllogis <- function(x, locationlog, scalelog) {
+  x1 <- log(pmax(y, 0))
+  ind <- is.infinite(y1)
+  d <- numeric(length(y))
+  d[ind] <- 0
+  d[!ind] <- 1/x1[!ind] * dlogis(x1[!ind], locationlog[!ind], scalelog[!ind])
+  return(d)
+}
 
 ### log-normal
 check.lnorm <- function(input) {
@@ -392,6 +422,12 @@ check.tn <- function(input) {
 }
 list_inputChecks$'truncated-normal' <- "check.tn"
 
+ftn <- function(x, m, s, lb) {
+  d <- dnorm(y, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
+  d[y < lb] <- 0
+  return(d)
+}
+
 ################################################################################
 ### variable support
 
@@ -414,6 +450,27 @@ check.gpd <- function(input) {
 }
 list_inputChecks$'gpd' <- "check.gpd"
 
+fgpd <- function(x, location, scale, shape) {
+  ind1 <- abs(shape) > 1e-12
+  d <- numeric(length(y))
+  
+  if (any(!ind1)) {
+    d <- dexp(x[!ind1] - location[!ind1], 1/scale[!ind1])
+    x <- x[ind1]
+    location <- location[ind1]
+    scale <- scale[ind1]
+    shape <- shape[ind1]
+  }
+  
+  upper <- ifelse(shape > 0, Inf, location - scale / shape)
+  ind2 <- (y >= location) & (y <= upper)
+  d[ind1][!ind2] <- 0
+  z <- (y - location) / scale 
+  d[ind1][ind2] <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
+  
+  return(d)
+}
+
 ### gev
 check.gev <- function(input) {
   reqinput <- c("y", "location", "scale", "shape")
@@ -432,3 +489,21 @@ check.gev <- function(input) {
   return(list(y = y, location = location, scale = scale, shape = shape))
 }
 list_inputChecks$'gev' <- "check.gev"
+
+fgev <- function(x, location, scale, shape) {
+  ind <- abs(shape) > 1e-12
+  out <- numeric(length(x))
+  z <- (x - location) / scale
+  
+  if (any(!ind)) {
+    out[!ind] <- 1 / scale[!ind] * exp(-z[!ind]) * exp(-exp(-z[!ind]))
+    z <- z[ind]
+    scale <- scale[ind]
+    shape <- shape[ind]
+  }
+  
+  zz <- 1 + shape * z
+  out[ind] <- ifelse(zz > 0, 1/scale * zz^(-1-1/shape) * exp(-zz^(-1/shape)), 0)
+  
+  return(out)
+}

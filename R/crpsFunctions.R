@@ -102,11 +102,12 @@ crps.beta <- function(y, shape1, shape2) {
   c2 <- shape1/(shape1+shape2)
   c3 <- 1 - 2*pbeta(y, shape1 + 1, shape2)
   c4 <- 2/shape1 * beta(2*shape1, 2*shape2) / beta(shape1, shape2)^2
-  c4s <- sqrt(shape2 / (pi*shape1*(shape1+shape2)))
-  c4 <- ifelse(is.finite(c4), c4, c4s)
+  ind <- !is.finite(c4)
+  c4[ind] <- sqrt(shape2[ind] / (pi*shape1[ind]*(shape1[ind]+shape2[ind])))
   return(-(c1 + c2*(c3 - c4)))
 }
 list_crpsFunctions$'beta' <- "crps.beta"
+
 
 ################################################################################
 ### real line
@@ -187,6 +188,7 @@ crps.t <- function(y, df, location, scale) {
   )
 }
 list_crpsFunctions$'t' <- "crps.t"
+
 
 ################################################################################
 ### non-negative
