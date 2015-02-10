@@ -82,7 +82,7 @@ crps.parametric <- function(y, family, ...){
   return(orientation*out)
 }
 
-qs.parametric <- function(family, parameters, y){
+qs.parametric <- function(y, family, ...){
   ind <- c(match(family, names(list_qsFunctions)),
            match(paste("qs.", family, sep=""), list_qsFunctions)
   )
