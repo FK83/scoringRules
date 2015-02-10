@@ -422,7 +422,7 @@ check.tn <- function(input) {
 }
 list_inputChecks$'truncated-normal' <- "check.tn"
 
-ftn <- function(x, m, s, lb) {
+ftn <- function(y, m, s, lb) {
   d <- dnorm(y, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
   d[y < lb] <- 0
   return(d)
