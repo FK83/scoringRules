@@ -1,4 +1,7 @@
 Scoring rules for fixed (parametric) and simulated forecast distributions
 
-First commit September 15
-Major redo November 19
+September 15, 2014: First commit 
+
+November 19, 2014: Major redo (split into xx.parametric and xx.sample)
+
+February 6, 2015: Complete re-design of internal function structure

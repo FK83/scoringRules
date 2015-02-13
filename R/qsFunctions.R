@@ -45,6 +45,7 @@ qs.norm <- function(y, mean, sd) {
   c1 <- 2*dnorm(y, mean, sd)
   c2 <- 1/(2*sd*sqrt(pi))
   return(c1 - c2)
+}
 list_qsFunctions$'normal' <- "qs.norm"
 
 # mixture of normals

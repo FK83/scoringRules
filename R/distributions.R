@@ -350,9 +350,9 @@ check.llapl <- function(input) {
 list_inputChecks$'log-laplace' <- "check.llapl"
 
 fllapl <- function(x, locationlog, scalelog) {
-  x1 <- log(pmax(y, 0))
-  ind <- is.infinite(y1)
-  d <- numeric(length(y))
+  x1 <- log(pmax(x, 0))
+  ind <- is.infinite(x1)
+  d <- numeric(length(x))
   d[ind] <- 0
   d[!ind] <- 1/x1[!ind] * flapl(x1[!ind], locationlog[!ind], scalelog[!ind])
   return(d)
@@ -377,9 +377,9 @@ check.llogis <- function(input) {
 list_inputChecks$'log-logistic' <- "check.llogis"
 
 fllogis <- function(x, locationlog, scalelog) {
-  x1 <- log(pmax(y, 0))
-  ind <- is.infinite(y1)
-  d <- numeric(length(y))
+  x1 <- log(pmax(x, 0))
+  ind <- is.infinite(x1)
+  d <- numeric(length(x))
   d[ind] <- 0
   d[!ind] <- 1/x1[!ind] * dlogis(x1[!ind], locationlog[!ind], scalelog[!ind])
   return(d)
@@ -423,8 +423,8 @@ check.tn <- function(input) {
 list_inputChecks$'truncated-normal' <- "check.tn"
 
 ftn <- function(x, m, s, lb) {
-  d <- dnorm(y, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
-  d[y < lb] <- 0
+  d <- dnorm(x, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
+  d[x < lb] <- 0
   return(d)
 }
 
@@ -452,7 +452,7 @@ list_inputChecks$'gpd' <- "check.gpd"
 
 fgpd <- function(x, location, scale, shape) {
   ind1 <- abs(shape) > 1e-12
-  d <- numeric(length(y))
+  d <- numeric(length(x))
   
   if (any(!ind1)) {
     d <- dexp(x[!ind1] - location[!ind1], 1/scale[!ind1])
@@ -463,9 +463,9 @@ fgpd <- function(x, location, scale, shape) {
   }
   
   upper <- ifelse(shape > 0, Inf, location - scale / shape)
-  ind2 <- (y >= location) & (y <= upper)
+  ind2 <- (x >= location) & (x <= upper)
   d[ind1][!ind2] <- 0
-  z <- (y - location) / scale 
+  z <- (x - location) / scale 
   d[ind1][ind2] <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
   
   return(d)
