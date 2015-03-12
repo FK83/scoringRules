@@ -46,7 +46,7 @@ checkVector <- function(input) {
   }
   input_lengths <- sapply(input, length)
   input_maxlength <- max(input_lengths)
-  if (anyNA(match(input_lengths, c(1, input_maxlength)))) {
+  if (any(is.na(match(input_lengths, c(1, input_maxlength))))) {
     stop("Incompatible input vector lengths. Each vector should be of length 1 or n.")
   }
 }
@@ -65,7 +65,7 @@ checkMatrix <- function(input) {
   input_dims <- sapply(input[-1], dim)
   ylength <- length(input$y)
   input_maxdim <- c(ylength, max(input_dims[2,]))
-  if (anyNA(sapply(1:2, function(i) match(input_dims[i,], input_maxdim[i])))) {
+  if (any(is.na(sapply(1:2, function(i) match(input_dims[i,], input_maxdim[i]))))) {
     stop("Incompatible input object sizes.")
   }
 }
