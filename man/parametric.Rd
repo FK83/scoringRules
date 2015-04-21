@@ -7,7 +7,7 @@
 Scoring Rules for Parametric Forecast Distributions
 }
 \description{
-The functions documented here compute scores of the form \eqn{S(F, y)}, where \eqn{S} is a proper scoring rule, \eqn{F} belongs to a parametric family of distributions, and \eqn{y} is a vector of realizations. 
+The functions documented here compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
 }
 \usage{
 crps.parametric(y, family, ...)
@@ -75,9 +75,14 @@ The parameters supplied to each of the functions are numeric vectors:
 }
 }
 
-\examples{a <- 1
-b <- 2
-a + b
+\examples{
+# Forecast distribution is N(0, 1), three different realizations (1, 2, and 3)
+crps.parametric(c(1, 2, 3), family = "normal", mean = 0, sd = 1)
+# Forecast distribution is a mixture of N(0, 1) and N(0, 3), three different realizations (1, 2, and 3)
+m <- matrix(0, ncol = 2)
+s <- matrix(c(1, 3), ncol = 2)
+w <- matrix(0.5, ncol = 2)
+crps.parametric(c(1, 2, 3), family = "normal-mixture", m = m, s = s, w = w)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
