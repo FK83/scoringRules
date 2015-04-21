@@ -78,11 +78,12 @@ The parameters supplied to each of the functions are numeric vectors:
 \examples{
 # Forecast distribution is N(0, 1), three different realizations (1, 2, and 3)
 crps.parametric(c(1, 2, 3), family = "normal", mean = 0, sd = 1)
-# Forecast distribution is a mixture of N(0, 1) and N(0, 3), three different realizations (1, 2, and 3)
+
+# Forecast distribution is a mixture of N(0, 1) and N(0, 3), single realization (2)
 m <- matrix(0, ncol = 2)
 s <- matrix(c(1, 3), ncol = 2)
 w <- matrix(0.5, ncol = 2)
-crps.parametric(c(1, 2, 3), family = "normal-mixture", m = m, s = s, w = w)
+crps.parametric(2, family = "normal-mixture", m = m, s = s, w = w)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
