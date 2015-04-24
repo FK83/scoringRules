@@ -42,7 +42,8 @@ The parameters supplied to each of the functions are numeric vectors:
 \item Distributions for random variables with discrete / infinite support:
     \itemize{
       \item If \code{family == "poisson"}: \code{lambda} denotes the vector of positive means
-      \item If \code{family == "negative-binomial"}: 
+      \item If \code{family == "negative-binomial"}: Vectors \code{size} and \code{prob}; as an alternative parametrization, \code{mu}
+      can be provided instead of \code{prob}. See the help file for the base function \link{dnbinom}. 
     }
 \item Distribution for random variables defined on bounded intervals:
     \itemize{
