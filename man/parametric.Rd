@@ -7,7 +7,7 @@
 Scoring Rules for Parametric Forecast Distributions
 }
 \description{
-The functions documented here compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
+Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
 }
 \usage{
 crps.parametric(y, family, ...)
