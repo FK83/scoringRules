@@ -37,7 +37,7 @@ Krueger, F., S. Lerch, T. Thorarinsdottir and T. Gneiting (2015), ``Evaluating M
 Alexander Jordan, Fabian Krueger
 }
 \details{
-When using \code{method = "edf"}, \link{crps.sample} employs the efficient algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). When using \code{meth = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.SJ}.
+When using \code{method = "edf"}, \link{crps.sample} employs the efficient algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). When using \code{meth = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
 
 \link{ls.sample} and \link{qs.sample} \emph{always} use kernel density estimation with a Gaussian kernel (the EDF option is not available since the two scores require a density). The choice of bandwidth is handled as in \link{crps.sample}.
 
