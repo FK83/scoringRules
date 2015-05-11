@@ -29,7 +29,7 @@ crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL){
 }
 
 qs.sample <- function(y, dat, bw = NULL){
-  if (is.null(bw)) bw <- bw.SJ(dat)
+  if (is.null(bw)) bw <- bw.nrd(dat)
   if (length(dat) < 10000){
     out <- qsmixnC(w = rep(1/length(dat), length(dat)), m = dat, s = rep(bw, length(dat)), y = y)
   } else {
@@ -44,7 +44,7 @@ qs.sample <- function(y, dat, bw = NULL){
 
 ls.sample <- function(y, dat, bw = NULL){
   message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2015) for details.")
-  if (is.null(bw)) bw <- bw.SJ(dat)
+  if (is.null(bw)) bw <- bw.nrd(dat)
   out <- lsmixnC(w = rep(1/length(dat), length(dat)), m = dat, s = rep(bw, length(dat)), y = y)
   return(orientation*out)
 }
