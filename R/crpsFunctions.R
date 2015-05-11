@@ -57,7 +57,7 @@ crps.edf <- function(dat, y, w = NULL){
 crps.kdens = function(dat, y, bw = NULL, exact = TRUE, rel.tol = 1e-6){
   n <- length(dat)
   if (is.null(bw)) {
-    s <- rep(bw.SJ(dat), n)
+    s <- rep(bw.nrd(dat), n)
   }
   else {
     s <- rep(bw, n)
