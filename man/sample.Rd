@@ -7,7 +7,7 @@
 Scoring Rules for Simulated Forecast Distributions
 }
 \description{
-The functions documented here compute scores of the form \eqn{S(dat, y)}, where \eqn{S} is a proper scoring rule, \eqn{dat} is a simulated sample of data, and \eqn{y} is a scalar realization. 
+Compute scores of the form \eqn{S(dat, y)}, where \eqn{S} is a proper scoring rule, \eqn{dat} is a simulated sample of data, and \eqn{y} is a scalar realization. 
 }
 \usage{
 crps.sample(dat, y, method = "edf", w = NULL, bw = NULL)
