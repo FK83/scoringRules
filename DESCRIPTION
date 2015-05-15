@@ -10,4 +10,3 @@ Description: Tools to evaluate probabilistic forecasts, covering various perform
 License: GPL (>= 2.0)
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: Rcpp
-Suggests: testthat
