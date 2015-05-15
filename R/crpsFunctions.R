@@ -57,12 +57,14 @@ crps.edf <- function(dat, y, w = NULL){
 crps.kdens = function(dat, y, bw = NULL){
   n <- length(dat)
   if (is.null(bw)) {
-    s <- rep(bw.nrd(dat), n)
+    s <- matrix(bw.nrd(dat), nrow = 1, ncol = n)
   }
   else {
-    s <- rep(bw, n)
+    s <- matrix(bw, nrow = 1, ncol = n)
   }
-  return(crps.mixn(dat, s, y))
+  m <- matrix(dat, nrow = 1, ncol = n)
+  w <- matrix(1/n, nrow = 1, ncol = n)
+  return(crps.mixn(y = y, m = m, s = s, w = w))
 }
 
 ################################################################################

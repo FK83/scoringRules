@@ -19,7 +19,7 @@ crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
 		if (is.null(bw)) bw <- bw.nrd(dat)
 		if (num_int == FALSE){
 		  # Exact formula
-		  out <- crps.kdens(dat = dat, y = y, bw = bw, exact = xx)
+		  out <- crps.kdens(dat = dat, y = y, bw = bw)
 		} else {
 		  # Numerical integration
 		  FF <- function(x){
@@ -27,15 +27,14 @@ crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
 		  }
 		  aux1 <- integrate(function(s) FF(s)^2, -Inf, y, rel.tol = 1e-6)$value
 		  aux2 <- integrate(function(s) (1-FF(s))^2, y, Inf, rel.tol = 1e-6)$value
-		  out <- (s1 + s2)
+		  out <- orientation*(aux1 + aux2)
+		  # Message
+          message("Used numerical integration for CPRS (tolerance = 1e-6).")
 		}
-		# Message
-        message("Used numerical integration for CPRS (tolerance = 1e-6).")
-		}		
 	} else {
 		stop("Unexpected choice of method - please select either edf or kde")
 	}
-	return(orientation*out)
+	return(out)
 }
 
 qs.sample <- function(y, dat, bw = NULL, num_int = FALSE){
