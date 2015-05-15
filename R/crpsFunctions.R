@@ -54,7 +54,7 @@ crps.edf <- function(dat, y, w = NULL){
 }
 
 # kernel density estimation
-crps.kdens = function(dat, y, bw = NULL, exact = TRUE, rel.tol = 1e-6){
+crps.kdens = function(dat, y, bw = NULL){
   n <- length(dat)
   if (is.null(bw)) {
     s <- rep(bw.nrd(dat), n)
@@ -62,7 +62,7 @@ crps.kdens = function(dat, y, bw = NULL, exact = TRUE, rel.tol = 1e-6){
   else {
     s <- rep(bw, n)
   }
-  return(crps.mixn(dat, s, y, exact = exact, rel.tol = 1e-6))
+  return(crps.mixn(dat, s, y))
 }
 
 ################################################################################

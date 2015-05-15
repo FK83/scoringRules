@@ -10,10 +10,10 @@ Scoring Rules for Simulated Forecast Distributions
 Compute scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a scalar realization and \eqn{dat} is a simulated sample of data. 
 }
 \usage{
-crps.sample(y, dat, method = "edf", w = NULL, bw = NULL)
+crps.sample(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE)
 dss.sample(y, dat)
 ls.sample(y, dat, bw = NULL)
-qs.sample(y, dat, bw = NULL)
+qs.sample(y, dat, bw = NULL, num_int = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,6 +22,7 @@ qs.sample(y, dat, bw = NULL)
 \item{method}{String, approximation method used in \link{crps.sample}. Currently implemented: "edf" (empirical distribution function) and "kde" (kernel density estimation).}
 \item{w}{Numeric vector of observation weights for \code{dat}.}
 \item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one)}
+\item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps.sample} and \link{qs.sample} in case of large samples \code{dat}).}
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
