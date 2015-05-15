@@ -27,14 +27,14 @@ crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
 		  }
 		  aux1 <- integrate(function(s) FF(s)^2, -Inf, y, rel.tol = 1e-6)$value
 		  aux2 <- integrate(function(s) (1-FF(s))^2, y, Inf, rel.tol = 1e-6)$value
-		  out <- orientation*(aux1 + aux2)
+		  out <- -(aux1 + aux2)
 		  # Message
           message("Used numerical integration for CPRS (tolerance = 1e-6).")
 		}
 	} else {
 		stop("Unexpected choice of method - please select either edf or kde")
 	}
-	return(out)
+	return(orientation*out)
 }
 
 qs.sample <- function(y, dat, bw = NULL, num_int = FALSE){
