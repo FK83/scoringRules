@@ -9,75 +9,99 @@ using namespace Rcpp;
 double dnormC(double x);
 RcppExport SEXP scoringrules_dnormC(SEXP xSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    __result = Rcpp::wrap(dnormC(x));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< double >::type x(xSEXP );
+        double __result = dnormC(x);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // pnormC
 double pnormC(double x);
 RcppExport SEXP scoringrules_pnormC(SEXP xSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    __result = Rcpp::wrap(pnormC(x));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< double >::type x(xSEXP );
+        double __result = pnormC(x);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // auxcrpsC
 double auxcrpsC(double m, double s);
 RcppExport SEXP scoringrules_auxcrpsC(SEXP mSEXP, SEXP sSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< double >::type m(mSEXP);
-    Rcpp::traits::input_parameter< double >::type s(sSEXP);
-    __result = Rcpp::wrap(auxcrpsC(m, s));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< double >::type m(mSEXP );
+        Rcpp::traits::input_parameter< double >::type s(sSEXP );
+        double __result = auxcrpsC(m, s);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // crpsmixnC
 double crpsmixnC(NumericVector w, NumericVector m, NumericVector s, double y);
 RcppExport SEXP scoringrules_crpsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
-    Rcpp::traits::input_parameter< double >::type y(ySEXP);
-    __result = Rcpp::wrap(crpsmixnC(w, m, s, y));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP );
+        Rcpp::traits::input_parameter< double >::type y(ySEXP );
+        double __result = crpsmixnC(w, m, s, y);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // lsmixnC
 NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, NumericVector y);
 RcppExport SEXP scoringrules_lsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    __result = Rcpp::wrap(lsmixnC(w, m, s, y));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP );
+        NumericVector __result = lsmixnC(w, m, s, y);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // qsmixnC
 double qsmixnC(NumericVector w, NumericVector m, NumericVector s, double y);
 RcppExport SEXP scoringrules_qsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
-    Rcpp::traits::input_parameter< double >::type y(ySEXP);
-    __result = Rcpp::wrap(qsmixnC(w, m, s, y));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP );
+        Rcpp::traits::input_parameter< double >::type y(ySEXP );
+        double __result = qsmixnC(w, m, s, y);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
