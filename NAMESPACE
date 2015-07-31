@@ -1,0 +1,3 @@
+useDynLib(scoringrules)
+exportPattern(ergdist, sim.fw, crps.sample, crps.parametric, qs.sample, qs.parametric, ls.sample, ls.parametric, dss.sample, dss.parametric)
+importFrom(Rcpp, evalCpp)
