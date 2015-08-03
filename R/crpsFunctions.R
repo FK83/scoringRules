@@ -250,9 +250,9 @@ list_crpsFunctions$'log-normal' <- "crps.lnorm"
 
 # truncated-normal
 crps.tn <- function(y, m, s, lb) {
-  z <- (y-m)/s; Phi.z <- pnorm(z)
-  x.lb <- (lb-m)/s; Phi.lb <- 1-pnorm(x.lb)
-  return(-(s/Phi.lb^2*(z*Phi.lb*(2*Phi.z+Phi.lb-2) + 2*dnorm(z)*Phi.lb - (1-pnorm(sqrt(2)*x.lb))/sqrt(pi))))
+  z <- (y-m)/s
+  x.lb <- (lb-m)/s; Phi.lb <- pnorm(-x.lb)
+  return(-(s/Phi.lb^2*(z*Phi.lb*(2*(-pnorm(-z))+Phi.lb) + 2*dnorm(z)*Phi.lb - (pnorm(-sqrt(2)*x.lb))/sqrt(pi))))
 }
 list_crpsFunctions$'truncated-normal' <- "crps.tn"
 

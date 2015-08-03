@@ -1,3 +1,3 @@
-useDynLib(scoringrules)
-exportPattern(ergdist, sim.fw, crps.sample, crps.parametric, qs.sample, qs.parametric, ls.sample, ls.parametric, dss.sample, dss.parametric)
+useDynLib(scoringRules)
+export(crps, logs, qs, crps_sample, qs_sample, logs_sample)
 importFrom(Rcpp, evalCpp)

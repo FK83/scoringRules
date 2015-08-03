@@ -1,12 +1,11 @@
-Package: scoringrules
+Package: scoringRules
 Type: Package
-Title: Scoring Rules for Evaluating Probabilistic Forecasts
-Version: 1.0
-Date: 2014-09-11
+Title: Scoring rules for parametric and simulated distribution forecasts
+Version: 0.8
+Date: 2015-08-01
 Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch
 Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
-Description: Tools to evaluate probabilistic forecasts, covering various performance measures (scoring rules)
-			 and types of forecasts. 
-License: GPL (>= 2.0)
-Imports: Rcpp (>= 0.11.2)
+Description: More about what it does (maybe more than one line)
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.11.0)
 LinkingTo: Rcpp
