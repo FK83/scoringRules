@@ -5,7 +5,7 @@ orientation <- -1
 ################################################################################
 ### xx.sample
 
-crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE){
+crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE){
 	# Throw error if weights are not equal
 	if (method == "kde" & !is.null(w)){
 		warning("Observation weights not implemented for kernel density estimation - edf used instead.")
@@ -37,7 +37,7 @@ crps.sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
 	return(orientation*out)
 }
 
-qs.sample <- function(y, dat, bw = NULL, num_int = FALSE){
+qs_sample <- function(y, dat, bw = NULL, num_int = FALSE){
   if (is.null(bw)) bw <- bw.nrd(dat)
   if (num_int == FALSE){
     out <- qsmixnC(w = rep(1/length(dat), length(dat)), m = dat, s = rep(bw, length(dat)), y = y)
@@ -51,23 +51,17 @@ qs.sample <- function(y, dat, bw = NULL, num_int = FALSE){
   return(orientation*out)
 }
 
-ls.sample <- function(y, dat, bw = NULL){
+logs_sample <- function(y, dat, bw = NULL){
   message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2015) for details.")
   if (is.null(bw)) bw <- bw.nrd(dat)
   out <- lsmixnC(w = rep(1/length(dat), length(dat)), m = dat, s = rep(bw, length(dat)), y = y)
   return(orientation*out)
 }
 
-dss.sample <- function(y, dat){
-  message("Note: The DS Score considers only the first two moments of the simulated distribution.")
-  out <- dnorm(y, mean(dat), sd(dat), log=TRUE)
-  return(orientation*out)
-}
-
 ################################################################################
 ### parametric
 
-crps.parametric <- function(y, family, ...){
+crps <- function(y, family, ...){
   ind <- c(match(family, names(list_crpsFunctions)),
            match(paste("crps.", family, sep=""), list_crpsFunctions)
   )
@@ -91,7 +85,7 @@ crps.parametric <- function(y, family, ...){
   return(orientation*out)
 }
 
-qs.parametric <- function(y, family, ...){
+qs <- function(y, family, ...){
   ind <- c(match(family, names(list_qsFunctions)),
            match(paste("qs.", family, sep=""), list_qsFunctions)
   )
@@ -115,7 +109,7 @@ qs.parametric <- function(y, family, ...){
   return(orientation*out)
 }
 
-ls.parametric <- function(y, family, ...){
+logs <- function(y, family, ...){
   ind <- c(match(family, names(list_lsFunctions)),
            match(paste("ls.", family, sep=""), list_lsFunctions)
   )
@@ -139,63 +133,4 @@ ls.parametric <- function(y, family, ...){
   return(orientation*out)
 }
 
-dss.parametric <- function(y, family, ...) {
-  ind <- c(match(family, names(list_dssFunctions)),
-           match(paste("dss.", family, sep=""), list_dssFunctions)
-  )
-  ind <- ind[!is.na(ind)]
-  ind <- unique(ind)
-  ind <- names(list_dssFunctions)[ind]
-  if (length(ind) > 1) {
-    stop("Ambiguous choice of parametric family - see details section of ?dss.parametric for a list of available choices.")
-  } else if (length(ind) == 0) {
-    stop("Could not find parametric family - see details section of ?dss.parametric for a list of available choices.")  
-  }
-  
-  message("Note: The DS Score considers only the first two moments of the chosen distribution.")
-  
-  input <- list(y = y, ...)
-  inputCheck <- eval(parse(text = list_inputChecks[ind]))
-  input <- inputCheck(input)
-  
-  dss <- eval(parse(text = list_dssFunctions[ind]))
-  formals(dss) <- input
-  out <- dss()
-  
-  return(orientation*out)
-}
-
 ################################################################################
-
-# Simulate Data from the Fox/West Model
-sim.fw <- function(a, s, n, ndraws){
-  # Compute parameters of marginal distribution (inverse Gamma)
-  beta.ig <- c(0.5*(n+2), 0.5*n*s)
-  # Compute parameters of corresponding t distribution
-  beta.t <- c(beta.ig[2]/beta.ig[1], 2*beta.ig[1]) # variance, degrees of freedom
-  # Simulate data
-  sig2 <- rep(0, ndraws)
-  sig2[1] <- 1
-  psi <- 1/rgamma(ndraws, 0.5*(n+3), 0.5*n*s*(1-a^2))
-  v <- a + sqrt( psi/(n*s) ) * rnorm(ndraws)
-  for (j in 2:ndraws){
-    sig2[j] <- psi[j] + (v[j]^2) * sig2[j-1]
-  }  
-  # Return list
-  return(list(par.ig = beta.ig, sim = sig2))
-}
-
-# Make the ergodic dist for our simulation design
-ergdist <- function(s, n){
-  # Make t distribution parameters
-  s <- sqrt(n*s/(n + 2))
-  df <- n + 2
-  # Compute properties of ergodic dist
-  pdf <- function(z){
-    sapply(z, function(l) dt(l/s, df)/s)
-  }  
-  cdf <- function(z){
-    sapply(z, function(l) pt(l/s, df))
-  } 
-  list(pdf = pdf, cdf = cdf, s = s, df = df)
-}

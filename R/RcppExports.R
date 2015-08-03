@@ -2,26 +2,26 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 dnormC <- function(x) {
-    .Call('scoringrules_dnormC', PACKAGE = 'scoringrules', x)
+    .Call('scoringRules_dnormC', PACKAGE = 'scoringRules', x)
 }
 
 pnormC <- function(x) {
-    .Call('scoringrules_pnormC', PACKAGE = 'scoringrules', x)
+    .Call('scoringRules_pnormC', PACKAGE = 'scoringRules', x)
 }
 
 auxcrpsC <- function(m, s) {
-    .Call('scoringrules_auxcrpsC', PACKAGE = 'scoringrules', m, s)
+    .Call('scoringRules_auxcrpsC', PACKAGE = 'scoringRules', m, s)
 }
 
 crpsmixnC <- function(w, m, s, y) {
-    .Call('scoringrules_crpsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
+    .Call('scoringRules_crpsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
 }
 
 lsmixnC <- function(w, m, s, y) {
-    .Call('scoringrules_lsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
+    .Call('scoringRules_lsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
 }
 
 qsmixnC <- function(w, m, s, y) {
-    .Call('scoringrules_qsmixnC', PACKAGE = 'scoringrules', w, m, s, y)
+    .Call('scoringRules_qsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
 }
 
