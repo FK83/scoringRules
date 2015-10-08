@@ -20,13 +20,13 @@ checkNames2 <- function(input, reqinput) {
   if (length(param.choice) > 1) {
     stop(paste("Multiple parameterizations given. Please choose one.",
                paste("Given input:", paste(names(input), collapse=", ")),
-               paste("Required input:", paste(names(reqinput), collapse=", ")),
+               paste("Required input:", paste(lapply(reqinput, paste, collapse = ", "), collapse = "  OR  ")),
                sep="\n")
     ) 
   } else if (length(param.choice) == 0) {
     stop(paste("Missing parameter.",
                paste("Given input:", paste(names(input), collapse=", ")),
-               paste("Required input:", paste(names(reqinput), collapse=", ")),
+               paste("Required input:", paste(lapply(reqinput, paste, collapse = ", "), collapse = "  OR  ")),
                sep="\n")
     )
   } else {
