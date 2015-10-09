@@ -43,7 +43,6 @@ crps.edf <- function(dat, y, w = NULL){
     x <- .Internal(sort(dat, FALSE))
     out <- sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
   } else {
-    if (length(w) != n) stop()
     ord <- order(dat)
     x <- dat[ord]
     w <- w[ord]
