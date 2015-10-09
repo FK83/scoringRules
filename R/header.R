@@ -117,7 +117,8 @@ check.sample <- function(input) {
     )
   }
   
-  if (!is.null(w)) {
+  if (!is.null(input$w)) {
+    w <- input$w
     if (any(w < 0 | w > 1)) {
       stop("Parameter 'w' contains values not in [0, 1].")
     }
@@ -125,8 +126,11 @@ check.sample <- function(input) {
       stop("Parameter 'w' contains weighting schemes which do not sum up to 1.")
     }
   }
-  if (!is.null(bw) & bw < 0)
-    stop("Bandwidth parameter 'bw' is negative.")
+  if (!is.null(input$bw)) {
+    if (input$bw < 0) {
+      stop("Bandwidth parameter 'bw' is negative.")
+    }
+  }
 }
 
 
