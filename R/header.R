@@ -13,7 +13,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
     if (!is.null(bw)) {
       input$bw <- bw
     }
-    check.crps_sample(input)
+    check.sample(input)
     
     # Throw error if weights are not equal
     if (method == "kde" & !is.null(w)) {
