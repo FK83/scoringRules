@@ -125,7 +125,7 @@ list_qsFunctions$'log-normal' <- "qs.lnorm"
 qs.tn <- function(y, m, s, lb) {
   c1 <- 2*ftn(y, m, s, lb)
   c2 <- sapply(seq_along(y), function(i) {
-    d <- function(x) ftn(x, m[i], s[i], lb[i])
+    d <- function(x) ftn(x, m[i], s[i], lb[i])^2
     integrate(d, lb[i], Inf)$value
   })
   return(c1 - c2)
@@ -148,7 +148,7 @@ qs.gpd <- function(y, location, scale, shape) {
   upper <- ifelse(shape < 0, location - scale / shape, Inf)
   c1 <- 2*fgpd(y[ind], location[ind], scale[ind], shape[ind])
   c2 <- sapply(which(ind), function(i) {
-    d <- function(x) fgpd(x, location[i], scale[i], shape[i])
+    d <- function(x) fgpd(x, location[i], scale[i], shape[i])^2
     integrate(d, location[i], upper[i])$value
   })
   out[ind] <- c1 - c2
@@ -168,7 +168,7 @@ qs.gev <- function(y, location, scale, shape) {
   
   c2[!ind1] <- 0.25/scale[!ind1]
   c2[ind1] <- sapply(which(ind1), function(i) {
-    d <- function(x) fgev(x, location[i], scale[i], shape[i])
+    d <- function(x) fgev(x, location[i], scale[i], shape[i])^2
     integrate(d, lower[i], upper[i])$value
   })
   
