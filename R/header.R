@@ -120,10 +120,10 @@ check.sample <- function(input) {
   if (!is.null(input$w)) {
     w <- input$w
     if (any(w < 0 | w > 1)) {
-      stop("Parameter 'w' contains values not in [0, 1].")
+      stop("Weight parameter 'w' contains values not in [0, 1].")
     }
-    if (all.equal(apply(w, 1, sum), rep(1, dim(w)[1])) != TRUE) {
-      stop("Parameter 'w' contains weighting schemes which do not sum up to 1.")
+    if (!isTRUE(all.equal(sum(w), 1))) {
+      stop("Weight parameter 'w' does not sum up to 1.")
     }
   }
   if (!is.null(input$bw)) {
