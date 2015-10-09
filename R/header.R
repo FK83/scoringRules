@@ -60,7 +60,8 @@ qs_sample <- function(y, dat, bw = NULL, num_int = FALSE) {
   }
   if (num_int == FALSE) {
     w <- rep(1 / length(dat), length(dat))
-    out <- qsmixnC(w = w, m = dat, s = rep(bw, length(dat)), y = y)
+    s <- rep(bw, length(dat))
+    out <- qsmixnC(w = w, m = dat, s = s, y = y)
   } else {
     ff <- function(x) {
       sapply(x, function(zz) mean(dnorm(zz, mean = dat, sd = bw)))
