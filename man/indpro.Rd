@@ -30,7 +30,7 @@ hist(indpro$x_draws[,1], main = "Forecast draws for 2014:Q2", xlab = "Value")
 
 # Add vertical line at realizing value
 abline(v = subset(indpro$dat, dt == "2014Q2")$val, lwd = 3)
-text(x = 9.5, y = 1500, "Realization")
+text(x = 9, y = 2200, "Realization")
 
 }
 }
