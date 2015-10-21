@@ -68,8 +68,8 @@ The parameters supplied to each of the functions are numeric vectors:
 \item Distributions  for random variables with variable support:
     \itemize{
       \item If \code{family == "truncated-normal"}: \code{lb} (truncation parameter, lower bound), \code{m} (location parameter) and \code{s} (scale parameter). \code{m} and \code{s} correspond to mean and standard deviation of the normal distribution before the left-sided truncation in \code{lb}, respectively. [Reference to Gneiting and Thorarinsdottir (2010)?]
-      \item If \code{family == "gpd"}: \code{loc} (location), \code{sc} (scale) and \code{sh} (shape) denote the parameters of the generalized Pareto distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).
-      \item If \code{family == "gev"}: \code{loc} (location), \code{sc} (scale) and \code{sh} (shape) denote the parameters of the generalized extreme value distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).   
+      \item If \code{family == "gpd"}: \code{location}, \code{scale} and \code{shape} denote the parameters of the generalized Pareto distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).
+      \item If \code{family == "gev"}: \code{location}, \code{scale} and \code{shape} denote the parameters of the generalized extreme value distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).   
     }
 }
 }
