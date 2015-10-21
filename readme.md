@@ -12,6 +12,7 @@ An R package to compute scoring rules for fixed (parametric) and simulated forec
 
 ```r
 # install.packages("devtools")
+library(devtools)
 install_github("FK83/scoringRules")
 library(scoringRules)
 ```
