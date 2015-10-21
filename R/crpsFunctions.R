@@ -266,7 +266,8 @@ crps.gpd <- function(y, location, scale, shape) {
   out <- numeric(length(y))
   
   if (any(ind)) {
-    if (any(ind & shape != 0)) warning("Parameter 'shape' contains values close to zero. In those cases the CRPS is calculated assuming a value of 0.")
+    if (any(ind & shape != 0))
+      warning("Parameter 'shape' contains values close to zero. In those cases the CRPS is calculated assuming a value of 0.")
     out[ind] <- crps.exp(y[ind] - location[ind], 1/scale[ind])
     y <- y[!ind]
     location <- location[!ind]
