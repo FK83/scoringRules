@@ -9,8 +9,8 @@ Realizations and Forecasts of the growth rate of quarterly US Industrial Product
 }
 
 \format{
-List; each element is a data frame. \code{dat} contains realizations and dates. \code{m_draws}, \code{v_draws} and \code{x_draws} contain the forecast mean, variance and (simulated) observation in each Gibbs sampler iteration;
-please see the package vignette for details.
+List; each element is a data frame. \code{dat} contains realizations and dates. \code{m_draws}, \code{v_draws} and \code{x_draws} contain the forecast mean, variance and (simulated) observation in each Gibbs sampler iteration.
+\code{nu_draws}, \code{alpha_draws} and \code{s2_draws} are the posterior draws for the parameters of the underlying AR(1) model. Please refer to the package vignette for details.
 }
 
 \source{Federal Reserve Bank of St. Louis (2014): Federal Reserve Economic Data, \url{http://research.stlouisfed.org/fred2/}.
