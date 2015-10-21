@@ -2,7 +2,21 @@
 
 An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions
 
-## Intro
+## Highlights
+  - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
+  - Previously unavailable closed-form expressions of the CRPS for many parametric distributions
+  - Efficient implementation thanks to R/Rcpp 
+  - Whenever more than one implementation variant exists, we offer statistically principled default choices
+  
+## Installation
+
+```r
+# install.packages("devtools")
+install_github("FK83/scoringRules")
+library(scoringRules)
+```
+
+## Background
 
 Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast distribution F, given that an outcome y was eventually observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of distributions F that come up in applied work, and three popular choices of S. Two main classes of distributions are
 
@@ -10,12 +24,6 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
   - Distributions that are not known analytically, but are indirectly described through a sample of simulaton draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
 
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976), the logarithmic score (Good, 1952), and the quadratic score (Brier, 1950).
-
-## Highlights
-  - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
-  - Previously unavailable closed-form expressions of the CRPS for many parametric distributions
-  - Efficient implementation thanks to R/Rcpp 
-  - Whenever more than one implementation variant exists, we offer statistically principled default choices
 
 ## History
   - August 3, 2015: Some name changes to header functions
