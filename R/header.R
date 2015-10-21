@@ -151,13 +151,13 @@ crps <- function(y, family, ...) {
     stop("Could not find parametric family - see details section of ?crps for a list of available choices.")  
   }
   
-  input <- list(y = y, ...)
   inputCheck <- eval(parse(text = list_inputChecks[ind]))
+  input <- list(...)
+  if (!missing(y)) input$y <- y
   input <- inputCheck(input)
   
   crps <- eval(parse(text = list_crpsFunctions[ind]))
-  formals(crps) <- input
-  out <- crps()
+  out <- do.call(crps, input)
   
   return(orientation*out)
 }
@@ -175,13 +175,13 @@ qs <- function(y, family, ...) {
     stop("Could not find parametric family - see details section of ?qs for a list of available choices.")  
   }
   
-  input <- list(y = y, ...)
   inputCheck <- eval(parse(text = list_inputChecks[ind]))
+  input <- list(...)
+  if (!missing(y)) input$y <- y
   input <- inputCheck(input)
   
   qs <- eval(parse(text = list_qsFunctions[ind]))
-  formals(qs) <- input
-  out <- qs()
+  out <- do.call(qs, input)
   
   return(orientation*out)
 }
@@ -199,13 +199,13 @@ logs <- function(y, family, ...) {
     stop("Could not find parametric family - see details section of ?logs for a list of available choices.")  
   }
   
-  input <- list(y = y, ...)
   inputCheck <- eval(parse(text = list_inputChecks[ind]))
+  input <- list(...)
+  if (!missing(y)) input$y <- y
   input <- inputCheck(input)
   
   logscore <- eval(parse(text = list_lsFunctions[ind]))
-  formals(logscore) <- input
-  out <- logscore()
+  out <- do.call(logscore, input)
   
   return(orientation*out)
 }
