@@ -1,5 +1,21 @@
 ################################################################################
-list_inputChecks <- list()
+synonyms <- list(
+  poisson = "pois",
+  'negative-binomial' = "nbinom",
+  uniform = "unif",
+  laplace = "lapl",
+  logistic = "logis",
+  normal = "norm",
+  'normal-mixture' = "mixn",
+  'two-piece-normal' = "2pnorm",
+  exponential = "exp",
+  'log-laplace' = "llapl",
+  'log-logistic' = "llogis",
+  'log-normal' = "lnorm",
+  'truncated-normal' = "tn"
+)
+
+################################################################################
 
 # for only one choice of parameterization
 checkNames1 <- function(input, reqinput) {
@@ -88,7 +104,6 @@ check.pois <- function(input) {
   
   return(list(y = y, lambda = lambda))
 }
-list_inputChecks$'poisson' <- "check.pois"
 
 ### negative binomial
 check.nbinom <- function(input) {
@@ -113,7 +128,6 @@ check.nbinom <- function(input) {
   
   return(list(y = y, size = size, prob = prob))
 }
-list_inputChecks$'negative-binomial' <- "check.nbinom"
 
 ################################################################################
 ### bounded interval
@@ -133,7 +147,6 @@ check.unif <- function(input) {
   
   return(list(y = y, min = min, max = max))
 }
-list_inputChecks$'uniform' <- "check.unif"
 
 ### beta
 check.beta <- function(input) {
@@ -152,7 +165,6 @@ check.beta <- function(input) {
   
   return(list(y = y, shape1 = shape1, shape2 = shape2))
 }
-list_inputChecks$'beta' <- "check.beta"
 
 ################################################################################
 ### real line
@@ -173,7 +185,6 @@ check.lapl <- function(input) {
   
   return(list(y = y, location = location, scale = scale))
 }
-list_inputChecks$'laplace' <- "check.lapl"
 
 flapl <- function(x, location, scale) {
   z <- (x - location)/scale
@@ -196,7 +207,6 @@ check.logis <- function(input) {
   
   return(list(y = y, location = location, scale = scale))
 }
-list_inputChecks$'logistic' <- "check.logis"
 
 ### normal
 check.norm <- function(input) {
@@ -214,7 +224,6 @@ check.norm <- function(input) {
   
   return(list(y = y, mean = mean, sd = sd))
 }
-list_inputChecks$'normal' <- "check.norm"
 
 ### normal-mixture
 check.mixn <- function(input) {
@@ -234,8 +243,6 @@ check.mixn <- function(input) {
   
   return(list(y = y, m = m, s = s, w = w))
 }
-list_inputChecks$'normal-mixture' <- "check.mixn"
-
 
 ### two-piece-normal
 check.2pnorm <- function(input) {
@@ -255,7 +262,6 @@ check.2pnorm <- function(input) {
   
   return(list(y = y, m = m, s1 = s1, s2 = s2))
 }
-list_inputChecks$'two-piece-normal' <- "check.2pnorm"
 
 f2pnorm <- function(x, m, s1, s2) ifelse(x < m, 2*s1/(s1+s2)*dnorm(x, m, s1), 2*s2/(s1+s2)*dnorm(x, m, s2))
 
@@ -276,7 +282,6 @@ check.t <- function(input) {
   
   return(list(y = y, df = df, location = location, scale = scale))
 }
-list_inputChecks$'t' <- "check.t"
 
 ft <- function(x, df, location, scale) {
   z <- (x - location) / scale
@@ -302,7 +307,6 @@ check.exp <- function(input) {
   
   return(list(y = y, rate = rate))
 }
-list_inputChecks$'exponential' <- "check.exp"
 
 ### gamma
 check.gamma <- function(input) {
@@ -329,7 +333,6 @@ check.gamma <- function(input) {
   
   return(list(y = y, shape = shape, scale = scale))
 }
-list_inputChecks$'gamma' <- "check.gamma"
 
 ### log-laplace
 check.llapl <- function(input) {
@@ -347,7 +350,6 @@ check.llapl <- function(input) {
   
   return(list(y = y, locationlog = locationlog, scalelog = scalelog))
 }
-list_inputChecks$'log-laplace' <- "check.llapl"
 
 fllapl <- function(x, locationlog, scalelog) {
   x1 <- log(pmax(x, 0))
@@ -374,7 +376,6 @@ check.llogis <- function(input) {
   
   return(list(y = y, locationlog = locationlog, scalelog = scalelog))
 }
-list_inputChecks$'log-logistic' <- "check.llogis"
 
 fllogis <- function(x, locationlog, scalelog) {
   x1 <- log(pmax(x, 0))
@@ -401,7 +402,6 @@ check.lnorm <- function(input) {
   
   return(list(y = y, meanlog = meanlog, sdlog = sdlog))
 }
-list_inputChecks$'log-normal' <- "check.lnorm"
 
 ### truncated-normal
 check.tn <- function(input) {
@@ -420,7 +420,6 @@ check.tn <- function(input) {
   
   return(list(y = y, m = m, s = s, lb = lb))
 }
-list_inputChecks$'truncated-normal' <- "check.tn"
 
 ftn <- function(x, m, s, lb) {
   d <- dnorm(x, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
@@ -448,7 +447,6 @@ check.gpd <- function(input) {
   
   return(list(y = y, location = location, scale = scale, shape = shape))
 }
-list_inputChecks$'gpd' <- "check.gpd"
 
 fgpd <- function(x, location, scale, shape) {
   ind1 <- abs(shape) > 1e-12
@@ -488,7 +486,6 @@ check.gev <- function(input) {
       
   return(list(y = y, location = location, scale = scale, shape = shape))
 }
-list_inputChecks$'gev' <- "check.gev"
 
 fgev <- function(x, location, scale, shape) {
   ind <- abs(shape) > 1e-12

@@ -1,13 +1,8 @@
 ################################################################################
-
-list_qsFunctions <- list()
-
-################################################################################
 ### bounded interval
 
 # uniform
 qs.unif <- function(y, min, max) 2*dunif(y, min, max) - 1/(max-min)
-list_qsFunctions$'uniform' <- "qs.unif"
 
 # beta
 qs.beta <- function(y, shape1, shape2) {
@@ -15,7 +10,6 @@ qs.beta <- function(y, shape1, shape2) {
   c2 <- beta(2*shape1 - 1, 2*shape2 - 1) / beta(shape1, shape2)^2
   return(c1 - c2)
 }
-list_qsFunctions$'beta' <- "qs.beta"
 
 
 ################################################################################
@@ -27,7 +21,6 @@ qs.lapl <- function(y, location, scale) {
   c2 <- 1/(4*scale)
   return(c1 - c2)
 }
-list_qsFunctions$'laplace' <- "qs.lapl"
 
 # logistic
 qs.logis <- function(y, location, scale) {
@@ -44,7 +37,6 @@ qs.logis <- function(y, location, scale) {
   warning("No closed form expression available - numerical integration used.")
   return(c1 - c2)
 }
-list_qsFunctions$'logistic' <- "qs.logis"
 
 # normal
 qs.norm <- function(y, mean, sd) {
@@ -52,11 +44,9 @@ qs.norm <- function(y, mean, sd) {
   c2 <- 1/(2*sd*sqrt(pi))
   return(c1 - c2)
 }
-list_qsFunctions$'normal' <- "qs.norm"
 
 # mixture of normals
 qs.mixn <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
-list_qsFunctions$'normal-mixture' <- "qs.mixn"
 
 # two-piece-normal
 qs.2pnorm <- function(y, m, s1, s2) {
@@ -64,7 +54,6 @@ qs.2pnorm <- function(y, m, s1, s2) {
   c2 <- (s1 + s2) / (sqrt(pi) * (s1 + s2)^2)
   return(c1 - c2)
 }
-list_qsFunctions$'two-piece-normal' <- "qs.2pnorm"
 
 # t
 qs.t <- function(y, df, location, scale) {
@@ -76,15 +65,12 @@ qs.t <- function(y, df, location, scale) {
   c2[ind] <- 1/(2*scale*sqrt(pi))
   return(c1 - c2)
 }
-list_qsFunctions$'t' <- "qs.t"
-
 
 ################################################################################
 ### non-negative
 
 # exponential
 qs.exp <- function(y, rate) 2*dexp(y, rate) - 0.5*rate
-list_qsFunctions$'exponential' <- "qs.exp"
 
 # gamma
 qs.gamma <- function(y, shape, scale) {
@@ -92,7 +78,6 @@ qs.gamma <- function(y, shape, scale) {
   c2 <- 2^(1-2*shape) / scale / (2*shape - 1) / beta(shape, shape)
   return(c1 - c2)
 }
-list_qsFunctions$'gamma' <- "qs.gamma"
 
 # log-laplace
 qs.llapl <- function(y, locationlog, scalelog) {
@@ -109,7 +94,6 @@ qs.llapl <- function(y, locationlog, scalelog) {
   warning("No closed form expression available - numerical integration used.")
   return(c1 - c2)
 }
-list_qsFunctions$'log-laplace' <- "qs.llapl"
 
 # log-logistic
 qs.llogis <- function(y, locationlog, scalelog) {
@@ -126,7 +110,6 @@ qs.llogis <- function(y, locationlog, scalelog) {
   warning("No closed form expression available - numerical integration used.")
   return(c1 - c2)
 }
-list_qsFunctions$'log-logistic' <- "qs.llogis"
 
 # log-normal
 qs.lnorm <- function(y, meanlog, sdlog) {
@@ -143,7 +126,6 @@ qs.lnorm <- function(y, meanlog, sdlog) {
   warning("No closed form expression available - numerical integration used.")
   return(c1 - c2)
 }
-list_qsFunctions$'log-normal' <- "qs.lnorm"
 
 # truncated-normal
 qs.tn <- function(y, m, s, lb) {
@@ -161,8 +143,6 @@ qs.tn <- function(y, m, s, lb) {
   warning("No closed form expression available - numerical integration used.")
   return(c1 - c2)
 }
-list_qsFunctions$'truncated-normal' <- "qs.tn"
-
 
 ################################################################################
 ### variable support
@@ -192,7 +172,6 @@ qs.gpd <- function(y, location, scale, shape) {
   out[!ind] <- qs.exp(y - location, 1/scale)
   return(out)
 }
-list_qsFunctions$'gpd' <- "qs.gpd"
 
 # generalized extreme value distribution
 qs.gev <- function(y, location, scale, shape) {
@@ -221,4 +200,3 @@ qs.gev <- function(y, location, scale, shape) {
     warning("Parameter 'shape' contains values close to zero. In those cases the QS is calculated assuming a value of 0.")
   return(c1-c2)
 }
-list_qsFunctions$'gev' <- "qs.gev"
