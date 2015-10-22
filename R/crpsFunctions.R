@@ -1,8 +1,4 @@
 ################################################################################
-
-list_crpsFunctions <- list()
-
-################################################################################
 ### general / non-parametric
 
 # Numerical integration
@@ -75,7 +71,6 @@ crps.pois <- function(y, lambda) {
   c2 <- 2*dpois(floor(y), lambda) - exp(-2*lambda) * (besselI(2*lambda, 0) + besselI(2*lambda, 1))
   return(-(c1 + lambda*c2))
 }
-list_crpsFunctions$'poisson' <- "crps.pois"
 
 # negative binomial
 crps.nbinom <- function(y, size, prob) { # hypergeo dependence
@@ -84,7 +79,6 @@ crps.nbinom <- function(y, size, prob) { # hypergeo dependence
   c3 <- prob*(2*pnbinom(y-1, size+1, prob) - 1) + as.numeric(hypergeo(size+1, 0.5, 2, -4*c2))
   return(-(c1 - size*c2*c3))
 }
-list_crpsFunctions$'negative-binomial' <- "crps.nbinom"
 
 ################################################################################
 ### bounded interval
@@ -95,7 +89,6 @@ crps.unif <- function(y, min, max) {
   c2 <- (max - min) * (1/3 - punif(y, min, max)^2)
   return(-(c1 + c2))
 }
-list_crpsFunctions$'uniform' <- "crps.unif"
 
 # beta
 crps.beta <- function(y, shape1, shape2) {
@@ -107,8 +100,6 @@ crps.beta <- function(y, shape1, shape2) {
   c4[ind] <- sqrt(shape2[ind] / (pi*shape1[ind]*(shape1[ind]+shape2[ind])))
   return(-(c1 + c2*(c3 - c4)))
 }
-list_crpsFunctions$'beta' <- "crps.beta"
-
 
 ################################################################################
 ### real line
@@ -121,7 +112,6 @@ crps.lapl <- function(y, location, scale) {
   c1 <- z*(2*p - 1) - 2*minp*(log(2*minp) - 1) - 0.75
   return(-scale*c1)  
 }
-list_crpsFunctions$'laplace' <- "crps.lapl"
 
 # logistic
 crps.logis <- function(y, location, scale) {
@@ -130,7 +120,6 @@ crps.logis <- function(y, location, scale) {
   c1 <- z*(2*p - 1) - 1 - 2*(p*log(p) + (1-p)*log(1-p))
   return(-scale*c1)
 }
-list_crpsFunctions$'logistic' <- "crps.logis"
 
 # normal
 crps.norm <- function(y, mean, sd) {
@@ -138,7 +127,6 @@ crps.norm <- function(y, mean, sd) {
   c1 <- z*(2*pnorm(z) - 1) + 2*dnorm(z) - 1/sqrt(pi)
   return(-sd*c1)
 }
-list_crpsFunctions$'normal' <- "crps.norm"
 
 # mixture of normals
 #crps.mixn = function (m, s, y, w = NULL, exact = TRUE, rel.tol = 1e-6){
@@ -158,7 +146,6 @@ crps.mixn <- function(y, m, s, w) {
   out <- sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
   return(out)
 }
-list_crpsFunctions$'normal-mixture' <- "crps.mixn"
 
 # two-piece-normal
 crps.2pnorm <- function(y, m, s1, s2) {
@@ -172,7 +159,6 @@ crps.2pnorm <- function(y, m, s1, s2) {
   sc <- ifelse(y <= m, aux1(y, m, s1, s2) - (y-m) + aux2(m, s1, s2), aux1(y, m, s2, s1) + (y-m)*((s1-s2)^2-4*s2^2)/(s1+s2)^2 + aux2(m, s2, s1))
   return(-sc)
 }
-list_crpsFunctions$'two-piece-normal' <- "crps.2pnorm"
 
 # t
 crps.t <- function(y, df, location, scale) {
@@ -188,8 +174,6 @@ crps.t <- function(y, df, location, scale) {
           }
   )
 }
-list_crpsFunctions$'t' <- "crps.t"
-
 
 ################################################################################
 ### non-negative
@@ -199,7 +183,6 @@ crps.exp <- function(y, rate) {
   c1 <- 1/(2*rate) * (1 - 4*pexp(y, rate))
   return(-(abs(y) + c1))
 }
-list_crpsFunctions$'exponential' <- "crps.exp"
 
 # gamma
 crps.gamma <- function(y, shape, scale) {
@@ -207,7 +190,6 @@ crps.gamma <- function(y, shape, scale) {
   c2 <- shape*(2*pgamma(y, shape+1, scale=scale) - 1) - 1/beta(.5, shape)
   return(-(c1 - scale*c2))
 }
-list_crpsFunctions$'gamma' <- "crps.gamma"
 
 # log-laplace
 crps.llapl <- function(y, locationlog, scalelog) {
@@ -224,7 +206,6 @@ crps.llapl <- function(y, locationlog, scalelog) {
   c3 <- scalelog / (4 - scalelog^2) + c2
   return(-(c1 + scale*c3))
 }
-list_crpsFunctions$'log-laplace' <- "crps.llapl"
 
 # log-logistic
 crps.llogis <- function(y, locationlog, scalelog) {
@@ -236,7 +217,6 @@ crps.llogis <- function(y, locationlog, scalelog) {
   c3 <- (1 - scalelog)/2 - pbeta(p, 1 + scalelog, 1 - scalelog)
   return(-(c1 + c2*c3))
 }
-list_crpsFunctions$'log-logistic' <- "crps.llogis"
 
 # log-normal
 crps.lnorm <- function(y, meanlog, sdlog) {
@@ -245,7 +225,6 @@ crps.lnorm <- function(y, meanlog, sdlog) {
   c3 <- plnorm(y, meanlog + sdlog^2, sdlog) + pnorm(sdlog/sqrt(2)) - 1
   return(-(c1 - c2*c3))
 }
-list_crpsFunctions$'log-normal' <- "crps.lnorm"
 
 # truncated-normal
 crps.tn <- function(y, m, s, lb) {
@@ -253,7 +232,6 @@ crps.tn <- function(y, m, s, lb) {
   x.lb <- (lb-m)/s; Phi.lb <- pnorm(-x.lb)
   return(-(s/Phi.lb^2*(z*Phi.lb*(2*(-pnorm(-z))+Phi.lb) + 2*dnorm(z)*Phi.lb - (pnorm(-sqrt(2)*x.lb))/sqrt(pi))))
 }
-list_crpsFunctions$'truncated-normal' <- "crps.tn"
 
 
 ################################################################################
@@ -283,7 +261,6 @@ crps.gpd <- function(y, location, scale, shape) {
   
   return(out)
 }
-list_crpsFunctions$'gpd' <- "crps.gpd"
 
 # generalized extreme value distribution
 crps.gev <- function(y, location, scale, shape) {
@@ -310,5 +287,3 @@ crps.gev <- function(y, location, scale, shape) {
   
   return(-out)
 }
-list_crpsFunctions$'gev' <- "crps.gev"
-

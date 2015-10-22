@@ -138,74 +138,75 @@ check.sample <- function(input) {
 ################################################################################
 ### parametric
 
-crps <- function(y, family, ...) {
-  ind <- c(match(family, names(list_crpsFunctions)),
-           match(paste("crps.", family, sep=""), list_crpsFunctions)
-  )
-  ind <- ind[!is.na(ind)]
-  ind <- unique(ind)
-  ind <- names(list_crpsFunctions)[ind]
-  if (length(ind) > 1) {
-    stop("Ambiguous choice of parametric family - see details section of ?crps for a list of available choices.")
-  } else if (length(ind) == 0) {
-    stop("Could not find parametric family - see details section of ?crps for a list of available choices.")  
+checkFamily <- function(family, score) {
+  family <- unique(family)
+  ind <- match(family, names(synonyms), nomatch = 0)
+  family[ind > 0] <- synonyms[ind]
+  family <- unique(family)
+  n <- length(family)
+  
+  if (n > 1) {
+    stop(sprintf("Ambiguous choice of parametric family - see details section of ?%s for a list of available choices.",
+                 score))
+  } else if (n == 0) {
+    stop(sprintf("Could not find parametric family - see details section of ?%s for a list of available choices.",
+                 score))
+  }
+  if (!existsFunction(paste0(score, ".", family)) | !existsFunction(paste0("check.", family))) {
+    stop(sprintf("Could not find parametric family - see details section of ?%s for a list of available choices.",
+                 score))
   }
   
-  inputCheck <- eval(parse(text = list_inputChecks[ind]))
-  input <- list(...)
-  if (!missing(y)) input$y <- y
-  input <- inputCheck(input)
+  return(family)
+}
+
+crps <- function(y, family, ...) {
+  family <- checkFamily(family, "crps")
+  checkInput <- get(paste0("check.", family))
+  calculateCRPS <- get(paste0("crps.", family))
   
-  crps <- eval(parse(text = list_crpsFunctions[ind]))
-  out <- do.call(crps, input)
+  if (!missing(y)) {
+    input <- list(y = y, ...)
+  } else {
+    input <- list(...)
+  }
+  
+  input <- checkInput(input)
+  out <- do.call(calculateCRPS, input)
   
   return(orientation*out)
 }
 
 qs <- function(y, family, ...) {
-  ind <- c(match(family, names(list_qsFunctions)),
-           match(paste("qs.", family, sep=""), list_qsFunctions)
-  )
-  ind <- ind[!is.na(ind)]
-  ind <- unique(ind)
-  ind <- names(list_qsFunctions)[ind]
-  if (length(ind) > 1) {
-    stop("Ambiguous choice of parametric family - see details section of ?qs for a list of available choices.")
-  } else if (length(ind) == 0) {
-    stop("Could not find parametric family - see details section of ?qs for a list of available choices.")  
+  family <- checkFamily(family, "qs")
+  checkInput <- get(paste0("check.", family))
+  calculateQS <- get(paste0("qs.", family))
+  
+  if (!missing(y)) {
+    input <- list(y = y, ...)
+  } else {
+    input <- list(...)
   }
   
-  inputCheck <- eval(parse(text = list_inputChecks[ind]))
-  input <- list(...)
-  if (!missing(y)) input$y <- y
-  input <- inputCheck(input)
-  
-  qs <- eval(parse(text = list_qsFunctions[ind]))
-  out <- do.call(qs, input)
+  input <- checkInput(input)
+  out <- do.call(calculateQS, input)
   
   return(orientation*out)
 }
 
 logs <- function(y, family, ...) {
-  ind <- c(match(family, names(list_lsFunctions)),
-           match(paste("ls.", family, sep=""), list_lsFunctions)
-  )
-  ind <- ind[!is.na(ind)]
-  ind <- unique(ind)
-  ind <- names(list_lsFunctions)[ind]
-  if (length(ind) > 1) {
-    stop("Ambiguous choice of parametric family - see details section of ?logs for a list of available choices.")
-  } else if (length(ind) == 0) {
-    stop("Could not find parametric family - see details section of ?logs for a list of available choices.")  
+  family <- checkFamily(family, "ls")
+  checkInput <- get(paste0("check.", family))
+  calculateLS <- get(paste0("ls.", family))
+  
+  if (!missing(y)) {
+    input <- list(y = y, ...)
+  } else {
+    input <- list(...)
   }
   
-  inputCheck <- eval(parse(text = list_inputChecks[ind]))
-  input <- list(...)
-  if (!missing(y)) input$y <- y
-  input <- inputCheck(input)
-  
-  logscore <- eval(parse(text = list_lsFunctions[ind]))
-  out <- do.call(logscore, input)
+  input <- checkInput(input)
+  out <- do.call(calculateLS, input)
   
   return(orientation*out)
 }
