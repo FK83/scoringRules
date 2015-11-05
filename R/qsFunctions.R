@@ -46,7 +46,7 @@ qs.norm <- function(y, mean, sd) {
 }
 
 # mixture of normals
-qs.mixn <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+qs.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-normal
 qs.2pnorm <- function(y, m, s1, s2) {

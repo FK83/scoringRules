@@ -6,7 +6,7 @@ synonyms <- list(
   laplace = "lapl",
   logistic = "logis",
   normal = "norm",
-  'normal-mixture' = "mixn",
+  'normal-mixture' = "mixnorm",
   'two-piece-normal' = "2pnorm",
   exponential = "exp",
   'log-laplace' = "llapl",
@@ -219,7 +219,7 @@ check.norm <- function(input) {
 }
 
 ### normal-mixture
-check.mixn <- function(input) {
+check.mixnorm <- function(input) {
   reqinput <- c("y", "m", "s", "w")
   checkNames1(input, reqinput)
   input <- input[reqinput]

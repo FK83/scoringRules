@@ -142,7 +142,7 @@ crps.norm <- function(y, mean, sd) {
 #    return(crps.int(Fmix, y, rel.tol = 1e-6))
 # }
 #}
-crps.mixn <- function(y, m, s, w) {
+crps.mixnorm <- function(y, m, s, w) {
   out <- sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
   return(out)
 }
@@ -227,7 +227,7 @@ crps.lnorm <- function(y, meanlog, sdlog) {
 }
 
 # truncated-normal
-crps.tn <- function(y, m, s, lb) {
+crps.tnorm <- function(y, m, s, lb) {
   z <- (y-m)/s
   x.lb <- (lb-m)/s; Phi.lb <- pnorm(-x.lb)
   return(-(s/Phi.lb^2*(z*Phi.lb*(2*(-pnorm(-z))+Phi.lb) + 2*dnorm(z)*Phi.lb - (pnorm(-sqrt(2)*x.lb))/sqrt(pi))))
