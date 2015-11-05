@@ -107,7 +107,7 @@ crps.beta <- function(y, shape1, shape2) {
 # laplace
 crps.lapl <- function(y, location, scale) {
   z <- (y - location)/scale
-  p <- ifelse(z < 0, 0.5 * exp(z), 1 - 0.5 * exp(-z))
+  p <- 0.5 + 0.5 * sign(z) * pexp(abs(z))
   minp <- pmin(p, 1-p)
   c1 <- z*(2*p - 1) - 2*minp*(log(2*minp) - 1) - 0.75
   return(-scale*c1)  
@@ -194,23 +194,22 @@ crps.gamma <- function(y, shape, scale) {
 # log-laplace
 crps.llapl <- function(y, locationlog, scalelog) {
   if (any(!scalelog < 1)) stop("Parameter 'scalelog' contains values not in (0, 1). The CRPS is not defined.")
-  y1 <- suppressWarnings(ifelse(y > 0, log(y), -Inf))
+  y1 <- log(pmax(y, 0))
   z <- (y1 - locationlog) / scalelog
-  p <- ifelse(z < 0, 0.5 * exp(z), 1 - 0.5 * exp(-z))
-  scale <- exp(locationlog)
+  p <- 0.5 + 0.5 * sign(z) * pexp(abs(z))
   c1 <- y*(2*p - 1)
-  c2 <- ifelse (y < scale,
+  c2 <- ifelse (z < 0,
           (1 - (2*p)^(1 + scalelog)) / (1 + scalelog),
           - (1 - (2*(1-p))^(1 - scalelog)) / (1 - scalelog)
   )
   c3 <- scalelog / (4 - scalelog^2) + c2
-  return(-(c1 + scale*c3))
+  return(-(c1 + exp(locationlog)*c3))
 }
 
 # log-logistic
 crps.llogis <- function(y, locationlog, scalelog) {
   if (any(!scalelog < 1)) stop("Parameter 'scalelog' contains values not in (0, 1). The CRPS is not defined.")
-  y1 <- suppressWarnings(ifelse(y > 0, log(y), -Inf))
+  y1 <- log(pmax(y, 0))
   p <- plogis(y1, locationlog, scalelog)
   c1 <- y*(2*p - 1)
   c2 <- 2*exp(locationlog)*beta(1 + scalelog, 1 - scalelog)
