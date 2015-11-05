@@ -73,11 +73,17 @@ crps.pois <- function(y, lambda) {
 }
 
 # negative binomial
-crps.nbinom <- function(y, size, prob) { # hypergeo dependence
-  c1 <- y*(2*pnbinom(y, size, prob) - 1)
-  c2 <- (1-prob)/prob^2
-  c3 <- prob*(2*pnbinom(y-1, size+1, prob) - 1) + as.numeric(hypergeo(size+1, 0.5, 2, -4*c2))
-  return(-(c1 - size*c2*c3))
+crps.nbinom <- function(y, size, prob) {
+  if (!requireNamespace("hypergeo", quietly = TRUE)) {
+    stop(paste(
+      "Calculations require an implementation of the gaussian hypergeometric function.",
+      "Please install the following package: hypergeo (>= 1.0)",
+      sep = "\n"))
+  }
+  c1 <- y * (2 * pnbinom(y, size, prob) - 1)
+  c2 <- (1 - prob) / prob ^ 2
+  c3 <- prob * (2 * pnbinom(y - 1, size + 1, prob) - 1) + Re(hypergeo::hypergeo(size + 1, 0.5, 2,-4 * c2))
+  return(-(c1 - size * c2 * c3))
 }
 
 ################################################################################
@@ -97,7 +103,9 @@ crps.beta <- function(y, shape1, shape2) {
   c3 <- 1 - 2*pbeta(y, shape1 + 1, shape2)
   c4 <- 2/shape1 * beta(2*shape1, 2*shape2) / beta(shape1, shape2)^2
   ind <- !is.finite(c4)
-  c4[ind] <- sqrt(shape2[ind] / (pi*shape1[ind]*(shape1[ind]+shape2[ind])))
+  if (any(ind)) {
+    c4[ind] <- sqrt(shape2 / (pi * shape1 * (shape1 + shape2)))[ind]  # stirling's approximation
+  }
   return(-(c1 + c2*(c3 - c4)))
 }
 
@@ -149,6 +157,10 @@ crps.mixnorm <- function(y, m, s, w) {
 
 # two-piece-normal
 crps.2pnorm <- function(y, m, s1, s2) {
+  n <- max(lengths(list(y, m, s1, s2)))
+  y <- rep(y, len = n)
+  m <- rep(y, len = n)
+  
   aux1 <- function(y, m, s1, s2) {
     a1 <- (y-m)/s1
     4*(s1^2)/(s1 + s2) * (a1*pnorm(a1) + dnorm(a1))
@@ -162,17 +174,28 @@ crps.2pnorm <- function(y, m, s1, s2) {
 
 # t
 crps.t <- function(y, df, location, scale) {
-  if (any(!df > 1)) stop("Parameter 'df' contains values not greater than 1. The CRPS is not defined.")
-  ifelse (df == Inf,
-          return(crps.norm(y, location, scale)),
-          {
-            z <- (y - location)/scale
-            c1 <- z*(2*pt(z, df) - 1)
-            c2 <- 2*dt(z, df) * (df + z^2)/(df - 1)
-            c3 <- 2*sqrt(df)/(df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5*df)^2
-            return(-scale*(c1 + c2 - c3))
-          }
-  )
+  if (any(!df > 1))
+    stop("Parameter 'df' contains values not greater than 1. The CRPS is not defined.")
+  
+  z <- (y - location) / scale
+  ind <- df == Inf
+  if (any(ind)) {
+    if (length(z) < length(df)) {
+      z <- rep(z, len = length(df))
+    }
+    if (length(scale) < length(z)) {
+      scale <- rep(scale, len = length(z))
+    }
+    out <- numeric(length(z))
+    out[ind] <- scale[ind] * crps.norm(z[ind], 0, 1)
+    out[!ind] <- scale[!ind] * crps.t(z[!ind], df[!ind], 0, 1)
+  } else {
+    c1 <- z * (2 * pt(z, df) - 1)
+    c2 <- 2 * dt(z, df) * (df + z ^ 2) / (df - 1)
+    c3 <- 2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df) ^ 2
+    out <- -scale * (c1 + c2 - c3)
+  }
+  return(out)
 }
 
 ################################################################################
@@ -239,50 +262,72 @@ crps.tnorm <- function(y, m, s, lb) {
 # generalized pareto distribution
 crps.gpd <- function(y, location, scale, shape) {
   if (any(!shape < 1)) stop("Parameter 'shape' contains values not smaller than 1. The CRPS is not defined.")
-  ind <- abs(shape) < 1e-12
-  out <- numeric(length(y))
   
+  z <- (y - location)/scale
+  ind <- abs(shape) < 1e-12
   if (any(ind)) {
     if (any(ind & shape != 0))
       warning("Parameter 'shape' contains values close to zero. In those cases the CRPS is calculated assuming a value of 0.")
-    out[ind] <- crps.exp(y[ind] - location[ind], 1/scale[ind])
-    y <- y[!ind]
-    location <- location[!ind]
-    scale <- scale[!ind]
-    shape <- shape[!ind]
+    
+    if (length(z) < length(shape)) {
+      z <- rep(z, len = length(shape))
+    }
+    if (length(scale) < length(z)) {
+      scale <- rep(scale, len = length(z))
+    }
+    
+    out <- numeric(length(z))
+    out[ind] <- scale[ind] * crps.exp(z[ind], 1)
+    out[!ind] <- scale[!ind] * crps.gpd(z[!ind], 0, 1, shape[!ind])
+  } else {
+    p <- 1 - (1 + shape * z) ^ (-1 / shape)
+    p[p < 0] <- 0
+    p[p > 1] <- 1
+    c1 <- (z + 1 / shape) * (2 * p - 1)
+    c2 <- 2 / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
+    out <- - scale * (c1 - c2)
   }
-  
-  z <- (y - location) / scale
-  p <- pmin(1, ifelse(y < location, 0, 1-(1 + shape * z)^(-1/shape)))
-  c1 <- (y - location + scale/shape) * (2*p1 - 1)
-  c2 <- 2*scale/shape/(shape-1) * (1/(shape-2) + (1-p)^(1-shape))
-  out[!ind] <- -(c1 - c2)
-  
   return(out)
 }
 
 # generalized extreme value distribution
 crps.gev <- function(y, location, scale, shape) {
   if (any(!shape < 1)) stop("Parameter 'shape' contains values not smaller than 1. The CRPS is not defined.")
-  ind <- abs(shape) < 1e-12
-  out <- numeric(length(y))
-  
-  if (any(ind)) {
-    warning("Parameter 'shape' contains values equal or close to zero.\n  In those cases the CRPS is calculated using numerical integration and assuming a value of 0.")
-    out[ind] <- sapply(which(ind), 1, function(i) {
-      F1 <- function(x) exp(-exp(-(x-location[i])/scale[i]))^2
-      F2 <- function(x) (expm1(-exp(-(x-location[i])/scale[i])))^2
-      integrate(F1, -Inf, y[i])$value + integrate(F2, y[i], Inf)$value
-    })
-    y <- y[!ind]
-    location <- location[!ind]
-    scale <- scale[!ind]
-    shape <- shape[!ind]
-  }
   
   z <- (y - location) / scale
-  p <- exp(-pmax(0, 1 + shape * z)^(-1/shape))
-  out[!ind] <- (location - y - scale/shape)*(1 - 2*p) - scale/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape))
-  
-  return(-out)
+  ind <- abs(shape) < 1e-12
+  if (any(ind)) {
+    if (any(ind & shape != 0))
+      warning("Parameter 'shape' contains values close to zero. In those cases the CRPS is calculated assuming a value of 0.")
+    
+    if (length(z) < length(shape)) {
+      z <- rep(z, len = length(shape))
+    }
+    if (length(scale) < length(z)) {
+      scale <- rep(scale, len = length(scale))
+    }
+    
+    out <- numeric(length(z))
+    if (requireNamespace("gsl", quietly = TRUE)) {
+      out[ind] <- -scale[ind] * (-z[ind] + (-digamma(1) - log(2)) - 2 * gsl::expint_Ei(-exp(-z[ind])))
+    } else {
+      warning(paste("Parameter 'shape' contains values equal or close to zero.",
+                    "In those cases the CRPS is calculated using numerical integration and assuming a value of 0.",
+                    "Consider installing the 'gsl' package to leverage an implementation of the exponential integral.",
+                    sep = "\n"))
+      if (length(ind) < length(z)) {
+        ind <- rep(ind, len = length(z))
+      }
+      out[ind] <- sapply(which(ind), function(i) {
+        F1 <- function(x) exp(-exp(-x))^2
+        F2 <- function(x) (expm1(-exp(-x)))^2
+        - scale[i] * (integrate(F1, -Inf, z[i])$value + integrate(F2, z[i], Inf)$value)
+      })
+    }
+    out[!ind] <- scale[!ind] * crps.gev(z[!ind], 0, 1, shape[!ind])
+  } else {
+    p <- exp(-pmax(0, 1 + shape * z)^(-1/shape))
+    out <- -scale * ((z - 1/shape)*(1 - 2*p) - 1/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape)))
+  }
+  return(out)
 }

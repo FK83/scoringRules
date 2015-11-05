@@ -8,4 +8,5 @@ Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.0)
+Suggests: gsl (>= 1.8-3), hypergeo(>= 1.0)
 LinkingTo: Rcpp
