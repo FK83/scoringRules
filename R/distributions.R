@@ -368,13 +368,13 @@ check.lnorm <- function(input) {
   if (choice == 2) {
     names(input)[names(input) == "locationlog"] <- "meanlog"
     names(input)[names(input) == "scalelog"] <- "sdlog"
-    if (any(is.infinite(meanlog))) stop("Parameter 'locationlog' contains infinite values.")
-    if (any(!sdlog>0)) stop("Parameter 'scalelog' contains non-positive values.")
-    if (any(is.infinite(sdlog))) stop("Parameter 'scalelog' contains infinite values.")
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'locationlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'scalelog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'scalelog' contains infinite values.")
   } else {
-    if (any(is.infinite(meanlog))) stop("Parameter 'meanlog' contains infinite values.")
-    if (any(!sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
-    if (any(is.infinite(sdlog))) stop("Parameter 'sdlog' contains infinite values.")
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'meanlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'sdlog' contains infinite values.")
   }
   
   return(input)
