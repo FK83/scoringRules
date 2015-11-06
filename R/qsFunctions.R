@@ -24,11 +24,9 @@ qs.lapl <- function(y, location, scale) {
 
 # logistic
 qs.logis <- function(y, location, scale) {
-  warning("No closed form expression implemented - numerical integration used.")
   c1 <- 2*dlogis(y, location, scale)
-  d <- function(x) dlogis(x, 0, 1)^2
-  c2 <- integrate(d, -Inf, Inf)$value
-  return(c1 - c2/scale)
+  c2 <- 1/(6*scale)
+  return(c1 - c2)
 }
 
 # normal
