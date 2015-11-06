@@ -20,7 +20,7 @@ ls.logis <- function(y, location, scale) dlogis(y, location, scale, log=TRUE)
 ls.norm <- function(y, mean, sd) dnorm(y, mean, sd, log=TRUE)
 
 # mixture of normals
-ls.mixn <- function(y, m, s, w) sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+ls.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-normal
 ls.2pnorm <- function(y, m, s1, s2) log(f2pnorm(y, m, s1, s2))
@@ -47,7 +47,7 @@ ls.llogis <- function(y, locationlog, scalelog) log(fllogis(y, locationlog, scal
 ls.lnorm <- function(y, meanlog, sdlog) dlnorm(y, meanlog, sdlog, log=TRUE)
 
 # truncated-normal
-ls.tn <- function(y, m, s, lb) log(ftn(y, m, s, lb))
+ls.tnorm <- function(y, m, s, lb) log(ftnorm(y, m, s, lb))
 
 ################################################################################
 ### variable support

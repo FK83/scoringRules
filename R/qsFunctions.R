@@ -24,17 +24,8 @@ qs.lapl <- function(y, location, scale) {
 
 # logistic
 qs.logis <- function(y, location, scale) {
-  n <- max(lengths(list(y, location, scale)))
-  y <- rep(y, len = n)
-  location <- rep(location, len = n)
-  scale <- rep(scale, len = n)
-  
   c1 <- 2*dlogis(y, location, scale)
-  c2 <- sapply(1:n, function(i) {
-    d <- function(x) dlogis(x, location[i], scale[i])^2
-    integrate(d, -Inf, Inf)$value
-  })
-  warning("No closed form expression available - numerical integration used.")
+  c2 <- 1/(6*scale)
   return(c1 - c2)
 }
 
@@ -46,7 +37,7 @@ qs.norm <- function(y, mean, sd) {
 }
 
 # mixture of normals
-qs.mixn <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+qs.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-normal
 qs.2pnorm <- function(y, m, s1, s2) {
@@ -62,7 +53,10 @@ qs.t <- function(y, df, location, scale) {
 #  c3 <- 2^(3-4*df) * pi / scale / df^(1.5) * gamma(2*df) / gamma(df/2)^4
   c2 <- 2^(3-4*df) * pi / scale / df^(1.5) / beta(df, df) / beta(df/2, df/2)^2
   ind <- !is.finite(c2)
-  c2[ind] <- 1/(2*scale*sqrt(pi))
+  if (any(ind)) {
+    c2[ind] <- rep(1/(2*scale*sqrt(pi)), len = length(c2))[ind]
+  }
+  
   return(c1 - c2)
 }
 
@@ -81,6 +75,7 @@ qs.gamma <- function(y, shape, scale) {
 
 # log-laplace
 qs.llapl <- function(y, locationlog, scalelog) {
+  warning("No closed form expression implemented - numerical integration used.")
   n <- max(lengths(list(y, locationlog, scalelog)))
   y <- rep(y, len = n)
   locationlog <- rep(locationlog, len = n)
@@ -91,12 +86,13 @@ qs.llapl <- function(y, locationlog, scalelog) {
     d <- function(x) fllapl(x, locationlog[i], scalelog[i])^2
     integrate(d, 0, Inf)$value
   })
-  warning("No closed form expression available - numerical integration used.")
+  
   return(c1 - c2)
 }
 
 # log-logistic
 qs.llogis <- function(y, locationlog, scalelog) {
+  warning("No closed form expression implemented - numerical integration used.")
   n <- max(lengths(list(y, locationlog, scalelog)))
   y <- rep(y, len = n)
   locationlog <- rep(locationlog, len = n)
@@ -107,12 +103,13 @@ qs.llogis <- function(y, locationlog, scalelog) {
     d <- function(x) fllogis(x, locationlog[i], scalelog[i])^2
     integrate(d, 0, Inf)$value
   })
-  warning("No closed form expression available - numerical integration used.")
+  
   return(c1 - c2)
 }
 
 # log-normal
 qs.lnorm <- function(y, meanlog, sdlog) {
+  warning("No closed form expression implemented - numerical integration used.")
   n <- max(lengths(list(y, meanlog, sdlog)))
   y <- rep(y, len = n)
   meanlog <- rep(meanlog, len = n)
@@ -123,24 +120,15 @@ qs.lnorm <- function(y, meanlog, sdlog) {
     d <- function(x) dlnorm(x, meanlog[i], sdlog[i])^2
     integrate(d, 0, Inf)$value
   })
-  warning("No closed form expression available - numerical integration used.")
+  
   return(c1 - c2)
 }
 
 # truncated-normal
-qs.tn <- function(y, m, s, lb) {
-  n <- max(lengths(list(y, m, s, lb)))
-  y <- rep(y, len = n)
-  m <- rep(m, len = n)
-  s <- rep(s, len = n)
-  lb <- rep(lb, len = n)
-  
-  c1 <- 2*ftn(y, m, s, lb)
-  c2 <- sapply(1:n, function(i) {
-    d <- function(x) ftn(x, m[i], s[i], lb[i])^2
-    integrate(d, lb[i], Inf)$value
-  })
-  warning("No closed form expression available - numerical integration used.")
+qs.tnorm <- function(y, m, s, lb) {
+  c1 <- 2*ftnorm(y, m, s, lb)
+  c2 <- pnorm(lb, m, s, lower.tail = FALSE)^(-2) * (1 - pnorm(sqrt(2) * (lb - m)/s)) / (2 * s * sqrt(pi))
+
   return(c1 - c2)
 }
 
