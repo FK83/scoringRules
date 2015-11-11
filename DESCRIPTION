@@ -7,6 +7,7 @@ Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch
 Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: GPL (>= 2)
+Depends: R (>= 2.10)
 Imports: Rcpp (>= 0.11.0)
 Suggests: gsl (>= 1.8-3), hypergeo(>= 1.0)
 LinkingTo: Rcpp
