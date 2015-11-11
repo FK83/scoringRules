@@ -233,6 +233,44 @@ check.mixnorm <- function(input) {
   
   return(input)
 }
+fmixnorm <- function(x, m, s, w) {
+  if (!is.vector(x)) stop("object 'x' not a vector")
+  p <- length(x)
+  
+  if (is.matrix(m)) {
+    m.q <- dim(m)[2]
+    if (dim(m)[1] != p) stop("number of rows of object 'm' does not match length of object 'x'")
+  } else if (length(m) != 1) {
+    stop("object 'm' is neither a matrix nor a single number")
+  }
+  
+  if (is.matrix(s)) {
+    s.q <- dim(s)[2]
+    if (dim(s)[1] != p) stop("number of rows of object 's' does not match length of object 'x'")
+    if (exists("m.q")) {
+      if (s.q != m.q) stop("number of mixture components in 's' and 'm' do not match")
+    }
+  } else if (length(s) != 1) {
+    stop("object 's' is neither a matrix nor a single number")
+  }
+  
+  if (is.matrix(w)) {
+    w.q <- dim(w)[2]
+    if (dim(w)[1] != p) stop("number of rows of object 'w' does not match length of object 'x'")
+    if (exists("m.q")) {
+      if (w.q != m.q) stop("number of mixture components in 'w' and 'm' do not match")
+    }
+    if (exists("s.q")) {
+      if (w.q != s.q) stop("number of mixture components in 'w' and 's' do not match")
+    }
+  } else if (length(w) == 1) {
+    w <- 1/max(dim(m)[2], dim(s)[2], 1)
+  } else {
+    stop("object 'w' is neither a matrix nor a single number")
+  }
+  
+  rowSums(dnorm(as.matrix(x), m, s) * w)
+}
 
 ### two-piece-normal
 check.2pnorm <- function(input) {
@@ -368,13 +406,13 @@ check.lnorm <- function(input) {
   if (choice == 2) {
     names(input)[names(input) == "locationlog"] <- "meanlog"
     names(input)[names(input) == "scalelog"] <- "sdlog"
-    if (any(is.infinite(meanlog))) stop("Parameter 'locationlog' contains infinite values.")
-    if (any(!sdlog>0)) stop("Parameter 'scalelog' contains non-positive values.")
-    if (any(is.infinite(sdlog))) stop("Parameter 'scalelog' contains infinite values.")
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'locationlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'scalelog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'scalelog' contains infinite values.")
   } else {
-    if (any(is.infinite(meanlog))) stop("Parameter 'meanlog' contains infinite values.")
-    if (any(!sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
-    if (any(is.infinite(sdlog))) stop("Parameter 'sdlog' contains infinite values.")
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'meanlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'sdlog' contains infinite values.")
   }
   
   return(input)
