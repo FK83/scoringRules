@@ -327,7 +327,7 @@ crps.gev <- function(y, location, scale, shape) {
     out[!ind] <- scale[!ind] * crps.gev(z[!ind], 0, 1, shape[!ind])
   } else {
     p <- exp(-pmax(0, 1 + shape * z)^(-1/shape))
-    out <- -scale * ((z - 1/shape)*(1 - 2*p) - 1/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape)))
+    out <- -scale * ((-z - 1/shape)*(1 - 2*p) - 1/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape)))
   }
   return(out)
 }
