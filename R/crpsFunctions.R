@@ -159,7 +159,7 @@ crps.mixnorm <- function(y, m, s, w) {
 crps.2pnorm <- function(y, m, s1, s2) {
   n <- max(lengths(list(y, m, s1, s2)))
   y <- rep(y, len = n)
-  m <- rep(y, len = n)
+  m <- rep(m, len = n)
   
   aux1 <- function(y, m, s1, s2) {
     a1 <- (y-m)/s1
