@@ -6,12 +6,12 @@ The Two-Piece Normal Distribution
 }
 \description{Density function for the two-piece normal distribution.}
 \usage{
-f2pnorm(x, m, s1, s2)
+f2pnorm(x, location, scale1, scale2)
 }
 \arguments{
   \item{x}{vector of quantiles}
-  \item{m}{vector of location parameters (mode of distribution)}
-  \item{s1, s2}{vector of scale parameters (standard deviation to the left and right of the mode)}
+  \item{location}{vector of location parameters (mode of distribution)}
+  \item{scale1, scale2}{vector of scale parameters (standard deviation to the left and right of the mode, must be positive)}
 }
 \details{
 These functions are implemented for internal use.
