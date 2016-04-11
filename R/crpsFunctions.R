@@ -36,7 +36,7 @@ crps.edf <- function(dat, y, w = NULL){
   n <- length(dat)
   # Set uniform weights unless specified otherwise
   if (is.null(w)){
-    x <- .Internal(sort(dat, FALSE))
+    x <- sort(dat, decreasing = FALSE)
     out <- sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
   } else {
     ord <- order(dat)
