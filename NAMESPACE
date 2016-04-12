@@ -1,3 +1,3 @@
 useDynLib(scoringRules)
-export(crps, logs, qs, crps_sample, qs_sample, logs_sample)
+export(crps, logs, qs, crps_sample, qs_sample, logs_sample, flapl, f2plapl, fmixnorm, f2pnorm, ft, fllapl, fllogis)
 importFrom(Rcpp, evalCpp)
