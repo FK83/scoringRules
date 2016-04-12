@@ -60,8 +60,8 @@ The parameters supplied to each of the functions are numeric vectors:
     \itemize{
       \item \code{"exponential"} or \code{"exp"}: \code{rate} (positive rate parameter); see \link{Exponential}
       \item \code{"gamma"}: \code{shape} (positive shape parameter), \code{rate} (positive rate parameter), \code{scale} (alternative to \code{rate}); see \link{GammaDist}
-      \item \code{"log-laplace"} or \code{"llapl"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{sRLoglaplace}
-      \item \code{"log-logistic"} or \code{"llogis"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{sRLoglogistic}
+      \item \code{"log-laplace"} or \code{"llapl"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{fllapl}
+      \item \code{"log-logistic"} or \code{"llogis"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{fllogis}
       \item \code{"log-normal"} or \code{"lnorm"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{Lognormal}
     }
 \item Distributions  for random variables with variable support:

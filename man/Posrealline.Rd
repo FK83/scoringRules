@@ -1,8 +1,8 @@
-\name{Additional distributions on the positive real line}
+\name{Supplementary distributions: Positive real line}
 \alias{fllapl}
 \alias{fllogis}
 \title{
-Additional distributions (not in base R) supported on the positive real line.
+Supplementary distributions (not in base R) supported on the positive real line.
 }
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps}, \code{logs} and \code{qs}.
 
@@ -21,3 +21,4 @@ fllogis(x, locationlog, scalelog)
 To be added.
 }
 \seealso{The documentation for \link{crps} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
+\keyword{distributions}
