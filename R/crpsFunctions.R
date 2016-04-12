@@ -36,7 +36,7 @@ crps.edf <- function(dat, y, w = NULL){
   n <- length(dat)
   # Set uniform weights unless specified otherwise
   if (is.null(w)){
-    x <- .Internal(sort(dat, FALSE))
+    x <- sort(dat, decreasing = FALSE)
     out <- sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
   } else {
     ord <- order(dat)
@@ -159,7 +159,7 @@ crps.mixnorm <- function(y, m, s, w) {
 crps.2pnorm <- function(y, m, s1, s2) {
   n <- max(lengths(list(y, m, s1, s2)))
   y <- rep(y, len = n)
-  m <- rep(y, len = n)
+  m <- rep(m, len = n)
   
   aux1 <- function(y, m, s1, s2) {
     a1 <- (y-m)/s1

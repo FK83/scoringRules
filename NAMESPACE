@@ -1,3 +1,7 @@
 useDynLib(scoringRules)
+<<<<<<< HEAD
 export(crps, logs, qs, crps_sample, qs_sample, logs_sample, flapl, f2plapl, fmixnorm, f2pnorm, ft, fllapl, fllogis, ftnorm, fgpd, fgev)
+=======
+export(crps, logs, qs, crps_sample, qs_sample, logs_sample, flapl, f2plapl, fmixnorm, f2pnorm, ft, fllapl, fllogis)
+>>>>>>> upstream/master
 importFrom(Rcpp, evalCpp)
