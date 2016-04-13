@@ -64,7 +64,7 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"log-logistic"} or \code{"llogis"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{fllogis}
       \item \code{"log-normal"} or \code{"lnorm"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{Lognormal}
     }
-\item Distributions  for random variables with flexible support:
+\item Distributions  for random variables with variable support:
     \itemize{
       \item \code{"truncated-normal"} or \code{"tnorm"}: \code{lb} (real-valued truncation parameter, lower bound), \code{m} (location parameter), \code{s} (scale parameter); see \link{ftnorm}
       \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgpd}

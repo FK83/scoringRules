@@ -1,13 +1,13 @@
-\name{Supplementary distributions: Flexible support}
+\name{Supplementary distributions: variable support}
 \alias{fgev}
 \alias{fgpd}
 \alias{ftnorm}
 \title{
-Supplementary distributions (not in base R) with flexible support.
+Supplementary distributions (not in base R) with variable support.
 }
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps}, \code{logs} and \code{qs}.
 
-Here we document distributions with flexible support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{ftnorm} - truncated normal distribution.}
+Here we document distributions with variable support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{ftnorm} - truncated normal distribution.}
 \usage{
 fgev(x, location, scale, shape)
 fgpd(x, location, scale, shape)
