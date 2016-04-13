@@ -22,6 +22,7 @@ ftnorm(x, m, s, lb)
   \item{s}{vector of scale parameters for \code{ftnorm} (positive)}
   \item{lb}{lower truncation bound for \code{ftnorm}}
 }
+\value{Probability density function of the relevant distribution, evaluated at \code{x}.}
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
@@ -31,4 +32,5 @@ The most common use in practice lies in the context of non-negative quantities, 
 \deqn{f(x) = \phi(x)/(1 - \Phi(0)),} for \eqn{x \ge 0} and 0 otherwise. This example is for the standard normal distribution with pdf \eqn{\phi} and cdf \eqn{\Phi}, but also applies to location-scale transformed versions.
 
 }
+\seealso{The documentation for \link{crps} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
 \keyword{distributions}
