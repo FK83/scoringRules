@@ -1,4 +1,4 @@
-\name{Supplementary distributions: variable support}
+\name{Supplementary distributions: Variable support}
 \alias{fgev}
 \alias{fgpd}
 \alias{ftnorm}
