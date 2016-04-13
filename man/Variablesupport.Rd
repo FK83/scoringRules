@@ -16,14 +16,14 @@ ftnorm(x, m, s, lb)
 \arguments{
   \item{x}{vector of quantiles}
   \item{location}{vector of location parameters}
-  \item{scale}{vector of scale parameters}
+  \item{scale}{vector of scale parameters (positive)}
   \item{shape}{vector of shape parameters}
   \item{m}{vector of location parameters for \code{ftnorm}}
-  \item{s}{vector of scale parameters for \code{ftnorm}}
+  \item{s}{vector of scale parameters for \code{ftnorm} (positive)}
   \item{lb}{lower truncation bound for \code{ftnorm}}
 }
 \details{
-For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).
+For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
 The truncated normal distribution is defined as the section of a normal distribution, rescaled to a probability distribution by an affine transformation (as opposed to a censored distribution which introduces point mass at the bounds).
 
