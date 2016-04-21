@@ -11,16 +11,21 @@ Here we document distributions with variable support: \code{fgev} - generalized 
 \usage{
 fgev(x, location, scale, shape)
 fgpd(x, location, scale, shape)
-ftnorm(x, m, s, lb)
+
+ftnorm(x, location, scale, lower, upper)
+fcnorm(x, location, scale, lower, upper)
+fctnorm(x, location, scale, lower, upper)
+ftcnorm(x, location, scale, lower, upper)
+fgnorm(x, location, scale, a, b, lower, upper)
 }
 \arguments{
   \item{x}{vector of quantiles}
   \item{location}{vector of location parameters}
   \item{scale}{vector of scale parameters (positive)}
   \item{shape}{vector of shape parameters}
-  \item{m}{vector of location parameters for \code{ftnorm}}
-  \item{s}{vector of scale parameters for \code{ftnorm} (positive)}
-  \item{lb}{lower truncation bound for \code{ftnorm}}
+  \item{a, b}{vector of parameters for the affine transformation of the normal CDF}
+  \item{lower}{vector of lower bounds}
+  \item{upper}{vector of upper bounds}
 }
 \value{Probability density function of the relevant distribution, evaluated at \code{x}.}
 \details{
