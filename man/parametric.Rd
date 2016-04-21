@@ -44,8 +44,10 @@ The parameters supplied to each of the functions are numeric vectors:
     }
 \item Distribution for random variables defined on bounded intervals:
     \itemize{
-      \item \code{"beta"}: \code{shape1}, \code{shape2} (positive parameters); see \link{Beta}
       \item \code{"uniform"} or \code{"unif"}: \code{min}, \code{max} (lower and upper limits); see \link{Uniform}
+      \item \code{"beta"}: \code{shape1}, \code{shape2} (positive parameters); see \link{Beta}
+      \item \code{"censored-truncated-normal"} or \code{"ctnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fctnorm}
+      \item \code{"truncated-censored-normal"} or \code{"tcnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{ftcnorm}
     }
 \item Distributions defined on the real line:
     \itemize{
@@ -66,7 +68,9 @@ The parameters supplied to each of the functions are numeric vectors:
     }
 \item Distributions  for random variables with variable support:
     \itemize{
-      \item \code{"truncated-normal"} or \code{"tnorm"}: \code{lb} (real-valued truncation parameter, lower bound), \code{m} (location parameter), \code{s} (scale parameter); see \link{ftnorm}
+      \item \code{"truncated-normal"} or \code{"tnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{ftnorm}
+      \item \code{"censored-normal"} or \code{"cnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fcnorm}
+      \item \code{"gnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{a, b} (parameters for the affine transformation of the normal CDF), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fgnorm}
       \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgpd}
       \item \code{"gev"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgev}
     }

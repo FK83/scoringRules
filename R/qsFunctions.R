@@ -40,9 +40,9 @@ qs.norm <- function(y, mean, sd) {
 qs.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-normal
-qs.2pnorm <- function(y, m, s1, s2) {
-  c1 <- 2*f2pnorm(y, m, s1, s2)
-  c2 <- (s1 + s2) / (sqrt(pi) * (s1 + s2)^2)
+qs.2pnorm <- function(y, location, scale1, scale2) {
+  c1 <- 2*f2pnorm(y, location, scale1, scale2)
+  c2 <- (scale1 + scale2) / (sqrt(pi) * (scale1 + scale2)^2)
   return(c1 - c2)
 }
 
@@ -125,9 +125,9 @@ qs.lnorm <- function(y, meanlog, sdlog) {
 }
 
 # truncated-normal
-qs.tnorm <- function(y, m, s, lb) {
-  c1 <- 2*ftnorm(y, m, s, lb)
-  c2 <- pnorm(lb, m, s, lower.tail = FALSE)^(-2) * (1 - pnorm(sqrt(2) * (lb - m)/s)) / (2 * s * sqrt(pi))
+qs.tnorm <- function(y, location, scale, lower) {
+  c1 <- 2*ftnorm(y, location, scale, lower)
+  c2 <- pnorm(lower, location, scale, lower.tail = FALSE)^(-2) * (1 - pnorm(sqrt(2) * (lower - location)/scale)) / (2 * scale * sqrt(pi))
 
   return(c1 - c2)
 }

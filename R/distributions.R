@@ -12,7 +12,10 @@ synonyms <- list(
   'log-laplace' = "llapl",
   'log-logistic' = "llogis",
   'log-normal' = "lnorm",
-  'truncated-normal' = "tnorm"
+  'truncated-normal' = "tnorm",
+  'censored-normal' = "cnorm",
+  'truncated-censored-normal' = "tcnorm",
+  'censored-truncated-normal' = "ctnorm"
 )
 
 ################################################################################
@@ -274,16 +277,16 @@ fmixnorm <- function(x, m, s, w) {
 
 ### two-piece-normal
 check.2pnorm <- function(input) {
-  reqinput <- c("y", "m", "s1", "s2")
+  reqinput <- c("y", "location", "scale1", "scale2")
   checkNames1(input, reqinput)
   input <- input[reqinput]
   checkVector(input)
   
-  if (any(is.infinite(input$m))) stop("Parameter 'm' contains infinite values.")
-  if (any(!input$s1>0)) stop("Parameter 's1' contains non-positive values.")
-  if (any(is.infinite(input$s1))) stop("Parameter 's1' contains infinite values.")
-  if (any(!input$s2>0)) stop("Parameter 's2' contains non-positive values.")
-  if (any(is.infinite(input$s2))) stop("Parameter 's2' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale1 > 0)) stop("Parameter 'scale1' contains non-positive values.")
+  if (any(is.infinite(input$scale1))) stop("Parameter 'scale1' contains infinite values.")
+  if (any(!input$scale2>0)) stop("Parameter 'scale2' contains non-positive values.")
+  if (any(is.infinite(input$scale2))) stop("Parameter 'scale2' contains infinite values.")
   
   return(input)
 }
@@ -420,21 +423,77 @@ check.lnorm <- function(input) {
 
 ### truncated-normal
 check.tnorm <- function(input) {
-  reqinput <- c("y", "m", "s", "lb")
+  reqinput <- c("y", "location", "scale")
+  optinput <- c("lower", "upper")
+  checkNames1(input, reqinput)
+  input <- input[c(reqinput, optinput)]
+  checkVector(input)
+  
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale > 0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
+  
+  return(input)
+}
+ftnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(upper, location, scale, lower.tail = FALSE) - pnorm(lower, location, scale)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### censored-normal
+check.cnorm <- function(input) {
+  check.tnorm(input)
+}
+fcnorm <- function(x, location, scale, lower, upper) {
+  d <- dnorm(x, location, scale)
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### truncated-censored normal
+check.ctnorm <- function(input) {
+  check.tnorm(input)
+}
+fctnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(upper, location, scale, lower.tail = FALSE)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### truncated-censored normal
+check.tcnorm <- function(input) {
+  check.tnorm(input)
+}
+ftcnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(lower, location, scale)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+check.gnorm <- function(input) {
+  reqinput <- c("y", "location", "scale", "a", "b", "lower", "upper")
   checkNames1(input, reqinput)
   input <- input[reqinput]
   checkVector(input)
   
-  if (any(is.infinite(input$m))) stop("Parameter 'm' contains infinite values.")
-  if (any(!input$s>0)) stop("Parameter 's' contains non-positive values.")
-  if (any(is.infinite(input$s))) stop("Parameter 's' contains infinite values.")
-  if (any(is.infinite(input$lb))) stop("Parameter 'lb' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale > 0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   
   return(input)
 }
-ftnorm <- function(x, m, s, lb) {
-  d <- dnorm(x, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
-  d[x < lb] <- 0
+fgnorm <- function(x, location, scale, a, b, lower, upper) {
+  d <- dnorm(x, location, scale) * a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
   return(d)
 }
 
