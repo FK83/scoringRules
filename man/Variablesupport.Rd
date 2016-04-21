@@ -2,6 +2,10 @@
 \alias{fgev}
 \alias{fgpd}
 \alias{ftnorm}
+\alias{fcnorm}
+\alias{fctnorm}
+\alias{ftcnorm}
+\alias{fgnorm}
 \title{
 Supplementary distributions (not in base R) with variable support.
 }
