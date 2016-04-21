@@ -156,20 +156,31 @@ crps.mixnorm <- function(y, m, s, w) {
 }
 
 # two-piece-normal
-crps.2pnorm <- function(y, m, s1, s2) {
-  n <- max(lengths(list(y, m, s1, s2)))
-  y <- rep(y, len = n)
-  m <- rep(m, len = n)
+# crps.2pnorm <- function(y, m, s1, s2) {
+#   n <- max(lengths(list(y, m, s1, s2)))
+#   y <- rep(y, len = n)
+#   m <- rep(m, len = n)
+#   
+#   aux1 <- function(y, m, s1, s2) {
+#     a1 <- (y-m)/s1
+#     4*(s1^2)/(s1 + s2) * (a1*pnorm(a1) + dnorm(a1))
+#   }
+#   aux2 <- function(m, s1, s2) {
+#     2/(sqrt(pi)*(s1+s2)^2) * (sqrt(2)*s2*(s2^2-s1^2) - (s1^3+s2^3))    
+#   }
+#   sc <- ifelse(y <= m, aux1(y, m, s1, s2) - (y-m) + aux2(m, s1, s2), aux1(y, m, s2, s1) + (y-m)*((s1-s2)^2-4*s2^2)/(s1+s2)^2 + aux2(m, s2, s1))
+#   return(-sc)
+# }
+crps.2pnorm <- function(y, location, scale1, scale2) {
+  y1 <- pmin(y, location)
+  y2 <- pmax(y, location)
+  s <- scale1 + scale2
+  a1 <- scale1 / s
+  a2 <- scale2 / s
+  b2 <- a1 - a2
   
-  aux1 <- function(y, m, s1, s2) {
-    a1 <- (y-m)/s1
-    4*(s1^2)/(s1 + s2) * (a1*pnorm(a1) + dnorm(a1))
-  }
-  aux2 <- function(m, s1, s2) {
-    2/(sqrt(pi)*(s1+s2)^2) * (sqrt(2)*s2*(s2^2-s1^2) - (s1^3+s2^3))    
-  }
-  sc <- ifelse(y <= m, aux1(y, m, s1, s2) - (y-m) + aux2(m, s1, s2), aux1(y, m, s2, s1) + (y-m)*((s1-s2)^2-4*s2^2)/(s1+s2)^2 + aux2(m, s2, s1))
-  return(-sc)
+  crps.gnorm(y1, location, scale1, 2 * a1, 0, -Inf, location) +
+    crps.gnorm(y2, location, scale2, 2 * a2, b2, location, Inf)
 }
 
 # t
@@ -248,13 +259,75 @@ crps.lnorm <- function(y, meanlog, sdlog) {
   return(-(c1 - c2*c3))
 }
 
-# truncated-normal
-crps.tnorm <- function(y, m, s, lb) {
-  z <- (y-m)/s
-  x.lb <- (lb-m)/s; Phi.lb <- pnorm(-x.lb)
-  return(-(s/Phi.lb^2*(z*Phi.lb*(2*(-pnorm(-z))+Phi.lb) + 2*dnorm(z)*Phi.lb - (pnorm(-sqrt(2)*x.lb))/sqrt(pi))))
+# censored-normal
+crps.cnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  crps.gnorm(y, location, scale, 1, 0, lower, upper)
 }
 
+# censored-truncated normal
+crps.ctnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  ub <- (upper - location) / scale
+  a <- pnorm(ub)^(-1)
+  
+  crps.gnorm(y, location, scale, a, 0, lower, upper)
+}
+
+# truncated-censored normal
+crps.tcnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  lb <- (lower - location) / scale
+  a <- (1 - pnorm(lb))^(-1)
+  b <- -pnorm(lb) * a
+  
+  crps.gnorm(y, location, scale, a, b, lower, upper)
+}
+
+# truncated normal
+crps.tnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  z <- (y - location) / scale
+  lb <- (lower - location) / scale
+  ub <- (upper - location) / scale
+  zb <- pmin(pmax(lb, z), ub)
+  
+  a <- (pnorm(ub) - pnorm(lb))^(-1)
+  
+  c1 <- z * (2 * a * (pnorm(zb) - pnorm(lb)) - 1)
+  c2 <- 2 * a * dnorm(zb)
+  c3 <- a^2 / sqrt(pi) * (pnorm(ub * sqrt(2)) - pnorm(lb * sqrt(2)))
+  
+  return(- scale * (c1 + c2 - c3))
+}
+
+# generalized trunc/cens normal
+crps.gnorm <- function(y, location, scale, a = 1, b = 0, lower = -Inf, upper = Inf) {
+  zb <- y
+  
+  ind1 <- is.finite(lower)
+  ind2 <- is.finite(upper)
+  if (any(ind1)) {
+    zb <- pmax(lower, zb)
+    
+    lb <- (lower - location) / scale
+    Plb <- a * pnorm(lb) + b
+    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
+  } else {
+    out_l <- 0
+  }
+  if (any(ind2)) {
+    zb <- pmin(upper, zb)
+    
+    ub <- (upper - location) / scale
+    Pub <- 1 - b - a + a * pnorm(ub, lower.tail = FALSE)
+    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
+  } else {
+    out_u <- 0
+  }
+  
+  res <- abs(y - zb)
+  zb <- (zb - location) / scale
+  out_y <- zb * (2 * (a * pnorm(zb) + b) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+  
+  return(- res - scale * (out_y + out_l + out_u))
+}
 
 ################################################################################
 ### variable support
