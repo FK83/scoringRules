@@ -27,6 +27,7 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976), the logarithmic score (Good, 1952), and the quadratic score (Brier, 1950).
 
 ## History
+  - April 2016: Various small changes (improved consistency and better documentation)
   - August 3, 2015: Some name changes to header functions
   - February 6, 2015: Re-design of internal function structure
   - November 19, 2014: Split functions according to parametric versus simulated forecast distributions
