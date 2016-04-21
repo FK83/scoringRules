@@ -12,7 +12,10 @@ synonyms <- list(
   'log-laplace' = "llapl",
   'log-logistic' = "llogis",
   'log-normal' = "lnorm",
-  'truncated-normal' = "tnorm"
+  'truncated-normal' = "tnorm",
+  'censored-normal' = "cnorm",
+  'truncated-censored-normal' = "tcnorm",
+  'censored-truncated-normal' = "ctnorm"
 )
 
 ################################################################################
