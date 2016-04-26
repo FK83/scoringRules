@@ -5,7 +5,8 @@ orientation <- -1
 ################################################################################
 ### xx_sample
 
-crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE) {
+crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, 
+                        num_int = FALSE, show_messages = TRUE) {
     input <- list(y = y, dat = dat)
     if (!is.null(w)) {
       input$w <- w
@@ -40,7 +41,8 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
         aux2 <- integrate(function(s) (1 - FF(s))^2, y, Inf, rel.tol = 1e-6)$value
         out <- -(aux1 + aux2)
         # Message
-        message("Used numerical integration for CPRS (tolerance = 1e-6).")
+        if (show_messages) 
+          message("Used numerical integration for CPRS (tolerance = 1e-6).")
       }
     } else {
       stop("Unexpected choice of method - please select either edf or kde")
@@ -48,7 +50,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL, num_int = F
     return(orientation * out)
   }
 
-qs_sample <- function(y, dat, bw = NULL, num_int = FALSE) {
+qs_sample <- function(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE) {
   input <- list(y = y, dat = dat)
   if (!is.null(bw)) {
     input$bw <- bw
@@ -66,22 +68,22 @@ qs_sample <- function(y, dat, bw = NULL, num_int = FALSE) {
     ff <- function(x) {
       sapply(x, function(zz) mean(dnorm(zz, mean = dat, sd = bw)))
     }
-    message("Used numerical integration for qs computation (tolerance = 1e-6).")
+    if (show_messages) 
+      message("Used numerical integration for qs computation (tolerance = 1e-6).")
     out <- 2*ff(y) - integrate(function(x) ff(x)^2, -Inf, Inf, rel.tol = 1e-6)$value
   }
   return(orientation * out)
 }
 
-logs_sample <- function(y, dat, bw = NULL) {
+logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   input <- list(y = y, dat = dat)
   if (!is.null(bw)) {
     input$bw <- bw
   }
   check.sample(input)
   
-  message(
-    "Using the log score with kernel density estimation tends to be fragile -- see KLTG (2015) for details."
-  )
+  if (show_messages)
+    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2015) for details.")
   if (is.null(bw)) bw <- bw.nrd(dat)
   w <- rep(1 / length(dat), length(dat))
   s <- rep(bw, length(dat))
