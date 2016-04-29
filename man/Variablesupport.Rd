@@ -11,7 +11,7 @@ Supplementary distributions (not in base R) with variable support.
 }
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps}, \code{logs} and \code{qs}.
 
-Here we document distributions with variable support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{ftnorm} - truncated normal distribution.}
+Here we document distributions with variable support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{ftnorm} - truncated normal distribution; \code{fcnorm} - censored normal distribution; \code{fctnorm} - normal distribution censored at left and truncated at right; \code{ftcnorm} - normal distribution truncated at left and censored at right; \code{fgnorm} - affine transformation of normal distribution.}
 \usage{
 fgev(x, location, scale, shape)
 fgpd(x, location, scale, shape)
@@ -35,11 +35,9 @@ fgnorm(x, location, scale, a, b, lower, upper)
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
-The truncated normal distribution is defined as the section of a normal distribution, rescaled to a probability distribution by an affine transformation (as opposed to a censored distribution which introduces point mass at the bounds).
+The truncated normal distribution is defined as the section of a normal distribution, rescaled to integrate to one. In contrast, the censored distribution introduces point mass at the bounds. The most common use in practice lies in the context of non-negative quantities. For example, a truncated standard normal distribution (left truncation at zero) has pdf \eqn{f(x) = \phi(x)/(1 - \Phi(0)),} for \eqn{x \ge 0} and 0 otherwise. A censored standard normal distribution (left censoring at zero) has point mass \eqn{\Phi(0)} at zero, and density \eqn{\phi(x)} for \eqn{x > 0}. 
 
-The most common use in practice lies in the context of non-negative quantities, where a cut is made at the lower bound 0, leading to a pdf of
-\deqn{f(x) = \phi(x)/(1 - \Phi(0)),} for \eqn{x \ge 0} and 0 otherwise. This example is for the standard normal distribution with pdf \eqn{\phi} and cdf \eqn{\Phi}, but also applies to location-scale transformed versions.
-
+\code{ftcnorm} and \code{fctnorm} allow for flexible combinations of censoring and truncation.
 }
 \seealso{The documentation for \link{crps} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
 \keyword{distributions}
