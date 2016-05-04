@@ -5,11 +5,16 @@ Version: 0.8
 Date: 2015-08-01
 Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch
 Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
-Description: Dictionary-like reference for computing scoring rules in a wide range of situations.
-			 Covers both parametric forecast distributions (such as mixtures of Gaussians) and 
-			 distributions generated via simulation. 
+Description: Dictionary-like reference for computing scoring rules in a wide
+    range of situations. Covers both parametric forecast distributions (such as
+    mixtures of Gaussians) and distributions generated via simulation.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.11.0)
-Depends: R (>= 2.10)
-Suggests: gsl (>= 1.8-3), hypergeo(>= 1.0)
+Imports:
+    Rcpp (>= 0.11.0)
+Depends:
+    R (>= 2.10)
+Suggests:
+    gsl (>= 1.8-3),
+    hypergeo(>= 1.0)
 LinkingTo: Rcpp
+RoxygenNote: 5.0.1
