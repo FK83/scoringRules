@@ -221,7 +221,7 @@ crps.exp <- function(y, rate) {
 # gamma
 crps.gamma <- function(y, shape, scale) {
   c1 <- y*(2*pgamma(y, shape, scale=scale) - 1)
-  c2 <- shape*(2*pgamma(y, shape+1, scale=scale) - 1) - 1/beta(.5, shape)
+  c2 <- shape*(2*pgamma(y, shape+1, scale=scale) - 1) + 1/beta(.5, shape)
   return(-(c1 - scale*c2))
 }
 

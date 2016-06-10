@@ -9,9 +9,10 @@ Scoring Rules for Simulated Forecast Distributions
 Compute scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a scalar realization and \eqn{dat} is a simulated sample of data. 
 }
 \usage{
-crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE)
-logs_sample(y, dat, bw = NULL)
-qs_sample(y, dat, bw = NULL, num_int = FALSE)
+crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, 
+            num_int = FALSE, show_messages = TRUE)
+logs_sample(y, dat, bw = NULL, show_messages = TRUE)
+qs_sample(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,6 +22,7 @@ qs_sample(y, dat, bw = NULL, num_int = FALSE)
 \item{w}{Numeric vector of observation weights for \code{dat}.}
 \item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one)}
 \item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps_sample} and \link{qs_sample} in case of large samples \code{dat}).}
+\item{show_messages}{Logical of length one, on/off switch for messages (does not affect warnings and errors, which are always printed)}
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
