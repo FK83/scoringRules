@@ -426,7 +426,7 @@ check.tnorm <- function(input) {
   reqinput <- c("y", "location", "scale")
   optinput <- c("lower", "upper")
   checkNames1(input, reqinput)
-  input <- input[c(reqinput, optinput)]
+  input <- input[c(reqinput, optinput[optinput %in% names(input)])]
   checkVector(input)
   
   if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
