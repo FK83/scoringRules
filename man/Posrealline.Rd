@@ -4,7 +4,7 @@
 \title{
 Supplementary distributions (not in base R) supported on the positive real line.
 }
-\description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps}, \code{logs} and \code{qs}.
+\description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
 Here we document distributions on the positive real line: \code{fllapl} - log Laplace distribution; \code{fllogis} - log logistic distribution.}
 \usage{
