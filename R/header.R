@@ -170,10 +170,10 @@ crps <- function(y, family, ...) {
   checkInput <- get(paste0("check.", family))
   calculateCRPS <- get(paste0("crps.", family))
   
-  if (!missing(y)) {
-    input <- list(y = y, ...)
+  if (is.list(y)) {
+    input <- c(y, list(...))
   } else {
-    input <- list(...)
+    input <- list(y = y, ...)
   }
   
   input <- checkInput(input)
@@ -187,10 +187,10 @@ qs <- function(y, family, ...) {
   checkInput <- get(paste0("check.", family))
   calculateQS <- get(paste0("qs.", family))
   
-  if (!missing(y)) {
-    input <- list(y = y, ...)
+  if (is.list(y)) {
+    input <- c(y, list(...))
   } else {
-    input <- list(...)
+    input <- list(y = y, ...)
   }
   
   input <- checkInput(input)
@@ -204,10 +204,10 @@ logs <- function(y, family, ...) {
   checkInput <- get(paste0("check.", family))
   calculateLS <- get(paste0("ls.", family))
   
-  if (!missing(y)) {
-    input <- list(y = y, ...)
+  if (is.list(y)) {
+    input <- c(y, list(...))
   } else {
-    input <- list(...)
+    input <- list(y = y, ...)
   }
   
   input <- checkInput(input)
