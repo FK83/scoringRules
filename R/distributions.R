@@ -1,5 +1,24 @@
 ################################################################################
-list_inputChecks <- list()
+synonyms <- list(
+  poisson = "pois",
+  'negative-binomial' = "nbinom",
+  uniform = "unif",
+  laplace = "lapl",
+  logistic = "logis",
+  normal = "norm",
+  'normal-mixture' = "mixnorm",
+  'two-piece-normal' = "2pnorm",
+  exponential = "exp",
+  'log-laplace' = "llapl",
+  'log-logistic' = "llogis",
+  'log-normal' = "lnorm",
+  'truncated-normal' = "tnorm",
+  'censored-normal' = "cnorm",
+  'truncated-censored-normal' = "tcnorm",
+  'censored-truncated-normal' = "ctnorm"
+)
+
+################################################################################
 
 # for only one choice of parameterization
 checkNames1 <- function(input, reqinput) {
@@ -80,15 +99,11 @@ check.pois <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(!lambda>0)) stop("Parameter 'lambda' contains non-positive values.")
-  if (any(is.infinite(lambda))) stop("Parameter 'lambda' contains infinite values.")
+  if (any(!input$lambda>0)) stop("Parameter 'lambda' contains non-positive values.")
+  if (any(is.infinite(input$lambda))) stop("Parameter 'lambda' contains infinite values.")
   
-  return(list(y = y, lambda = lambda))
+  return(input)
 }
-list_inputChecks$'poisson' <- "check.pois"
 
 ### negative binomial
 check.nbinom <- function(input) {
@@ -98,22 +113,18 @@ check.nbinom <- function(input) {
   input <- input[reqinput[[choice]]]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
   if (choice == 1) {
-    if (any(prob > 1 | prob <= 0)) stop("Parameter 'prob' not in (0, 1]")
+    if (any(input$prob > 1 | input$prob <= 0)) stop("Parameter 'prob' not in (0, 1]")
   } else if (choice == 2) {
-    if (any(mu < 0)) stop("Parameter 'mu' contains negative values.")
-    if (any(is.infinite(mu))) stop("Parameter 'mu' contains infinite values.")
-    prob <- size/(size + mu)
+    if (any(input$mu < 0)) stop("Parameter 'mu' contains negative values.")
+    if (any(is.infinite(input$mu))) stop("Parameter 'mu' contains infinite values.")
+    input$prob <- input$size/(input$size + input$mu)
   }
-  if (any(!size>0)) stop("Parameter 'size' contains non-positive values.")
-  if (any(!is.finite(size))) stop("Parameter 'size' contains infinite values.")
+  if (any(!input$size>0)) stop("Parameter 'size' contains non-positive values.")
+  if (any(!is.finite(input$size))) stop("Parameter 'size' contains infinite values.")
   
-  return(list(y = y, size = size, prob = prob))
+  return(input[c("y", "size", "prob")])
 }
-list_inputChecks$'negative-binomial' <- "check.nbinom"
 
 ################################################################################
 ### bounded interval
@@ -125,15 +136,11 @@ check.unif <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(c(min, max)))) stop("Invalid distribution due to infinite bounds.")
-  if (any(min > max)) stop("Parameter 'min' contains greater values than parameter 'max'.")
+  if (any(is.infinite(c(input$min, input$max)))) stop("Invalid distribution due to infinite bounds.")
+  if (any(input$min > input$max)) stop("Parameter 'min' contains greater values than parameter 'max'.")
   
-  return(list(y = y, min = min, max = max))
+  return(input)
 }
-list_inputChecks$'uniform' <- "check.unif"
 
 ### beta
 check.beta <- function(input) {
@@ -142,17 +149,13 @@ check.beta <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(!shape1>0)) stop("Parameter 'shape1' contains non-positive values.")
-  if (any(is.infinite(shape1))) stop("Parameter 'shape1' contains infinite values.")
-  if (any(!shape2>0)) stop("Parameter 'shape2' contains non-positive values.")
-  if (any(is.infinite(shape2))) stop("Parameter 'shape2' contains infinite values.")
+  if (any(!input$shape1>0)) stop("Parameter 'shape1' contains non-positive values.")
+  if (any(is.infinite(input$shape1))) stop("Parameter 'shape1' contains infinite values.")
+  if (any(!input$shape2>0)) stop("Parameter 'shape2' contains non-positive values.")
+  if (any(is.infinite(input$shape2))) stop("Parameter 'shape2' contains infinite values.")
   
-  return(list(y = y, shape1 = shape1, shape2 = shape2))
+  return(input)
 }
-list_inputChecks$'beta' <- "check.beta"
 
 ################################################################################
 ### real line
@@ -164,20 +167,21 @@ check.lapl <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(location))) stop("Parameter 'location' contains infinite values.")
-  if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-  if (any(is.infinite(scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   
-  return(list(y = y, location = location, scale = scale))
+  return(input)
 }
-list_inputChecks$'laplace' <- "check.lapl"
 
 flapl <- function(x, location, scale) {
-  z <- (x - location)/scale
-  1/(2*scale) * exp(-abs(z))
+  dexp(abs(x - location), 1/scale) / 2
+}
+f2plapl <- function(x, location, scale1, scale2) {
+  n <- max(length(x), length(location), length(scale1), length(scale2))
+  z <- rep(x - location, len = n)
+  s <- ifelse(z < 0, scale1, scale2)
+  s / (scale1 + scale2) * dexp(abs(z), 1/s)
 }
 
 ### logistic
@@ -187,77 +191,111 @@ check.logis <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(location))) stop("Parameter 'location' contains infinite values.")
-  if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-  if (any(is.infinite(scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   
-  return(list(y = y, location = location, scale = scale))
+  return(input)
 }
-list_inputChecks$'logistic' <- "check.logis"
 
 ### normal
 check.norm <- function(input) {
-  reqinput <- c("y", "mean", "sd")
-  checkNames1(input, reqinput)
-  input <- input[reqinput]
+  reqinput <- list(c("y", "mean", "sd"),
+                   c("y", "location", "scale"))
+  choice <- checkNames2(input, reqinput)
+  input <- input[reqinput[[choice]]]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
+  if (choice == 2) {
+    names(input)[names(input) == "location"] <- "mean"
+    names(input)[names(input) == "scale"] <- "sd"
+    if (any(is.infinite(input$mean))) stop("Parameter 'location' contains infinite values.")
+    if (any(!input$sd>0)) stop("Parameter 'scale' contains non-positive values.")
+    if (any(is.infinite(input$sd))) stop("Parameter 'scale' contains infinite values.")
+  } else if (choice == 1) {
+    if (any(is.infinite(input$mean))) stop("Parameter 'mean' contains infinite values.")
+    if (any(!input$sd>0)) stop("Parameter 'sd' contains non-positive values.")
+    if (any(is.infinite(input$sd))) stop("Parameter 'sd' contains infinite values.")
   }
-  if (any(is.infinite(mean))) stop("Parameter 'mean' contains infinite values.")
-  if (any(!sd>0)) stop("Parameter 'sd' contains non-positive values.")
-  if (any(is.infinite(sd))) stop("Parameter 'sd' contains infinite values.")
   
-  return(list(y = y, mean = mean, sd = sd))
+  return(input)
 }
-list_inputChecks$'normal' <- "check.norm"
 
 ### normal-mixture
-check.mixn <- function(input) {
+check.mixnorm <- function(input) {
   reqinput <- c("y", "m", "s", "w")
   checkNames1(input, reqinput)
   input <- input[reqinput]
   checkMatrix(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(m))) stop("Parameter 'm' contains infinite values.")
-  if (any(!s>0)) stop("Parameter 's' contains non-positive values.")
-  if (any(is.infinite(s))) stop("Parameter 's' contains infinite values.")
-  if (any(w < 0 | w > 1)) stop("Parameter 'w' contains values not in [0, 1].")
-  if (all.equal(apply(w, 1, sum), rep(1, dim(w)[1])) != TRUE) stop("Parameter 'w' contains weighting schemes which do not sum up to 1.")
+  if (any(is.infinite(input$m))) stop("Parameter 'm' contains infinite values.")
+  if (any(!input$s>0)) stop("Parameter 's' contains non-positive values.")
+  if (any(is.infinite(input$s))) stop("Parameter 's' contains infinite values.")
+  if (any(input$w < 0 | input$w > 1)) stop("Parameter 'w' contains values not in [0, 1].")
+  if (all.equal(apply(input$w, 1, sum), rep(1, dim(input$w)[1])) != TRUE) stop("Parameter 'w' contains weighting schemes which do not sum up to 1.")
   
-  return(list(y = y, m = m, s = s, w = w))
+  return(input)
 }
-list_inputChecks$'normal-mixture' <- "check.mixn"
-
+fmixnorm <- function(x, m, s, w) {
+  if (!is.vector(x)) stop("object 'x' not a vector")
+  p <- length(x)
+  
+  if (is.matrix(m)) {
+    m.q <- dim(m)[2]
+    if (dim(m)[1] != p) stop("number of rows of object 'm' does not match length of object 'x'")
+  } else if (length(m) != 1) {
+    stop("object 'm' is neither a matrix nor a single number")
+  }
+  
+  if (is.matrix(s)) {
+    s.q <- dim(s)[2]
+    if (dim(s)[1] != p) stop("number of rows of object 's' does not match length of object 'x'")
+    if (exists("m.q")) {
+      if (s.q != m.q) stop("number of mixture components in 's' and 'm' do not match")
+    }
+  } else if (length(s) != 1) {
+    stop("object 's' is neither a matrix nor a single number")
+  }
+  
+  if (is.matrix(w)) {
+    w.q <- dim(w)[2]
+    if (dim(w)[1] != p) stop("number of rows of object 'w' does not match length of object 'x'")
+    if (exists("m.q")) {
+      if (w.q != m.q) stop("number of mixture components in 'w' and 'm' do not match")
+    }
+    if (exists("s.q")) {
+      if (w.q != s.q) stop("number of mixture components in 'w' and 's' do not match")
+    }
+  } else if (length(w) == 1) {
+    w <- 1/max(dim(m)[2], dim(s)[2], 1)
+  } else {
+    stop("object 'w' is neither a matrix nor a single number")
+  }
+  
+  rowSums(dnorm(as.matrix(x), m, s) * w)
+}
 
 ### two-piece-normal
 check.2pnorm <- function(input) {
-  reqinput <- c("y", "m", "s1", "s2")
+  reqinput <- c("y", "location", "scale1", "scale2")
   checkNames1(input, reqinput)
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(m))) stop("Parameter 'm' contains infinite values.")
-  if (any(!s1>0)) stop("Parameter 's1' contains non-positive values.")
-  if (any(is.infinite(s1))) stop("Parameter 's1' contains infinite values.")
-  if (any(!s2>0)) stop("Parameter 's2' contains non-positive values.")
-  if (any(is.infinite(s2))) stop("Parameter 's2' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale1 > 0)) stop("Parameter 'scale1' contains non-positive values.")
+  if (any(is.infinite(input$scale1))) stop("Parameter 'scale1' contains infinite values.")
+  if (any(!input$scale2>0)) stop("Parameter 'scale2' contains non-positive values.")
+  if (any(is.infinite(input$scale2))) stop("Parameter 'scale2' contains infinite values.")
   
-  return(list(y = y, m = m, s1 = s1, s2 = s2))
+  return(input)
 }
-list_inputChecks$'two-piece-normal' <- "check.2pnorm"
-
-f2pnorm <- function(x, m, s1, s2) ifelse(x < m, 2*s1/(s1+s2)*dnorm(x, m, s1), 2*s2/(s1+s2)*dnorm(x, m, s2))
+f2pnorm <- function(x, location, scale1, scale2) {
+  n <- max(length(x), length(location), length(scale1), length(scale2))
+  z <- rep(x - location, len = n)
+  s <- ifelse(z < 0, scale1, scale2)
+  2 * s / (scale1 + scale2) * dnorm(z, 0, s)
+}
 
 ### t
 check.t <- function(input) {
@@ -266,18 +304,13 @@ check.t <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(!df>0)) stop("Parameter 'df' contains non-positive values.")
-  if (any(is.infinite(location))) stop("Parameter 'location' contains infinite values.")
-  if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-  if (any(is.infinite(scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(!input$df>0)) stop("Parameter 'df' contains non-positive values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   
-  return(list(y = y, df = df, location = location, scale = scale))
+  return(input)
 }
-list_inputChecks$'t' <- "check.t"
-
 ft <- function(x, df, location, scale) {
   z <- (x - location) / scale
   1/scale * dt(z, df)
@@ -294,15 +327,11 @@ check.exp <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(!rate>0)) stop("Parameter 'rate' contains non-positive values.")
-  if (any(is.infinite(rate))) stop("Parameter 'rate' contains infinite values.")
+  if (any(!input$rate>0)) stop("Parameter 'rate' contains non-positive values.")
+  if (any(is.infinite(input$rate))) stop("Parameter 'rate' contains infinite values.")
   
-  return(list(y = y, rate = rate))
+  return(input)
 }
-list_inputChecks$'exponential' <- "check.exp"
 
 ### gamma
 check.gamma <- function(input) {
@@ -313,23 +342,19 @@ check.gamma <- function(input) {
   input <- input[reqinput[[choice]]]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(!shape>0)) stop("Parameter 'shape' contains non-positive values.")
-  if (any(!is.finite(shape))) stop("Parameter 'shape' contains infinite values.")
+  if (any(!input$shape>0)) stop("Parameter 'shape' contains non-positive values.")
+  if (any(!is.finite(input$shape))) stop("Parameter 'shape' contains infinite values.")
   if (choice == 1) {
-    if (any(!rate>0)) stop("Parameter 'rate' contains non-positive values.")
-    if (any(!is.finite(rate))) stop("Parameter 'rate' contains infinite values.")
-    scale <- 1/rate
+    if (any(!input$rate>0)) stop("Parameter 'rate' contains non-positive values.")
+    if (any(!is.finite(input$rate))) stop("Parameter 'rate' contains infinite values.")
+    input$scale <- 1/input$rate
   } else if (choice == 2) {
-    if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-    if (any(!is.finite(scale))) stop("Parameter 'scale' contains infinite values.")
+    if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+    if (any(!is.finite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   }
   
-  return(list(y = y, shape = shape, scale = scale))
+  return(input[c("y", "shape", "scale")])
 }
-list_inputChecks$'gamma' <- "check.gamma"
 
 ### log-laplace
 check.llapl <- function(input) {
@@ -338,23 +363,17 @@ check.llapl <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(locationlog))) stop("Parameter 'locationlog' contains infinite values.")
-  if (any(!scalelog>0)) stop("Parameter 'scalelog' contains non-positive values.")
-  if (any(is.infinite(scalelog))) stop("Parameter 'scalelog' contains infinite values.")
+  if (any(is.infinite(input$locationlog))) stop("Parameter 'locationlog' contains infinite values.")
+  if (any(!input$scalelog>0)) stop("Parameter 'scalelog' contains non-positive values.")
+  if (any(is.infinite(input$scalelog))) stop("Parameter 'scalelog' contains infinite values.")
   
-  return(list(y = y, locationlog = locationlog, scalelog = scalelog))
+  return(input)
 }
-list_inputChecks$'log-laplace' <- "check.llapl"
-
 fllapl <- function(x, locationlog, scalelog) {
   x1 <- log(pmax(x, 0))
   ind <- is.infinite(x1)
-  d <- numeric(length(x))
+  d <- 1/x * flapl(x1, locationlog, scalelog)
   d[ind] <- 0
-  d[!ind] <- 1/x1[!ind] * flapl(x1[!ind], locationlog[!ind], scalelog[!ind])
   return(d)
 }
 
@@ -365,66 +384,116 @@ check.llogis <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(locationlog))) stop("Parameter 'locationlog' contains infinite values.")
-  if (any(!scalelog>0)) stop("Parameter 'scalelog' contains non-positive values.")
-  if (any(is.infinite(scalelog))) stop("Parameter 'scalelog' contains infinite values.")
+  if (any(is.infinite(input$locationlog))) stop("Parameter 'locationlog' contains infinite values.")
+  if (any(!input$scalelog>0)) stop("Parameter 'scalelog' contains non-positive values.")
+  if (any(is.infinite(input$scalelog))) stop("Parameter 'scalelog' contains infinite values.")
   
-  return(list(y = y, locationlog = locationlog, scalelog = scalelog))
+  return(input)
 }
-list_inputChecks$'log-logistic' <- "check.llogis"
-
 fllogis <- function(x, locationlog, scalelog) {
   x1 <- log(pmax(x, 0))
   ind <- is.infinite(x1)
-  d <- numeric(length(x))
+  d <- 1/x * dlogis(x1, locationlog, scalelog)
   d[ind] <- 0
-  d[!ind] <- 1/x1[!ind] * dlogis(x1[!ind], locationlog[!ind], scalelog[!ind])
   return(d)
 }
 
 ### log-normal
 check.lnorm <- function(input) {
-  reqinput <- c("y", "meanlog", "sdlog")
-  checkNames1(input, reqinput)
-  input <- input[reqinput]
+  reqinput <- list(c("y", "meanlog", "sdlog"),
+                   c("y", "locationlog", "scalelog"))
+  choice <- checkNames2(input, reqinput)
+  input <- input[reqinput[[choice]]]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
+  if (choice == 2) {
+    names(input)[names(input) == "locationlog"] <- "meanlog"
+    names(input)[names(input) == "scalelog"] <- "sdlog"
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'locationlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'scalelog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'scalelog' contains infinite values.")
+  } else {
+    if (any(is.infinite(input$meanlog))) stop("Parameter 'meanlog' contains infinite values.")
+    if (any(!input$sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
+    if (any(is.infinite(input$sdlog))) stop("Parameter 'sdlog' contains infinite values.")
   }
-  if (any(is.infinite(meanlog))) stop("Parameter 'meanlog' contains infinite values.")
-  if (any(!sdlog>0)) stop("Parameter 'sdlog' contains non-positive values.")
-  if (any(is.infinite(sdlog))) stop("Parameter 'sdlog' contains infinite values.")
   
-  return(list(y = y, meanlog = meanlog, sdlog = sdlog))
+  return(input)
 }
-list_inputChecks$'log-normal' <- "check.lnorm"
 
 ### truncated-normal
-check.tn <- function(input) {
-  reqinput <- c("y", "m", "s", "lb")
+check.tnorm <- function(input) {
+  reqinput <- c("y", "location", "scale")
+  optinput <- c("lower", "upper")
+  checkNames1(input, reqinput)
+  input <- input[c(reqinput, optinput)]
+  checkVector(input)
+  
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale > 0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
+  
+  return(input)
+}
+ftnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(upper, location, scale, lower.tail = FALSE) - pnorm(lower, location, scale)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### censored-normal
+check.cnorm <- function(input) {
+  check.tnorm(input)
+}
+fcnorm <- function(x, location, scale, lower, upper) {
+  d <- dnorm(x, location, scale)
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### truncated-censored normal
+check.ctnorm <- function(input) {
+  check.tnorm(input)
+}
+fctnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(upper, location, scale, lower.tail = FALSE)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+### truncated-censored normal
+check.tcnorm <- function(input) {
+  check.tnorm(input)
+}
+ftcnorm <- function(x, location, scale, lower, upper) {
+  a <- 1 - pnorm(lower, location, scale)
+  d <- dnorm(x, location, scale) / a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
+  return(d)
+}
+
+check.gnorm <- function(input) {
+  reqinput <- c("y", "location", "scale", "a", "b", "lower", "upper")
   checkNames1(input, reqinput)
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(m))) stop("Parameter 'm' contains infinite values.")
-  if (any(!s>0)) stop("Parameter 's' contains non-positive values.")
-  if (any(is.infinite(s))) stop("Parameter 's' contains infinite values.")
-  if (any(is.infinite(lb))) stop("Parameter 'lb' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale > 0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
   
-  return(list(y = y, m = m, s = s, lb = lb))
+  return(input)
 }
-list_inputChecks$'truncated-normal' <- "check.tn"
-
-ftn <- function(x, m, s, lb) {
-  d <- dnorm(x, m, s) / pnorm(lb, m, s, lower.tail=FALSE)
-  d[x < lb] <- 0
+fgnorm <- function(x, location, scale, a, b, lower, upper) {
+  d <- dnorm(x, location, scale) * a
+  d[x < lower] <- 0
+  d[x > upper] <- 0
   return(d)
 }
 
@@ -438,37 +507,32 @@ check.gpd <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(location))) stop("Parameter 'location' contains infinite values.")
-  if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-  if (any(is.infinite(scale))) stop("Parameter 'scale' contains infinite values.")
-  if (any(is.infinite(shape))) stop("Parameter 'shape' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(is.infinite(input$shape))) stop("Parameter 'shape' contains infinite values.")
   
-  return(list(y = y, location = location, scale = scale, shape = shape))
+  return(input)
 }
-list_inputChecks$'gpd' <- "check.gpd"
-
 fgpd <- function(x, location, scale, shape) {
-  ind1 <- abs(shape) > 1e-12
-  d <- numeric(length(x))
+  z <- (x - location) / scale
   
-  if (any(!ind1)) {
-    d <- dexp(x[!ind1] - location[!ind1], 1/scale[!ind1])
-    x <- x[ind1]
-    location <- location[ind1]
-    scale <- scale[ind1]
-    shape <- shape[ind1]
+  ind <- abs(shape) < 1e-12
+  if (any(ind)) {
+    if (length(z) < length(shape))
+      z <- rep(z, len = length(shape))
+    if (length(scale) < length(z))
+      scale <- rep(scale, len = length(z))
+    out <- numeric(length(z))
+    out[ind] <- 1/scale[ind] * dexp(z[ind], 1)
+    out[!ind] <- 1/scale[!ind] * fgpd(z[!ind], 0, 1, shape[!ind])
+  } else {
+    out <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
+    out[z < 0] <- 0
+    out[z > -1/shape & shape < 0] <- 0
   }
   
-  upper <- ifelse(shape > 0, Inf, location - scale / shape)
-  ind2 <- (x >= location) & (x <= upper)
-  d[ind1][!ind2] <- 0
-  z <- (x - location) / scale 
-  d[ind1][ind2] <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
-  
-  return(d)
+  return(out)
 }
 
 ### gev
@@ -478,32 +542,32 @@ check.gev <- function(input) {
   input <- input[reqinput]
   checkVector(input)
   
-  for (i in seq_along(input)) {
-    assign(names(input)[i], input[[i]])
-  }
-  if (any(is.infinite(location))) stop("Parameter 'location' contains infinite values.")
-  if (any(!scale>0)) stop("Parameter 'scale' contains non-positive values.")
-  if (any(is.infinite(scale))) stop("Parameter 'scale' contains infinite values.")
-  if (any(is.infinite(shape))) stop("Parameter 'shape' contains infinite values.")
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(is.infinite(input$shape))) stop("Parameter 'shape' contains infinite values.")
       
-  return(list(y = y, location = location, scale = scale, shape = shape))
+  return(input)
 }
-list_inputChecks$'gev' <- "check.gev"
 
 fgev <- function(x, location, scale, shape) {
-  ind <- abs(shape) > 1e-12
-  out <- numeric(length(x))
   z <- (x - location) / scale
   
-  if (any(!ind)) {
-    out[!ind] <- 1 / scale[!ind] * exp(-z[!ind]) * exp(-exp(-z[!ind]))
-    z <- z[ind]
-    scale <- scale[ind]
-    shape <- shape[ind]
+  ind <- abs(shape) < 1e-12
+  if (any(ind)) {
+    if (length(z) < length(shape))
+      z <- rep(z, len = length(shape))
+    if (length(scale) < length(z))
+      scale <- rep(scale, len = length(z))
+    out <- numeric(length(z))
+    out[ind] <- 1 / scale[ind] * exp(-z[ind] - exp(-z[ind]))
+    out[!ind] <- 1 / scale[!ind] * fgev(z[!ind], 0, 1, shape[!ind])
+  } else {
+    zz <- 1 + shape * z
+    out <-
+      1 / scale * exp(log1p(shape * z) * (-1 - 1 / shape) - zz ^ (-1 / shape))
+    out[z * sign(shape) < -1 / abs(shape)] <- 0
   }
-  
-  zz <- 1 + shape * z
-  out[ind] <- ifelse(zz > 0, 1/scale * zz^(-1-1/shape) * exp(-zz^(-1/shape)), 0)
   
   return(out)
 }

@@ -9,9 +9,10 @@ Scoring Rules for Simulated Forecast Distributions
 Compute scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a scalar realization and \eqn{dat} is a simulated sample of data. 
 }
 \usage{
-crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, num_int = FALSE)
-logs_sample(y, dat, bw = NULL)
-qs_sample(y, dat, bw = NULL, num_int = FALSE)
+crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, 
+            num_int = FALSE, show_messages = TRUE)
+logs_sample(y, dat, bw = NULL, show_messages = TRUE)
+qs_sample(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,6 +22,7 @@ qs_sample(y, dat, bw = NULL, num_int = FALSE)
 \item{w}{Numeric vector of observation weights for \code{dat}.}
 \item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one)}
 \item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps_sample} and \link{qs_sample} in case of large samples \code{dat}).}
+\item{show_messages}{Logical of length one, on/off switch for messages (does not affect warnings and errors, which are always printed)}
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
@@ -36,7 +38,7 @@ Krueger, F., S. Lerch, T. Thorarinsdottir and T. Gneiting (2015), ``Evaluating M
 Alexander Jordan, Fabian Krueger
 }
 \details{
-When using \code{method = "edf"}, \link{crps_sample} employs the efficient algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). When using \code{meth = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
+When using \code{method = "edf"}, \link{crps_sample} employs the efficient algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
 \link{logs_sample} and \link{qs_sample} \emph{always} use kernel density estimation with a Gaussian kernel (the EDF option is not available since the two scores require a density). The choice of bandwidth is handled as in \link{crps_sample}.
 }
 

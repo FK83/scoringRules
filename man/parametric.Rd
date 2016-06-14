@@ -16,7 +16,7 @@ qs(y, family, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{y}{Vector of realized values}
-\item{family}{String which specifies the parametric family; currently implemented: "beta", "exponential", "gamma", "gev", "gpd", "log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal", "negative-binomial", "normal", "poisson", "t", "truncated-normal", "two-piece-normal", "uniform".}
+\item{family}{String which specifies the parametric family; currently implemented: "beta", "exponential", "gamma", "gev", "gpd", "laplace", "log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal", "negative-binomial", "normal", "poisson", "t", "truncated-normal", "two-piece-normal", "uniform".}
 \item{...}{Vectors of parameter values; expected input depends on chosen \code{family}. See details below.}
 
 }
@@ -37,39 +37,42 @@ Alexander Jordan, Fabian Krueger, Sebastian Lerch
 \details{
 The parameters supplied to each of the functions are numeric vectors:
 \enumerate{
-\item Distributions for random variables with discrete / infinite support:
-    \itemize{
-      \item If \code{family == "poisson"}: \code{lambda} denotes the vector of positive means
-      \item If \code{family == "negative-binomial"}: Vectors \code{size} and \code{prob}; as an alternative parametrization, \code{mu}
-      can be provided instead of \code{prob}. See the help file for the base function \link{dnbinom}. 
-    }
-\item Distribution for random variables defined on bounded intervals:
-    \itemize{
-      \item If \code{family == "beta"}: \code{shape1}, \code{shape2} ... simple reference to R help ? ...
-      \item If \code{family == "uniform"}: \code{min} and \code{max} denote lower and upper limits of the distribution.
-    }
 \item Distributions defined on the real line:
     \itemize{
-      \item If \code{family == "laplace"}: \code{location} and \code{scale} denote the location and scale parameter of the Laplace distribution with CDF ...
-      \item If \code{family == "logistic"}: \code{location} and \code{scale} denote the location and scale parameter of the logistic distribution with CDF ...
-      \item If \code{family == "normal"}: \code{mean} and \code{sd} denote the mean and standard deviation of the distribution.
-      \item If \code{family == "normal-mixture"}: Matrices \code{m}, \code{s}, and \code{w}, where the \eqn{i}-th column of each matrix corresponds to the vector of mean values (\code{m[,i]}), standard deviations (\code{s[,i]}) and weights (\code{w[,i]}) of mixture component \eqn{i}. The weights in every row of \code{w} must sum to 1.
-      \item If \code{family == "two-piece-normal"}: \code{m}, \code{s1} and \code{s2} denote the parameters of the two-piece normal distribution. For details, see Box A of Wallis (2004, "An Assessment of Bank of England and National Institute Inflation Forecast Uncertainties", National Institute Economic Review).
-      \item If \code{family == "t"}:  \code{location}, \code{scale} (spread parameter) and \code{df} (degrees of freedom). Note that the parametrization is such that the implied variance of a t distributed variable is \eqn{scale^2 \times \frac{df}{df-2}}. 
+      \item \code{"laplace"} or \code{"lapl"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter); see \link{flapl}
+      \item \code{"logistic"} or \code{"logis"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter); see \link{Logistic}
+      \item \code{"normal"} or \code{"norm"}: \code{mean}, \code{sd} (mean and standard deviation); see \link{Normal}
+      \item \code{"normal-mixture"} or \code{"mixnorm"}: \code{m} (mean parameters), \code{s} (standard deviations), \code{w} (weights); see \link{fmixnorm}; note: matrix-input for parameters
+      \item \code{"two-piece-normal"} or \code{"2pnorm"}: \code{m} (real-valued location parameter), \code{s1}, \code{s2} (positive scale parameters); see \link{f2pnorm}
+      \item \code{"t"}:  \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{df} (degrees of freedom); see \link{ft}
     }
 \item Distributions for non-negative random variables:
     \itemize{
-      \item If \code{family == "exponential"}: \code{rate} denotes a vector of rate parameters
-      \item If \code{family == "gamma"}:
-      \item If \code{family == "log-laplace"}:
-      \item If \code{family == "log-logistic"}:
-      \item If \code{family == "log-normal"}: \code{meanlog} and \code{sdlog} denote location and scale parameter of the log-normal distribution.
+      \item \code{"exponential"} or \code{"exp"}: \code{rate} (positive rate parameter); see \link{Exponential}
+      \item \code{"gamma"}: \code{shape} (positive shape parameter), \code{rate} (positive rate parameter), \code{scale} (alternative to \code{rate}); see \link{GammaDist}
+      \item \code{"log-laplace"} or \code{"llapl"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{fllapl}
+      \item \code{"log-logistic"} or \code{"llogis"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{fllogis}
+      \item \code{"log-normal"} or \code{"lnorm"}: \code{meanlog} (real-valued location parameter), \code{sdlog} (positive scale parameter); see \link{Lognormal}
     }
 \item Distributions  for random variables with variable support:
     \itemize{
-      \item If \code{family == "truncated-normal"}: \code{lb} (truncation parameter, lower bound), \code{m} (location parameter) and \code{s} (scale parameter). \code{m} and \code{s} correspond to mean and standard deviation of the normal distribution before the left-sided truncation in \code{lb}, respectively. [Reference to Gneiting and Thorarinsdottir (2010)?]
-      \item If \code{family == "gpd"}: \code{loc} (location), \code{sc} (scale) and \code{sh} (shape) denote the parameters of the generalized Pareto distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).
-      \item If \code{family == "gev"}: \code{loc} (location), \code{sc} (scale) and \code{sh} (shape) denote the parameters of the generalized extreme value distribution. For details, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594).   
+      \item \code{"truncated-normal"} or \code{"tnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{ftnorm}
+      \item \code{"censored-normal"} or \code{"cnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fcnorm}
+      \item \code{"gnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{a, b} (parameters for the affine transformation of the normal CDF), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fgnorm}
+      \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgpd}
+      \item \code{"gev"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgev}
+    }
+    \item Distribution for random variables defined on bounded intervals:
+    \itemize{
+      \item \code{"uniform"} or \code{"unif"}: \code{min}, \code{max} (lower and upper limits); see \link{Uniform}
+      \item \code{"beta"}: \code{shape1}, \code{shape2} (positive parameters); see \link{Beta}
+      \item \code{"censored-truncated-normal"} or \code{"ctnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fctnorm}
+      \item \code{"truncated-censored-normal"} or \code{"tcnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{ftcnorm}
+    }
+    \item Distributions for random variables with discrete / infinite support:
+    \itemize{
+      \item \code{"poisson"} or \code{"pois"}: \code{lambda} (positive mean); see \link{Poisson}
+      \item \code{"negative-binomial"} or \code{"nbinom"}: \code{size} (positive dispersion parameter), \code{prob} (success probability), \code{mu} (mean, alternative to \code{prob}); see \link{NegBinomial}
     }
 }
 }
