@@ -50,7 +50,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
     } else {
       stop("Unexpected choice of method - please select either edf or kde")
     }
-    return(orientation * out)
+    return(out)
   }
 
 qs_sample <- function(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE) {
@@ -75,7 +75,7 @@ qs_sample <- function(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE) 
       message("Used numerical integration for qs computation (tolerance = 1e-6).")
     out <- 2*ff(y) - integrate(function(x) ff(x)^2, -Inf, Inf, rel.tol = 1e-6)$value
   }
-  return(orientation * out)
+  return(out)
 }
 
 logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
@@ -91,7 +91,7 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   w <- rep(1 / length(dat), length(dat))
   s <- rep(bw, length(dat))
   out <- lsmixnC(w = w, m = dat, s = s, y = y)
-  return(orientation * out)
+  return(out)
 }
 
 # input checks for sample functions
@@ -179,7 +179,7 @@ crps <- function(y, family, ...) {
   input <- checkInput(input)
   out <- do.call(calculateCRPS, input)
   
-  return(orientation*out)
+  return(out)
 }
 
 qs <- function(y, family, ...) {
@@ -196,7 +196,7 @@ qs <- function(y, family, ...) {
   input <- checkInput(input)
   out <- do.call(calculateQS, input)
   
-  return(orientation*out)
+  return(out)
 }
 
 logs <- function(y, family, ...) {
@@ -213,7 +213,7 @@ logs <- function(y, family, ...) {
   input <- checkInput(input)
   out <- do.call(calculateLS, input)
   
-  return(orientation*out)
+  return(out)
 }
 
 ################################################################################

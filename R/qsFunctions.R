@@ -2,13 +2,13 @@
 ### bounded interval
 
 # uniform
-qs.unif <- function(y, min, max) 2*dunif(y, min, max) - 1/(max-min)
+qs.unif <- function(y, min, max) -2*dunif(y, min, max) + 1/(max-min)
 
 # beta
 qs.beta <- function(y, shape1, shape2) {
   c1 <- 2 * dbeta(y, shape1, shape2)
   c2 <- beta(2*shape1 - 1, 2*shape2 - 1) / beta(shape1, shape2)^2
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 
@@ -19,31 +19,31 @@ qs.beta <- function(y, shape1, shape2) {
 qs.lapl <- function(y, location, scale) {
   c1 <- 2*flapl(y, location, scale)
   c2 <- 1/(4*scale)
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # logistic
 qs.logis <- function(y, location, scale) {
   c1 <- 2*dlogis(y, location, scale)
   c2 <- 1/(6*scale)
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # normal
 qs.norm <- function(y, mean, sd) {
   c1 <- 2*dnorm(y, mean, sd)
   c2 <- 1/(2*sd*sqrt(pi))
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # mixture of normals
-qs.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+qs.mixnorm <- function(y, m, s, w) -sapply(seq_along(y), function(i) qsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-normal
 qs.2pnorm <- function(y, location, scale1, scale2) {
   c1 <- 2*f2pnorm(y, location, scale1, scale2)
   c2 <- (scale1 + scale2) / (sqrt(pi) * (scale1 + scale2)^2)
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # t
@@ -57,20 +57,20 @@ qs.t <- function(y, df, location, scale) {
     c2[ind] <- rep(1/(2*scale*sqrt(pi)), len = length(c2))[ind]
   }
   
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 ################################################################################
 ### non-negative
 
 # exponential
-qs.exp <- function(y, rate) 2*dexp(y, rate) - 0.5*rate
+qs.exp <- function(y, rate) -2*dexp(y, rate) + 0.5*rate
 
 # gamma
 qs.gamma <- function(y, shape, scale) {
   c1 <- 2*dgamma(y, shape, scale = scale)
   c2 <- 2^(1-2*shape) / scale / (2*shape - 1) / beta(shape, shape)
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # log-laplace
@@ -87,7 +87,7 @@ qs.llapl <- function(y, locationlog, scalelog) {
     integrate(d, 0, Inf)$value
   })
   
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # log-logistic
@@ -104,7 +104,7 @@ qs.llogis <- function(y, locationlog, scalelog) {
     integrate(d, 0, Inf)$value
   })
   
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # log-normal
@@ -121,7 +121,7 @@ qs.lnorm <- function(y, meanlog, sdlog) {
     integrate(d, 0, Inf)$value
   })
   
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 # truncated-normal
@@ -129,7 +129,7 @@ qs.tnorm <- function(y, location, scale, lower) {
   c1 <- 2*ftnorm(y, location, scale, lower)
   c2 <- pnorm(lower, location, scale, lower.tail = FALSE)^(-2) * (1 - pnorm(sqrt(2) * (lower - location)/scale)) / (2 * scale * sqrt(pi))
 
-  return(c1 - c2)
+  return(-c1 + c2)
 }
 
 ################################################################################
@@ -156,7 +156,7 @@ qs.gpd <- function(y, location, scale, shape) {
     warning("No closed form expression available for non-zero shape parameters - numerical integration used.")
   if (any(!ind & shape != 0))
     warning("Parameter 'shape' contains values close to zero. In those cases the QS is calculated assuming a value of 0.")
-  out[ind] <- c1 - c2
+  out[ind] <- -c1 + c2
   out[!ind] <- qs.exp(y - location, 1/scale)
   return(out)
 }
@@ -186,5 +186,5 @@ qs.gev <- function(y, location, scale, shape) {
     warning("No closed form expression available for non-zero shape parameters - numerical integration used.")
   if (any(!ind1 & shape != 0))
     warning("Parameter 'shape' contains values close to zero. In those cases the QS is calculated assuming a value of 0.")
-  return(c1-c2)
+  return(-c1 + c2)
 }
