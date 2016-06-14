@@ -194,19 +194,16 @@ crps.t <- function(y, df, location, scale) {
     if (length(z) < length(df)) {
       z <- rep(z, len = length(df))
     }
-    if (length(scale) < length(z)) {
-      scale <- rep(scale, len = length(z))
-    }
     out <- numeric(length(z))
-    out[ind] <- scale[ind] * crps.norm(z[ind], 0, 1)
-    out[!ind] <- scale[!ind] * crps.t(z[!ind], df[!ind], 0, 1)
+    out[ind] <- crps.norm(z[ind], 0, 1)
+    out[!ind] <- crps.t(z[!ind], df[!ind], 0, 1)
   } else {
     c1 <- z * (2 * pt(z, df) - 1)
-    c2 <- 2 * dt(z, df) * (df + z ^ 2) / (df - 1)
-    c3 <- 2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df) ^ 2
-    out <- scale * (c1 + c2 - c3)
+    c2 <- dt(z, df) * (1 + z^2 / df)
+    c3 <- beta(0.5, df - 0.5) / sqrt(df) / beta(0.5, 0.5 * df)^2
+    out <- c1 + 2 * df / (df - 1) * (c2 - c3)
   }
-  return(out)
+  return(scale * out)
 }
 
 ################################################################################
