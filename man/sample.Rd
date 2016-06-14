@@ -36,8 +36,7 @@ Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Evaluating
 Alexander Jordan, Fabian Krueger
 }
 \details{
-When using \code{method = "edf"}, \link{crps_sample} employs an empirical version of the quantile decomposition of the CRPS (Laio, F. and Tamea, S. (2007), "Verification tools for probabilistic forecasts of continuous hydrological variables", Hydrology and Earth System Sciences, 11,
-1267–1277). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
+When using \code{method = "edf"}, \link{crps_sample} employs an empirical version of the quantile decomposition of the CRPS (Laio, F. and S. Tamea (2007), "Verification tools for probabilistic forecasts of continuous hydrological variables", Hydrology and Earth System Sciences, 11, 1267–1277). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
 
 \link{logs_sample} \emph{always} uses kernel density estimation with a Gaussian kernel (the EDF option is not available since the score requires a density). The choice of bandwidth is handled as in \link{crps_sample}.
 }

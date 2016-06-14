@@ -9,7 +9,7 @@
 \title{
 Supplementary distributions (not in base R) with variable support.
 }
-\description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps}, \code{logs} and \code{qs}.
+\description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
 Here we document distributions with variable support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{ftnorm} - truncated normal distribution; \code{fcnorm} - censored normal distribution; \code{fctnorm} - normal distribution censored at left and truncated at right; \code{ftcnorm} - normal distribution truncated at left and censored at right; \code{fgnorm} - affine transformation of normal distribution.}
 \usage{
