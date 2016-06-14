@@ -345,22 +345,19 @@ crps.gpd <- function(y, location, scale, shape) {
     if (length(z) < length(shape)) {
       z <- rep(z, len = length(shape))
     }
-    if (length(scale) < length(z)) {
-      scale <- rep(scale, len = length(z))
-    }
     
     out <- numeric(length(z))
-    out[ind] <- scale[ind] * crps.exp(z[ind], 1)
-    out[!ind] <- scale[!ind] * crps.gpd(z[!ind], 0, 1, shape[!ind])
+    out[ind] <- crps.exp(z[ind], 1)
+    out[!ind] <- crps.gpd(z[!ind], 0, 1, shape[!ind])
   } else {
     p <- 1 - (1 + shape * z) ^ (-1 / shape)
     p[p < 0] <- 0
     p[p > 1] <- 1
     c1 <- (z + 1 / shape) * (2 * p - 1)
     c2 <- 2 / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
-    out <- scale * (c1 - c2)
+    out <- c1 - c2
   }
-  return(out)
+  return(scale * out)
 }
 
 # generalized extreme value distribution
