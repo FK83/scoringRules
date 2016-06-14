@@ -376,7 +376,7 @@ crps.gev <- function(y, location, scale, shape) {
       out[ind] <- -z[ind] - 2 * gsl::expint_Ei(-exp(-z[ind])) - digamma(1) - log(2)
     } else {
       warning(paste("The exponential integral is approximated using the 'integrate' function.",
-                    "Consider installing the 'gsl' package to leverage an implementation of the exponential integral.",
+                    "Consider installing the 'gsl' package to leverage a more accurate implementation.",
                     sep = "\n"))
       expint_Ei <- sapply(-exp(-z[ind]), function(upper) {
         integrate(function(x) exp(x)/x, -Inf, upper)$value
