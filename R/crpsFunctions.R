@@ -376,31 +376,25 @@ crps.gev <- function(y, location, scale, shape) {
     if (length(z) < length(shape)) {
       z <- rep(z, len = length(shape))
     }
-    if (length(scale) < length(z)) {
-      scale <- rep(scale, len = length(scale))
-    }
     
     out <- numeric(length(z))
     if (requireNamespace("gsl", quietly = TRUE)) {
-      out[ind] <- scale[ind] * (-z[ind] + (-digamma(1) - log(2)) - 2 * gsl::expint_Ei(-exp(-z[ind])))
+      out[ind] <- -z[ind] - 2 * gsl::expint_Ei(-exp(-z[ind])) - digamma(1) - log(2)
     } else {
-      warning(paste("Parameter 'shape' contains values equal or close to zero.",
-                    "In those cases the CRPS is calculated using numerical integration and assuming a value of 0.",
+      warning(paste("The exponential integral is approximated using the 'integrate' function.",
                     "Consider installing the 'gsl' package to leverage an implementation of the exponential integral.",
                     sep = "\n"))
-      if (length(ind) < length(z)) {
-        ind <- rep(ind, len = length(z))
-      }
-      out[ind] <- sapply(which(ind), function(i) {
-        F1 <- function(x) exp(-exp(-x))^2
-        F2 <- function(x) (expm1(-exp(-x)))^2
-        scale[i] * (integrate(F1, -Inf, z[i])$value + integrate(F2, z[i], Inf)$value)
+      expint_Ei <- sapply(-exp(-z[ind]), function(upper) {
+        integrate(function(x) exp(x)/x, -Inf, upper)$value
       })
+      out[ind] <- -z[ind] - 2 * expint_Ei - digamma(1) - log(2)
     }
-    out[!ind] <- scale[!ind] * crps.gev(z[!ind], 0, 1, shape[!ind])
+    out[!ind] <- crps.gev(z[!ind], 0, 1, shape[!ind])
   } else {
-    p <- exp(-pmax(0, 1 + shape * z)^(-1/shape))
-    out <- scale * ((-z - 1/shape)*(1 - 2*p) - 1/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape)))
+    x <- 1 + shape * z
+    x[x < 0] <- 0
+    p <- exp(-x^(-1/shape))
+    out <- (-z - 1/shape)*(1 - 2*p) - 1/shape*gamma(1-shape)*(2^shape - 2*pgamma(-log(p), 1-shape))
   }
-  return(out)
+  return(scale * out)
 }
