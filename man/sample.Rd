@@ -1,7 +1,6 @@
 \name{sample}
 \alias{crps_sample}
 \alias{logs_sample}
-\alias{qs_sample}
 \title{
 Scoring Rules for Simulated Forecast Distributions
 }
@@ -12,7 +11,6 @@ Compute scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper scoring ru
 crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, 
             num_int = FALSE, show_messages = TRUE)
 logs_sample(y, dat, bw = NULL, show_messages = TRUE)
-qs_sample(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,15 +29,16 @@ qs_sample(y, dat, bw = NULL, num_int = FALSE, show_messages = TRUE)
 
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., S. Lerch, T. Thorarinsdottir and T. Gneiting (2015), ``Evaluating MCMC-based Predictive Distributions'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Evaluating MCMC-based Predictive Distributions'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
 
 }
 \author{
 Alexander Jordan, Fabian Krueger
 }
 \details{
-When using \code{method = "edf"}, \link{crps_sample} employs the efficient algorithm by Hersbach (2000, "Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems", Weather and Forecasting). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
-\link{logs_sample} and \link{qs_sample} \emph{always} use kernel density estimation with a Gaussian kernel (the EDF option is not available since the two scores require a density). The choice of bandwidth is handled as in \link{crps_sample}.
+When using \code{method = "edf"}, \link{crps_sample} employs an empirical version of the quantile decomposition of the CRPS (Laio, F. and S. Tamea (2007), "Verification tools for probabilistic forecasts of continuous hydrological variables", Hydrology and Earth System Sciences, 11, 1267–1277). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
+
+\link{logs_sample} \emph{always} uses kernel density estimation with a Gaussian kernel (the EDF option is not available since the score requires a density). The choice of bandwidth is handled as in \link{crps_sample}.
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
