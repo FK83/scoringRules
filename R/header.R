@@ -179,6 +179,13 @@ crps <- function(y, family, ...) {
   input <- checkInput(input)
   out <- do.call(calculateCRPS, input)
   
+  if (any(out < 0)) {
+    warning("Negative CRPS values. Check parameter combinations and/or contact package maintainer(s).")
+  }
+  if (any(is.na(out))) {
+    warning("Missing CRPS values. Probably due to numerical instabilities as a result of extreme parameter choices.")
+  }
+  
   return(out)
 }
 
