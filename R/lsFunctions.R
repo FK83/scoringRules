@@ -56,7 +56,29 @@ ls.llogis <- function(y, locationlog, scalelog) -log(fllogis(y, locationlog, sca
 ls.lnorm <- function(y, meanlog, sdlog) -dlnorm(y, meanlog, sdlog, log=TRUE)
 
 # truncated-normal
-ls.tnorm <- function(y, m, s, lower, upper) -log(ftnorm(y, m, s, lower, upper))
+ls.tnorm <- function(y, location, scale, lower, upper) {
+  -log(ftnorm(y, m, s, lower, upper))
+}
+
+# censored-normal
+ls.cnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  stop("")
+}
+
+# censored-truncated normal
+ls.ctnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  stop("")
+}
+
+# truncated-censored normal
+ls.tcnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
+  stop("")
+}
+
+# generalized trunc/cens normal
+ls.gnorm <- function(y, location, scale, a = 1, b = 0, lower = -Inf, upper = Inf) {
+  stop("")
+}
 
 ################################################################################
 ### variable support
