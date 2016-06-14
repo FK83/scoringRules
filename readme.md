@@ -19,7 +19,7 @@ library(scoringRules)
 
 ## Background
 
-Scoring rules are functions $S(F, y)$ which evaluate the accuracy of a forecast distribution $F$, given that an outcome $y$ was observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of distributions F that come up in applied work, and three popular choices of S. Two main classes of distributions are
+Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast distribution F, given that an outcome y was observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of distributions F that come up in applied work, and three popular choices of S. Two main classes of distributions are
 
   - Parametric distributions like normal, t, and gamma. For example, most weather forecasts (which apply statistical postprocessing to physical models) take such a form. 
   - Distributions that are not known analytically, but are indirectly described through a sample of simulaton draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
