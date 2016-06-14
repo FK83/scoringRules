@@ -1,6 +1,5 @@
 \name{parametric}
 \alias{crps}
-\alias{qs}
 \alias{logs}
 \title{
 Scoring Rules for Parametric Forecast Distributions
@@ -11,7 +10,6 @@ Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule
 \usage{
 crps(y, family, ...)
 logs(y, family, ...)
-qs(y, family, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -59,8 +57,8 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"truncated-normal"} or \code{"tnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{ftnorm}
       \item \code{"censored-normal"} or \code{"cnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fcnorm}
       \item \code{"gnorm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{a, b} (parameters for the affine transformation of the normal CDF), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound); see \link{fgnorm}
-      \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgpd}
-      \item \code{"gev"}: \code{location} (real-valued location parameter), \code{shape} (real-valued shape parameter), \code{scale} (positive scale parameter); see \link{fgev}
+      \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{shape} (real-valued shape parameter); see \link{fgpd}
+      \item \code{"gev"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{shape} (real-valued shape parameter); see \link{fgev}
     }
     \item Distribution for random variables defined on bounded intervals:
     \itemize{
