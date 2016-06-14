@@ -1,4 +1,13 @@
 ################################################################################
+### discrete / infinite support
+
+# poisson
+ls.pois <- function(y, lambda) -dpois(y, lambda, log=TRUE)
+
+# negative binomial
+ls.nbinom <- function(y, size, prob) -dnbinom(y, size, prob, log=TRUE)
+
+################################################################################
 ### bounded interval
 
 # uniform
