@@ -29,7 +29,7 @@ logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Evaluating MCMC-based Predictive Distributions'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Probabilistic forecasting and comparative model assessment based on MCMC output'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
 
 }
 \author{
