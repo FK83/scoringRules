@@ -50,10 +50,6 @@ logs_sample(y = obs, dat = sample)
 ## exact solutions using analytical closed form expression:
 crps(y = obs, family = "normal", mean = 0, sd = 1) 
 logs(y = obs, family = "normal", mean = 0, sd = 1)
-
-## crps.sample and logs.sample require scalar observations and vector-valued samples
-crps_sample(y = rnorm(20), dat = sample)
-crps_sample(y = rnorm(20), dat = matrix(rnorm(2000), nrow = 20))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

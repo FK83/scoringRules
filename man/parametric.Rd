@@ -91,9 +91,6 @@ df <- data.frame(y = rnorm(20), mean = 1:20, sd = 1)
 crps(df, family = "normal")
 logs(df, family = "normal")
 
-df2 <- data.frame(rnorm(20), 1:20, rep(1,20))
-crps(df2, family = "normal")
-
 ## Mixture of normal distributions requires matrix input for parameters:
 mval <- matrix(rnorm(20*50), nrow = 20)
 sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
