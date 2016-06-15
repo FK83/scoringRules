@@ -45,7 +45,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
         out <- -(aux1 + aux2)
         # Message
         if (show_messages) 
-          message("Used numerical integration for CPRS (tolerance = 1e-6).")
+          message("Used numerical integration for CRPS computation (tolerance = 1e-6).")
       }
     } else {
       stop("Unexpected choice of method - please select either edf or kde")
@@ -86,7 +86,7 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   check.sample(input)
   
   if (show_messages)
-    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2015) for details.")
+    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2016) for details.")
   if (is.null(bw)) bw <- bw.nrd(dat)
   w <- rep(1 / length(dat), length(dat))
   s <- rep(bw, length(dat))

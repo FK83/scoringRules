@@ -14,7 +14,7 @@ logs(y, family, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{y}{Vector of realized values}
-\item{family}{String which specifies the parametric family; currently implemented: "beta", "exponential", "gamma", "gev", "gpd", "laplace", "log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal", "negative-binomial", "normal", "poisson", "t", "truncated-normal", "two-piece-normal", "uniform".}
+\item{family}{String which specifies the parametric family; currently implemented: "beta", "censored-normal", "censored-truncated-normal", "exponential", "gamma", "gev", "gpd", "laplace", "log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal", "negative-binomial", "normal", "poisson", "t", "truncated-normal", "truncated-censored-normal", "two-piece-normal", "uniform".}
 \item{...}{Vectors of parameter values; expected input depends on chosen \code{family}. See details below.}
 
 }
@@ -24,7 +24,7 @@ logs(y, family, ...)
 
 \emph{General background and further references on scoring rules:}
 
-Gneiting, T. and A. Raftery (2007): ```Strictly Proper Scoring Rules, Prediction and Estimation'', Journal of the American Statistical Association 102, 359-378.
+Gneiting, T. and A. Raftery (2007): ``Strictly Proper Scoring Rules, Prediction and Estimation'', Journal of the American Statistical Association 102, 359-378.
 
 Gneiting, T. and M. Katzfuss (2014): ``Probabilistic Forecasting'', Annual Review of Statistics and Its Application 1, 125-151. 
 
@@ -73,10 +73,35 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"negative-binomial"} or \code{"nbinom"}: \code{size} (positive dispersion parameter), \code{prob} (success probability), \code{mu} (mean, alternative to \code{prob}); see \link{NegBinomial}
     }
 }
+The length of the result is the maximum of the lengths of the numerical arguments. Numerical arguments of smaller length are recycled to the length of the result.
+}
+\examples{
+crps(y = 1, family = "normal", mean = 0, sd = 2)
+logs(y = 1, family = "normal", mean = 0, sd = 2)
+
+crps(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
+logs(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
+
+## Arguments can have different lenghts:
+crps(y = rnorm(20), family = "normal", mean = 0, sd = 2)
+crps(y = 1, family = "normal", mean = 1:20, sd = sqrt(1:20))
+
+## Lists are accepted as input if elements with the required names are present:
+df <- data.frame(y = rnorm(20), mean = 1:20, sd = 1)
+crps(df, family = "normal")
+logs(df, family = "normal")
+
+df2 <- data.frame(rnorm(20), 1:20, rep(1,20))
+crps(df2, family = "normal")
+
+## Mixture of normal distributions requires matrix input for parameters:
+mval <- matrix(rnorm(20*50), nrow = 20)
+sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
+weights <- matrix(rep(1/50, 20*50), nrow = 20)
+crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{crps}
-\keyword{qs}
 \keyword{logs}

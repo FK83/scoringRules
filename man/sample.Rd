@@ -18,9 +18,9 @@ logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 \item{dat}{Numeric vector of data (simulation draws from forecast distribution).}
 \item{method}{String, approximation method used in \link{crps_sample}. Currently implemented: "edf" (empirical distribution function) and "kde" (kernel density estimation).}
 \item{w}{Numeric vector of observation weights for \code{dat}.}
-\item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one)}
-\item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps_sample} and \link{qs_sample} in case of large samples \code{dat}).}
-\item{show_messages}{Logical of length one, on/off switch for messages (does not affect warnings and errors, which are always printed)}
+\item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one).}
+\item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps_sample} in case of large samples \code{dat} if \code{method = "kde"}).}
+\item{show_messages}{Logical of length one, on/off switch for messages (does not affect warnings and errors, which are always printed).}
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
@@ -41,8 +41,21 @@ When using \code{method = "edf"}, \link{crps_sample} employs an empirical versio
 \link{logs_sample} \emph{always} uses kernel density estimation with a Gaussian kernel (the EDF option is not available since the score requires a density). The choice of bandwidth is handled as in \link{crps_sample}.
 }
 
+\examples{
+sample <- rnorm(1e4)
+obs <- 1
+crps_sample(y = obs, dat = sample)  
+logs_sample(y = obs, dat = sample)
+
+## exact solutions using analytical closed form expression:
+crps(y = obs, family = "normal", mean = 0, sd = 1) 
+logs(y = obs, family = "normal", mean = 0, sd = 1)
+
+## crps.sample and logs.sample require scalar observations and vector-valued samples
+crps_sample(y = rnorm(20), dat = sample)
+crps_sample(y = rnorm(20), dat = matrix(rnorm(2000), nrow = 20))
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{crps}
-\keyword{qs}
 \keyword{logs}
