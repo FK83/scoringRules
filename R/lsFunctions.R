@@ -57,7 +57,7 @@ ls.lnorm <- function(y, meanlog, sdlog) -dlnorm(y, meanlog, sdlog, log=TRUE)
 
 # truncated-normal
 ls.tnorm <- function(y, location, scale, lower, upper) {
-  -log(ftnorm(y, m, s, lower, upper))
+  -log(ftnorm(y, location, scale, lower, upper))
 }
 
 # censored-normal
