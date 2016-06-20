@@ -4,6 +4,7 @@ orientation <- -1
 
 #' @export crps logs crps_sample logs_sample flapl f2pexp fmixnorm f2pnorm ft fllapl fllogis ftnorm fcnorm fctnorm ftcnorm
 #' @importFrom Rcpp evalCpp
+#' @useDynLib scoringRules
 
 ################################################################################
 ### xx_sample
