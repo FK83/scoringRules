@@ -7,14 +7,16 @@
 \title{Supplementary distributions (not in base R) supported on the real line.}
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
-Here we document distributions with support on the real line: \code{flapl} - Laplace distribution; \code{f2plapl} - two-piece Laplace distribution; \code{fmixnorm} - mixture of normal distributions; \code{f2pnorm} - two-piece normal distribution.
+Here we document distributions with support on the real line: \code{flapl} - Laplace distribution; \code{f2pexp} - two-piece exponential distribution; \code{fmixnorm} - mixture of normal distributions; \code{f2pnorm} - two-piece normal distribution.
 }
 \usage{
 flapl(x, location, scale)
-f2plapl(x, location, scale1, scale2)
-fmixnorm(x, m, s, w)
-f2pnorm(x, location, scale1, scale2)
 ft(x, df, location, scale)
+
+f2pexp(x, location, scale1, scale2)
+f2pnorm(x, location, scale1, scale2)
+
+fmixnorm(x, m, s, w)
 }
 \arguments{
   \item{x}{vector of quantiles}

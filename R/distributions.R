@@ -9,6 +9,7 @@ synonyms <- list(
   'normal-mixture' = "mixnorm",
   'two-piece-normal' = "2pnorm",
   exponential = "exp",
+  'two-piece-exponential' = "2pexp",
   'log-laplace' = "llapl",
   'log-logistic' = "llogis",
   'log-normal' = "lnorm",
@@ -173,11 +174,26 @@ check.lapl <- function(input) {
   
   return(input)
 }
-
 flapl <- function(x, location, scale) {
   dexp(abs(x - location), 1/scale) / 2
 }
-f2plapl <- function(x, location, scale1, scale2) {
+
+### two-piece-exponential
+check.2pexp <- function(input) {
+  reqinput <- c("y", "location", "scale1", "scale2")
+  checkNames1(input, reqinput)
+  input <- input[reqinput]
+  checkVector(input)
+  
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale1 > 0)) stop("Parameter 'scale1' contains non-positive values.")
+  if (any(is.infinite(input$scale1))) stop("Parameter 'scale1' contains infinite values.")
+  if (any(!input$scale2>0)) stop("Parameter 'scale2' contains non-positive values.")
+  if (any(is.infinite(input$scale2))) stop("Parameter 'scale2' contains infinite values.")
+  
+  return(input)
+}
+f2pexp <- function(x, location, scale1, scale2) {
   n <- max(length(x), length(location), length(scale1), length(scale2))
   z <- rep(x - location, len = n)
   s <- ifelse(z < 0, scale1, scale2)
