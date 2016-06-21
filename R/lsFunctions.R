@@ -32,7 +32,7 @@ ls.norm <- function(y, mean, sd) -dnorm(y, mean, sd, log=TRUE)
 ls.mixnorm <- function(y, m, s, w) -sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-exponential
-ls.2pexp <- function(y, location, scale1, scale2) -log(f2exp(y, location, scale1, scale2))
+ls.2pexp <- function(y, location, scale1, scale2) -log(f2pexp(y, location, scale1, scale2))
 
 # two-piece-normal
 ls.2pnorm <- function(y, location, scale1, scale2) -log(f2pnorm(y, location, scale1, scale2))

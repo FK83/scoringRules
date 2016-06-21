@@ -1,6 +1,6 @@
 \name{Supplementary distributions: Real line}
 \alias{flapl}
-\alias{f2plapl}
+\alias{f2pexp}
 \alias{fmixnorm}
 \alias{f2pnorm}
 \alias{ft}
