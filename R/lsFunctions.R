@@ -63,6 +63,11 @@ ls.tnorm <- function(y, location, scale, lower, upper) {
   -log(ftnorm(y, location, scale, lower, upper))
 }
 
+# censored-exponential
+ls.cexp <- function(y, location, scale, mass) {
+  stop("")
+}
+
 # censored-normal
 ls.cnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
   stop("")

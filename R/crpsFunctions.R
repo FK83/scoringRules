@@ -155,22 +155,18 @@ crps.mixnorm <- function(y, m, s, w) {
   return(-out)
 }
 
-# two-piece-normal
-# crps.2pnorm <- function(y, m, s1, s2) {
-#   n <- max(lengths(list(y, m, s1, s2)))
-#   y <- rep(y, len = n)
-#   m <- rep(m, len = n)
-#   
-#   aux1 <- function(y, m, s1, s2) {
-#     a1 <- (y-m)/s1
-#     4*(s1^2)/(s1 + s2) * (a1*pnorm(a1) + dnorm(a1))
-#   }
-#   aux2 <- function(m, s1, s2) {
-#     2/(sqrt(pi)*(s1+s2)^2) * (sqrt(2)*s2*(s2^2-s1^2) - (s1^3+s2^3))    
-#   }
-#   sc <- ifelse(y <= m, aux1(y, m, s1, s2) - (y-m) + aux2(m, s1, s2), aux1(y, m, s2, s1) + (y-m)*((s1-s2)^2-4*s2^2)/(s1+s2)^2 + aux2(m, s2, s1))
-#   return(-sc)
-# }
+crps.2pexp <- function(y, location, scale1, scale2) {
+  y1 <- pmin(y, location)
+  y2 <- pmax(y, location)
+  s <- scale1 + scale2
+  a1 <- scale1 / s
+  a2 <- scale2 / s
+  b2 <- a1 - a2
+  
+  crps.cexp(-y1, -location, scale1, a1) +
+    crps.cexp(y2, location, scale2, a2)
+}
+
 crps.2pnorm <- function(y, location, scale1, scale2) {
   y1 <- pmin(y, location)
   y2 <- pmax(y, location)
@@ -254,6 +250,13 @@ crps.lnorm <- function(y, meanlog, sdlog) {
   c2 <- 2*exp(meanlog + 0.5*sdlog^2)
   c3 <- plnorm(y, meanlog + sdlog^2, sdlog) + pnorm(sdlog/sqrt(2)) - 1
   return(c1 - c2*c3)
+}
+
+# censored-exponential
+crps.cexp <- function(y, location, scale, mass) {
+  z <- (y - location)/scale
+  c1 <- abs(z) - 2 * mass * pexp(z) + 0.5 * mass^2
+  return(scale * c1)
 }
 
 # censored-normal

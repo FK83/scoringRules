@@ -9,6 +9,7 @@ synonyms <- list(
   'normal-mixture' = "mixnorm",
   'two-piece-normal' = "2pnorm",
   exponential = "exp",
+  'censored-exponential' = "cexp",
   'two-piece-exponential' = "2pexp",
   'log-laplace' = "llapl",
   'log-logistic' = "llogis",
@@ -345,6 +346,21 @@ check.exp <- function(input) {
   
   if (any(!input$rate>0)) stop("Parameter 'rate' contains non-positive values.")
   if (any(is.infinite(input$rate))) stop("Parameter 'rate' contains infinite values.")
+  
+  return(input)
+}
+
+### censored-exponential
+check.cexp <- function(input) {
+  reqinput <- c("y", "location", "scale", "mass")
+  checkNames1(input, reqinput)
+  input <- input[reqinput]
+  checkVector(input)
+  
+  if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+  if (any(!input$scale > 0)) stop("Parameter 'scale' contains non-positive values.")
+  if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.")
+  if (any(input$mass < 0 | input$mass > 1)) stop("Parameter 'mass' contains values outside of [0, 1].")
   
   return(input)
 }
