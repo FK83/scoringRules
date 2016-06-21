@@ -31,7 +31,7 @@ fgnorm(x, location, scale, a, b, lower, upper)
   \item{lower}{vector of lower bounds}
   \item{upper}{vector of upper bounds}
 }
-\value{Probability density function of the relevant distribution, evaluated at \code{x}.}
+\value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (such as \code{fcnorm}), the density functions do not integrate to one.}
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
