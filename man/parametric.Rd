@@ -82,7 +82,7 @@ logs(y = 1, family = "normal", mean = 0, sd = 2)
 crps(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
 logs(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
 
-## Arguments can have different lenghts:
+## Arguments can have different lengths:
 crps(y = rnorm(20), family = "normal", mean = 0, sd = 2)
 crps(y = 1, family = "normal", mean = 1:20, sd = sqrt(1:20))
 
