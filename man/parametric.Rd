@@ -42,7 +42,6 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"normal"} or \code{"norm"}: \code{mean}, \code{sd} (mean and standard deviation); see \link{Normal}
       \item \code{"t"}:  \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{df} (degrees of freedom); see \link{ft}
       }
-      \cr
       \itemize{
       \item \code{"normal-mixture"} or \code{"mixnorm"}: \code{m} (mean parameters), \code{s} (standard deviations), \code{w} (weights); see \link{fmixnorm}; note: matrix-input for parameters
       \item \code{"two-piece-exponential"} or \code{"2pexp"}: \code{location} (real-valued location parameter), \code{scale1}, \code{scale2} (positive scale parameters); see \link{f2pexp}
