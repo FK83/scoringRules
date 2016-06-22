@@ -40,9 +40,13 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"laplace"} or \code{"lapl"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter); see \link{flapl}
       \item \code{"logistic"} or \code{"logis"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter); see \link{Logistic}
       \item \code{"normal"} or \code{"norm"}: \code{mean}, \code{sd} (mean and standard deviation); see \link{Normal}
-      \item \code{"normal-mixture"} or \code{"mixnorm"}: \code{m} (mean parameters), \code{s} (standard deviations), \code{w} (weights); see \link{fmixnorm}; note: matrix-input for parameters
-      \item \code{"two-piece-normal"} or \code{"2pnorm"}: \code{m} (real-valued location parameter), \code{s1}, \code{s2} (positive scale parameters); see \link{f2pnorm}
       \item \code{"t"}:  \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{df} (degrees of freedom); see \link{ft}
+      }
+      \cr
+      \itemize{
+      \item \code{"normal-mixture"} or \code{"mixnorm"}: \code{m} (mean parameters), \code{s} (standard deviations), \code{w} (weights); see \link{fmixnorm}; note: matrix-input for parameters
+      \item \code{"two-piece-exponential"} or \code{"2pexp"}: \code{location} (real-valued location parameter), \code{scale1}, \code{scale2} (positive scale parameters); see \link{f2pexp}
+      \item \code{"two-piece-normal"} or \code{"2pnorm"}: \code{location} (real-valued location parameter), \code{scale1}, \code{scale2} (positive scale parameters); see \link{f2pnorm}
     }
 \item Distributions for non-negative random variables:
     \itemize{
