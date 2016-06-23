@@ -2,29 +2,28 @@
 ### general / non-parametric
 
 # Numerical integration
-crps.int <- function(y, pxxx, lower, upper){
+# Note: y can be a vector, all other inputs are scalars
+crps.int <- function(y, pxxx, lower, upper, rel_tol = 1e-6){
   ind <- (y > upper) - (y < lower)
   out <- numeric(length(y))
+  F1 <- function(x) pxxx(x)^2
+  F2 <- function(x) (1-pxxx(x))^2
   if (any(ind == -1)) {
     out[ind == -1] <- sapply(which(ind == -1), function(i) {
-      F2 <- function(x) (1-pxxx[i](x))^2
-      s1 <- lower[i] - y[i]
-      s2 <- integrate(F2, lower[i], upper[i])$value
+      s1 <- lower - y[i]
+      s2 <- integrate(F2, lower, upper, rel.tol = rel_tol)$value
       s1 + s2
     })
   } else if (any(ind == 0)) {
     out[ind == 0] <- sapply(which(ind == 0), function(i) {
-      F1 <- function(x) pxxx[i](x)^2
-      F2 <- function(x) (1-pxxx[i](x))^2
-      s1 <- integrate(F1, lower[i], y[i])$value
-      s2 <- integrate(F2, y[i], upper[i])$value
+      s1 <- integrate(F1, lower, y[i], rel.tol = rel_tol)$value
+      s2 <- integrate(F2, y[i], upper, rel.tol = rel_tol)$value
       s1 + s2
     })
   } else if (any(ind == 1)) {
     out[ind == 1] <- sapply(which(ind == 1), function(i) {
-      F1 <- function(x) pxxx[i](x)^2
-      s1 <- integrate(F1, lower[i], upper[i])$value
-      s2 <- y[i] - upper[i]
+      s1 <- integrate(F1, lower, upper, rel.tol = rel_tol)$value
+      s2 <- y[i] - upper
       s1 + s2
     })
   }
@@ -136,23 +135,22 @@ crps.norm <- function(y, mean, sd) {
   return(sd*c1)
 }
 
+# mixture of normals (numerical integration)
+crps.mixnorm.int <- function(y, m, s, w, rel_tol){
+  Fmix <- function(z){
+    sapply(z, function(r) sum(w*pnorm((r-m)/s)))
+  }
+  crps.int(y, Fmix, -Inf, Inf, rel_tol)
+}
+
 # mixture of normals
-#crps.mixn = function (m, s, y, w = NULL, exact = TRUE, rel.tol = 1e-6){
-#  n <- length(m)
-#  if (is.null(w)) 
-#    w <- rep(1/n, n)
-#  if (exact == TRUE){
-#    return(crpsmixnC(w, m, s, y))
-#  } else {
-#    Fmix = function(z){
-#      sapply(z, function(r) sum(w*pnorm((r-m)/s)))
-#    }
-#    return(crps.int(Fmix, y, rel.tol = 1e-6))
-# }
-#}
-crps.mixnorm <- function(y, m, s, w) {
-  out <- sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
-  return(-out)
+crps.mixnorm = function(y, m, s, w, exact = TRUE, rel_tol = 1e-6){
+  if (exact == TRUE){
+    out <- sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+  } else {
+    out <- sapply(seq_along(y), function(i) crps.mixnorm.int(y[i], m[i, ], s[i, ], w[i, ], rel_tol))
+  }
+  return(out)
 }
 
 crps.2pexp <- function(y, location, scale1, scale2) {
