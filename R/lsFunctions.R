@@ -26,7 +26,14 @@ ls.lapl <- function(y, location, scale) -log(flapl(y, location, scale))
 ls.logis <- function(y, location, scale) -dlogis(y, location, scale, log=TRUE)
 
 # normal
-ls.norm <- function(y, mean, sd) -dnorm(y, mean, sd, log=TRUE)
+ls.norm <- function(y, location, scale,
+                    lower = -Inf, upper = Inf,
+                    lmass = 0, umass = 0) {
+  -fnorm(y, location, scale, lower, upper, lmass, umass, log = TRUE)
+}
+
+# t
+ls.t <- function(y, df, location, scale) -log(ft(y, df, location, scale))
 
 # mixture of normals
 ls.mixnorm <- function(y, m, s, w) -sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
@@ -36,9 +43,6 @@ ls.2pexp <- function(y, location, scale1, scale2) -log(f2pexp(y, location, scale
 
 # two-piece-normal
 ls.2pnorm <- function(y, location, scale1, scale2) -log(f2pnorm(y, location, scale1, scale2))
-
-# t
-ls.t <- function(y, df, location, scale) -log(ft(y, df, location, scale))
 
 ################################################################################
 ### non-negative
@@ -58,33 +62,8 @@ ls.llogis <- function(y, locationlog, scalelog) -log(fllogis(y, locationlog, sca
 # log-normal
 ls.lnorm <- function(y, meanlog, sdlog) -dlnorm(y, meanlog, sdlog, log=TRUE)
 
-# truncated-normal
-ls.tnorm <- function(y, location, scale, lower, upper) {
-  -log(ftnorm(y, location, scale, lower, upper))
-}
-
 # censored-exponential
 ls.cexp <- function(y, location, scale, mass) {
-  stop("")
-}
-
-# censored-normal
-ls.cnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  stop("")
-}
-
-# censored-truncated normal
-ls.ctnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  stop("")
-}
-
-# truncated-censored normal
-ls.tcnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  stop("")
-}
-
-# generalized trunc/cens normal
-ls.gnorm <- function(y, location, scale, a = 1, b = 0, lower = -Inf, upper = Inf) {
   stop("")
 }
 

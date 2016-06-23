@@ -129,10 +129,90 @@ crps.logis <- function(y, location, scale) {
 }
 
 # normal
-crps.norm <- function(y, mean, sd) {
-  z <- (y - mean)/sd
-  c1 <- z*(2*pnorm(z) - 1) + 2*dnorm(z) - 1/sqrt(pi)
-  return(sd*c1)
+crps.norm <- function(y, location, scale,
+                      lower = -Inf, upper = Inf,
+                      lmass = 0, umass = 0) {
+  
+  ### standard formula
+  
+  ind1 <- any(is.finite(lower))
+  ind2 <- any(is.finite(upper))
+  
+  if (!ind1 & !ind2) {
+    z <- (y - location) / scale
+    out_y <- z * (2 * pnorm(z) - 1) + 2 * dnorm(z) - 1 / sqrt(pi)
+    return(scale * z)
+  }
+  
+  ### dealing with truncation/censoring
+  
+  zb <- y
+  if (ind1) {
+    zb <- pmax(lower, zb)
+    lb <- (lower - location) / scale
+    
+    if (is.character(lmass)) {
+      Plb <- numeric(length(lmass))
+      Plb[lmass == "cens"] <- pnorm(lb)
+    } else {
+      Plb <- lmass
+    }
+  }
+  if (ind2) {
+    zb <- pmin(upper, zb)
+    ub <- (upper - location) / scale
+    
+    if (is.character(umass)) {
+      Pub <- numeric(length(lmass))
+      Pub[umass == "cens"] <- pnorm(ub, lower.tail = FALSE)
+    } else {
+      Pub <- umass
+    }
+  }
+  res <- abs(y - zb)
+  zb <- (zb - location) / scale
+  
+  if (ind1 & ind2) {
+    a <- (1 - Plb - Pub) / (pnorm(ub) - pnorm(lb))
+    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
+    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
+    out_y <- zb * (2 * (a * (pnorm(zb) - pnorm(lb)) + Plb) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+  } else if (ind1 & !ind2) {
+    a <- (1 - Plb) / (1 - pnorm(lb))
+    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
+    out_u <- 0
+    out_y <- zb * (2 * (1 - a * pnorm(zb, lower.tail = FALSE)) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+  } else if (!ind1 & ind2) {
+    a <- (1 - Pub) / pnorm(ub)
+    out_l <- 0
+    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
+    out_y <- zb * (2 * a * pnorm(zb) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+  }
+  
+  return(res + scale * (out_y + out_l + out_u))
+}
+
+# t
+crps.t <- function(y, df, location, scale) {
+  if (any(!df > 1))
+    stop("Parameter 'df' contains values not greater than 1. The CRPS is not defined.")
+  
+  z <- (y - location) / scale
+  ind <- df == Inf
+  if (any(ind)) {
+    if (length(z) < length(df)) {
+      z <- rep(z, len = length(df))
+    }
+    out <- numeric(length(z))
+    out[ind] <- crps.norm(z[ind], 0, 1)
+    out[!ind] <- crps.t(z[!ind], df[!ind], 0, 1)
+  } else {
+    c1 <- z * (2 * pt(z, df) - 1)
+    c2 <- dt(z, df) * (1 + z^2 / df)
+    c3 <- beta(0.5, df - 0.5) / sqrt(df) / beta(0.5, 0.5 * df)^2
+    out <- c1 + 2 * df / (df - 1) * (c2 - c3)
+  }
+  return(scale * out)
 }
 
 # mixture of normals (numerical integration)
@@ -173,31 +253,8 @@ crps.2pnorm <- function(y, location, scale1, scale2) {
   a2 <- scale2 / s
   b2 <- a1 - a2
   
-  crps.gnorm(y1, location, scale1, 2 * a1, 0, -Inf, location) +
-    crps.gnorm(y2, location, scale2, 2 * a2, b2, location, Inf)
-}
-
-# t
-crps.t <- function(y, df, location, scale) {
-  if (any(!df > 1))
-    stop("Parameter 'df' contains values not greater than 1. The CRPS is not defined.")
-  
-  z <- (y - location) / scale
-  ind <- df == Inf
-  if (any(ind)) {
-    if (length(z) < length(df)) {
-      z <- rep(z, len = length(df))
-    }
-    out <- numeric(length(z))
-    out[ind] <- crps.norm(z[ind], 0, 1)
-    out[!ind] <- crps.t(z[!ind], df[!ind], 0, 1)
-  } else {
-    c1 <- z * (2 * pt(z, df) - 1)
-    c2 <- dt(z, df) * (1 + z^2 / df)
-    c3 <- beta(0.5, df - 0.5) / sqrt(df) / beta(0.5, 0.5 * df)^2
-    out <- c1 + 2 * df / (df - 1) * (c2 - c3)
-  }
-  return(scale * out)
+  crps.norm(y1, location, scale1, upper = location, umass = a2) +
+    crps.norm(y2, location, scale2, lower = location, lmass = a1)
 }
 
 ################################################################################
@@ -255,76 +312,6 @@ crps.cexp <- function(y, location, scale, mass) {
   z <- (y - location)/scale
   c1 <- abs(z) - 2 * mass * pexp(z) + 0.5 * mass^2
   return(scale * c1)
-}
-
-# censored-normal
-crps.cnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  crps.gnorm(y, location, scale, 1, 0, lower, upper)
-}
-
-# censored-truncated normal
-crps.ctnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  ub <- (upper - location) / scale
-  a <- pnorm(ub)^(-1)
-  
-  crps.gnorm(y, location, scale, a, 0, lower, upper)
-}
-
-# truncated-censored normal
-crps.tcnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  lb <- (lower - location) / scale
-  a <- (1 - pnorm(lb))^(-1)
-  b <- -pnorm(lb) * a
-  
-  crps.gnorm(y, location, scale, a, b, lower, upper)
-}
-
-# truncated normal
-crps.tnorm <- function(y, location, scale, lower = -Inf, upper = Inf) {
-  z <- (y - location) / scale
-  lb <- (lower - location) / scale
-  ub <- (upper - location) / scale
-  zb <- pmin(pmax(lb, z), ub)
-  
-  a <- (pnorm(ub) - pnorm(lb))^(-1)
-  
-  c1 <- z * (2 * a * (pnorm(zb) - pnorm(lb)) - 1)
-  c2 <- 2 * a * dnorm(zb)
-  c3 <- a^2 / sqrt(pi) * (pnorm(ub * sqrt(2)) - pnorm(lb * sqrt(2)))
-  
-  return(scale * (c1 + c2 - c3))
-}
-
-# generalized trunc/cens normal
-crps.gnorm <- function(y, location, scale, a = 1, b = 0, lower = -Inf, upper = Inf) {
-  zb <- y
-  
-  ind1 <- is.finite(lower)
-  ind2 <- is.finite(upper)
-  if (any(ind1)) {
-    zb <- pmax(lower, zb)
-    
-    lb <- (lower - location) / scale
-    Plb <- a * pnorm(lb) + b
-    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
-  } else {
-    out_l <- 0
-  }
-  if (any(ind2)) {
-    zb <- pmin(upper, zb)
-    
-    ub <- (upper - location) / scale
-    Pub <- 1 - b - a + a * pnorm(ub, lower.tail = FALSE)
-    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
-  } else {
-    out_u <- 0
-  }
-  
-  res <- abs(y - zb)
-  zb <- (zb - location) / scale
-  out_y <- zb * (2 * (a * pnorm(zb) + b) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
-  
-  return(res + scale * (out_y + out_l + out_u))
 }
 
 ################################################################################

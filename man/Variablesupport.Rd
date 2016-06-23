@@ -1,11 +1,7 @@
 \name{Supplementary distributions: Variable support}
 \alias{fgev}
 \alias{fgpd}
-\alias{ftnorm}
-\alias{fcnorm}
-\alias{fctnorm}
-\alias{ftcnorm}
-\alias{fgnorm}
+\alias{fnorm}
 \title{
 Supplementary distributions (not in base R) with variable support.
 }
@@ -16,28 +12,24 @@ Here we document distributions with variable support: \code{fgev} - generalized 
 fgev(x, location, scale, shape)
 fgpd(x, location, scale, shape)
 
-ftnorm(x, location, scale, lower, upper)
-fcnorm(x, location, scale, lower, upper)
-fctnorm(x, location, scale, lower, upper)
-ftcnorm(x, location, scale, lower, upper)
-fgnorm(x, location, scale, a, b, lower, upper)
+fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log = FALSE)
 }
 \arguments{
   \item{x}{vector of quantiles}
   \item{location}{vector of location parameters}
   \item{scale}{vector of scale parameters (positive)}
   \item{shape}{vector of shape parameters}
-  \item{a, b}{vector of parameters for the affine transformation of the normal CDF}
   \item{lower}{vector of lower bounds}
   \item{upper}{vector of upper bounds}
+  \item{lmass}{vector of point masses in \code{lower}, or strings "trunc" / "cens"}
+  \item{umass}{vector of point masses in \code{upper}, or strings "trunc" / "cens"}
 }
 \value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (such as \code{fcnorm}), the density functions do not integrate to one.}
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
-The truncated normal distribution is defined as the section of a normal distribution, rescaled to integrate to one. In contrast, the censored distribution introduces point mass at the bounds. The most common use in practice lies in the context of non-negative quantities. For example, a truncated standard normal distribution (left truncation at zero) has pdf \eqn{f(x) = \phi(x)/(1 - \Phi(0)),} for \eqn{x \ge 0} and 0 otherwise. A censored standard normal distribution (left censoring at zero) has point mass \eqn{\Phi(0)} at zero, and density \eqn{\phi(x)} for \eqn{x > 0}. 
+Sometimes truncated or censored versions of the normal distribution are used to model variables with a restricted domain (e.g. precipitation). We allow the flexible specification of lower and upper boundaries and point masses in those boundaries. The truncated normal distribution assumes no point masses (i.e. redistributes the cut-off) and can be specified using the string "trunc" instead of a numerical probability. In contrast, the censored distribution introduces a point mass at the bound in the amount of the cut-off. Here, the string "cens" may be used for \code{lmass} or \code{umass}. The most common use in practice lies in the context of non-negative quantities. For example, a truncated standard normal distribution (left truncation at zero) has pdf \eqn{f(x) = \phi(x)/(1 - \Phi(0)),} for \eqn{x \ge 0} and 0 otherwise. A censored standard normal distribution (left censoring at zero) has point mass \eqn{\Phi(0)} at zero, and density \eqn{\phi(x)} for \eqn{x > 0}. 
 
-\code{ftcnorm} and \code{fctnorm} allow for flexible combinations of censoring and truncation.
 }
 \seealso{The documentation for \link{crps} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
 \keyword{distributions}
