@@ -44,12 +44,12 @@ double crpsmixnC(NumericVector w, NumericVector m, NumericVector s, double y){
   double crps = 0;
 
   for(int i = 0; i < N; i++) {
-	crps += (-auxcrpsC(y-m[i],s[i])*w[i]);
+	crps += (auxcrpsC(y-m[i],s[i])*w[i]);
     for (int j = 0; j < (i+1); j++){
       double tmp = 0.5*auxcrpsC(m[i]-m[j],sqrt(pow(s[i],2.0)+pow(s[j],2.0)))*(w[i]*w[j]);
-      crps += tmp;
+      crps -= tmp;
       if (i != j){
-        crps += tmp;
+        crps -= tmp;
       }
     }
   }
