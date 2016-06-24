@@ -10,11 +10,15 @@ Description: Dictionary-like reference for computing scoring rules in a wide
     mixtures of Gaussians) and distributions generated via simulation.
 License: GPL (>= 2)
 Imports:
-    Rcpp (>= 0.12.0)
+    Rcpp (>= 0.12.0),
+    methods
 Depends:
     R (>= 3.00)
 Suggests:
     gsl (>= 1.8-3),
-    hypergeo(>= 1.0)
+    hypergeo(>= 1.0),
+    knitr,
+    rmarkdown
 LinkingTo: Rcpp
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
