@@ -335,9 +335,10 @@ crps.gpd <- function(y, location, scale, shape) {
     out[ind] <- crps.exp(z[ind], 1)
     out[!ind] <- crps.gpd(z[!ind], 0, 1, shape[!ind])
   } else {
-    p <- 1 - (1 + shape * z) ^ (-1 / shape)
+    x <- 1 + shape * z
+    x[x < 0] <- 0
+    p <- 1 - x ^ (-1 / shape)
     p[p < 0] <- 0
-    p[p > 1] <- 1
     c1 <- (z + 1 / shape) * (2 * p - 1)
     c2 <- 2 / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
     out <- c1 - c2
