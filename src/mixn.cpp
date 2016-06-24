@@ -69,23 +69,4 @@ NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, Numeric
   }
   
   return log(ls);
-}  
-
-// [[Rcpp::export]]
-// !!! ATTENTION: Still in positive orientation
-double qsmixnC(NumericVector w, NumericVector m, NumericVector s, double y){
-  int N = m.size();
-  double qs = 0;
-  
-  for(int i = 0; i < N; i++) {
-	qs += 2*(w[i]/s[i])*dnormC((y-m[i])/s[i]);
-    for (int j = 0; j < (i+1); j++){ 
-	  double tmp = ((w[i]*w[j])/(sqrt(2*M_PI*(pow(s[i],2.0)+pow(s[j],2.0)))))*exp(-pow(m[i]-m[j],2.0)/(2*(pow(s[i],2.0)+pow(s[j],2.0))));
-	  qs -= tmp;
-	  if (i != j){
-		qs -= tmp;
-	  }
-	}
-  }
-  return qs;
 }
