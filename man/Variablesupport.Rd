@@ -23,6 +23,7 @@ fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log =
   \item{upper}{vector of upper bounds}
   \item{lmass}{vector of point masses in \code{lower}, or strings "trunc" / "cens"}
   \item{umass}{vector of point masses in \code{upper}, or strings "trunc" / "cens"}
+  \item{log}{logical; if \code{TRUE}, the log of the density is returned}
 }
 \value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (such as \code{fcnorm}), the density functions do not integrate to one.}
 \details{
