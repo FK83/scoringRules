@@ -241,8 +241,8 @@ crps.2pexp <- function(y, location, scale1, scale2) {
   a2 <- scale2 / s
   b2 <- a1 - a2
   
-  crps.cexp(-y1, -location, scale1, a1) +
-    crps.cexp(y2, location, scale2, a2)
+  crps.exp(-y1, -location, scale1, a2) +
+    crps.exp(y2, location, scale2, a1)
 }
 
 crps.2pnorm <- function(y, location, scale1, scale2) {
