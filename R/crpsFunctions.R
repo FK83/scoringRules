@@ -140,8 +140,8 @@ crps.norm <- function(y, location, scale,
   
   if (!ind1 & !ind2) {
     z <- (y - location) / scale
-    out_y <- z * (2 * pnorm(z) - 1) + 2 * dnorm(z) - 1 / sqrt(pi)
-    return(scale * z)
+    out <- z * (2 * pnorm(z) - 1) + 2 * dnorm(z) - 1 / sqrt(pi)
+    return(scale * out)
   }
   
   ### dealing with truncation/censoring
