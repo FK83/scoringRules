@@ -21,7 +21,3 @@ lsmixnC <- function(w, m, s, y) {
     .Call('scoringRules_lsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
 }
 
-qsmixnC <- function(w, m, s, y) {
-    .Call('scoringRules_qsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
-}
-
