@@ -4,6 +4,9 @@ orientation <- -1
 
 #' @export crps logs crps_sample logs_sample flapl fnorm f2pexp fmixnorm f2pnorm ft fllapl fllogis fexp fgev fgpd
 #' @importFrom Rcpp evalCpp
+#' @importFrom methods existsFunction
+#' @importFrom stats bw.nrd dbeta dexp dgamma dlnorm dlogis dnbinom dnorm dpois dt dunif integrate
+#' @importFrom stats pbeta pexp pgamma plnorm plogis pnbinom pnorm ppois pt punif
 #' @useDynLib scoringRules
 
 ################################################################################

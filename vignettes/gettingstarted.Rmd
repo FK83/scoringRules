@@ -1,0 +1,83 @@
+---
+title: "R package scoringRules: Getting started"
+author: "Alexander Jordan, Fabian Kr&uuml;ger, Sebastian Lerch"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Background 
+
+Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The **scoringRules** package offers mathematical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application*, 2014) for an introduction to the relevant statistical literature. 
+
+**scoringRules** supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (`logs`), given by $$\text{logs}(y, F) = \log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (`crps`), given by 
+$$
+\text{crps}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
+$$
+where $\mathbf{1}(A)$ is the indicator function of the event $A$. The `logs` is typically easy to compute, and we include it mainly for reference purposes. By contrast, the `crps` can be very tricky to compute analytically, and cumbersome to approximate numerically. The **scoringRules** package implements several new methods to tackle this challenge. Specifically, we include many previously unknown analytical expressions, and incorporate recent findings on how to best compute the `crps` of a simulated forecast distribution.  
+
+# Example 1: Parametric forecast distribution
+
+Suppose the forecast distribution is $\mathcal{N}(2, 4)$, and an outcome of zero realizes:\vspace{-1.5cm}
+
+```{r echo = FALSE, fig.align='center'}
+
+grid <- seq(from = -5, to = 10, length.out = 1000)
+plot(x = grid, y = dnorm(grid, mean = 2, sd = 2), bty = "n", type = "l", xlab = "Value", ylab = "Density")
+abline(v = 0, lwd = 2, lty = 2)
+```
+
+
+The following piece of code computes the \textsf{crps} for this situation:
+```{r}
+library(scoringRules)
+# CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero
+crps(y = 0, family = "normal", mean = 2, sd = 2)
+```
+As documented under `?crps`, the parametric family used in the example is one of 15 choices currently implemented in **scoringRules**: 
+
+- Laplace, Logistic, Normal, Mixture of Normals, Two-piece-normal, (Scaled) Student t, Exponential, Gamma, Log-Laplace, Log-Logistic, Log-Normal, Generalized Pareto, Generalized Extreme Value, Uniform, Beta
+
+Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
+
+# Example 2: Simulated forecast distribution
+
+Via `data(gdp_mcmc)`, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:\vspace{-1.3cm}
+
+```{r echo = FALSE, fig.align='center'}
+# Load data
+data(gdp_mcmc)
+
+# Histogram of forecast draws for 2012Q4
+dat <- gdp_mcmc$forecasts[, "X2012Q4"]
+h <- hist(dat, plot = FALSE)
+h$counts <- h$density
+
+grid <- seq(from = min(h$breaks), to = max(h$breaks), length.out = 1000)
+n_approx <- dnorm(grid, mean = mean(dat), sd = sd(dat))
+
+plot(h, xlab = "Value", ylab = "Probability", main = "")
+#plot(h, xlab = "Value", ylab = "Probability", main = "", 
+#     ylim = c(0, max(c(h$counts, n_approx))))
+#lines(x = grid, y = n_approx)
+
+# Add vertical line at realizing value
+abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 2, lty = 2)
+```
+
+Let's now compute the `crps` for this simulated forecast distribution:
+
+```{r}
+# Load data
+data(gdp_mcmc)
+# Get forecast distribution for 2012:Q4
+dat <- gdp_mcmc$forecasts[, "X2012Q4"]
+# Get realization for 2012:Q4
+y <- gdp_mcmc$actuals[, "X2012Q4"]
+# Compute CRPS of simulated sample
+crps_sample(y = y, dat = dat)
+
+```
