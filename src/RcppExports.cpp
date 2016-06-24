@@ -67,17 +67,3 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// qsmixnC
-double qsmixnC(NumericVector w, NumericVector m, NumericVector s, double y);
-RcppExport SEXP scoringRules_qsmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
-    Rcpp::traits::input_parameter< double >::type y(ySEXP);
-    __result = Rcpp::wrap(qsmixnC(w, m, s, y));
-    return __result;
-END_RCPP
-}
