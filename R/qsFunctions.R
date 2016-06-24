@@ -126,7 +126,7 @@ qs.lnorm <- function(y, meanlog, sdlog) {
 
 # truncated-normal
 qs.tnorm <- function(y, location, scale, lower) {
-  c1 <- 2*ftnorm(y, location, scale, lower)
+  c1 <- 2*fnorm(x = y, location = location, scale = scale, lower = lower, lmass = "trunc")
   c2 <- pnorm(lower, location, scale, lower.tail = FALSE)^(-2) * (1 - pnorm(sqrt(2) * (lower - location)/scale)) / (2 * scale * sqrt(pi))
 
   return(-c1 + c2)
