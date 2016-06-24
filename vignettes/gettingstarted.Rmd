@@ -55,14 +55,9 @@ data(gdp_mcmc)
 dat <- gdp_mcmc$forecasts[, "X2012Q4"]
 h <- hist(dat, plot = FALSE)
 h$counts <- h$density
-
 grid <- seq(from = min(h$breaks), to = max(h$breaks), length.out = 1000)
 n_approx <- dnorm(grid, mean = mean(dat), sd = sd(dat))
-
 plot(h, xlab = "Value", ylab = "Probability", main = "")
-#plot(h, xlab = "Value", ylab = "Probability", main = "", 
-#     ylim = c(0, max(c(h$counts, n_approx))))
-#lines(x = grid, y = n_approx)
 
 # Add vertical line at realizing value
 abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 2, lty = 2)
