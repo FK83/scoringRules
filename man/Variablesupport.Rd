@@ -25,7 +25,7 @@ fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log =
   \item{umass}{vector of point masses in \code{upper}, or strings "trunc" / "cens"}
   \item{log}{logical; if \code{TRUE}, the log of the density is returned}
 }
-\value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (such as \code{fcnorm}), the density functions do not integrate to one.}
+\value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (e.g., when \code{lower = "cens"} in \code{fnorm}), the density functions do not integrate to one.}
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
