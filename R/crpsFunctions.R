@@ -261,9 +261,10 @@ crps.2pnorm <- function(y, location, scale1, scale2) {
 ### non-negative
 
 # exponential
-crps.exp <- function(y, rate) {
-  c1 <- 1/(2*rate) * (1 - 4*pexp(y, rate))
-  return(abs(y) + c1)
+crps.exp <- function(y, location, scale, mass = 0) {
+  z <- (y - location)/scale
+  c1 <- abs(z) - 2 * (1 - mass) * pexp(z) + 0.5 * (1 - mass)^2
+  return(scale * c1)
 }
 
 # gamma
@@ -305,13 +306,6 @@ crps.lnorm <- function(y, meanlog, sdlog) {
   c2 <- 2*exp(meanlog + 0.5*sdlog^2)
   c3 <- plnorm(y, meanlog + sdlog^2, sdlog) + pnorm(sdlog/sqrt(2)) - 1
   return(c1 - c2*c3)
-}
-
-# censored-exponential
-crps.cexp <- function(y, location, scale, mass) {
-  z <- (y - location)/scale
-  c1 <- abs(z) - 2 * mass * pexp(z) + 0.5 * mass^2
-  return(scale * c1)
 }
 
 ################################################################################

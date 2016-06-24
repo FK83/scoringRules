@@ -73,12 +73,12 @@ fnorm <- function(x, location, scale,
     ind <- x > upper
   }
   
-  if (!log) {
-    out <- out * a
-    out[ind] <- 0
-  } else {
+  if (log) {
     out <- out + log(a)
     out[ind] <- -Inf
+  } else {
+    out <- out * a
+    out[ind] <- 0
   }
   return(out)
 }
@@ -160,6 +160,20 @@ fllogis <- function(x, locationlog, scalelog) {
 }
 
 ###
+
+fexp <- function(x, location, scale, mass, log = FALSE) {
+  out <- dexp(x - location, 1 / scale, log = log)
+  if (mass == 0) {
+    return(out)
+  } else {
+    warning("Not a probability density due to a point mass in 'location'.")
+    if (log) {
+      return(out + log(1 - mass))
+    } else {
+      return(out * (1 - mass))
+    }
+  }
+}
 
 fgpd <- function(x, location, scale, shape) {
   z <- (x - location) / scale

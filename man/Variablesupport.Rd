@@ -7,8 +7,9 @@ Supplementary distributions (not in base R) with variable support.
 }
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
-Here we document distributions with variable support: \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{fnorm} - normal distribution with flexible domain and potentially point masses on the boundaries.}
+Here we document distributions with variable support: \code{fexp} - location-scale exponential distribution with a point mass on the lower boundary; \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{fnorm} - normal distribution with flexible domain and point masses on the boundaries.}
 \usage{
+fexp(x, location, scale, mass, log = FALSE)
 fgev(x, location, scale, shape)
 fgpd(x, location, scale, shape)
 
@@ -19,6 +20,7 @@ fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log =
   \item{location}{vector of location parameters}
   \item{scale}{vector of scale parameters (positive)}
   \item{shape}{vector of shape parameters}
+  \item{mass}{vector of point masses in \code{location}}
   \item{lower}{vector of lower bounds}
   \item{upper}{vector of upper bounds}
   \item{lmass}{vector of point masses in \code{lower}, or strings "trunc" / "cens"}

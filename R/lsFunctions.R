@@ -29,6 +29,7 @@ ls.logis <- function(y, location, scale) -dlogis(y, location, scale, log=TRUE)
 ls.norm <- function(y, location, scale,
                     lower = -Inf, upper = Inf,
                     lmass = 0, umass = 0) {
+  if (any(lmass != 0 | umass != 0)) stop("Log score unavailable due to point mass.")
   -fnorm(y, location, scale, lower, upper, lmass, umass, log = TRUE)
 }
 
@@ -48,7 +49,10 @@ ls.2pnorm <- function(y, location, scale1, scale2) -log(f2pnorm(y, location, sca
 ### non-negative
 
 # exponential
-ls.exp <- function(y, rate) -dexp(y, rate, log=TRUE)
+ls.exp <- function(y, location, scale, mass = 0) {
+  if (mass != 0) stop("Log score unavailable due to point mass.")
+  -fexp(y, location, scale, mass, log=TRUE)
+} 
 
 # gamma
 ls.gamma <- function(y, shape, scale) -dgamma(y, shape, scale = scale, log=TRUE)

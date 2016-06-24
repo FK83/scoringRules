@@ -420,14 +420,34 @@ check.2pnorm <- function(input) {
 
 ### exponential
 check.exp <- function(input) {
-  required <- c("y", "rate")
-  checkNames1(required, names(input))
-  input <- input[required]
-  checkNumeric(input)
-  checkVector(input)
+  required <- list(c("y", "rate"),
+                   c("y", "location", "scale"))
+  optional <- c("mass")
+  choice <- checkNames2(required, names(input))
+  if ("mass" %in% names(input)) {
+    input <- input[c(required[[choice]], "mass")]
+    checkNumeric(input)
+    checkVector(input)
+    if (any(input$mass < 0 | input$mass > 1)) {
+      stop("Parameter 'mass' contains values not in [0, 1].")
+    }
+  } else {
+    input <- input[required[[choice]]]
+    checkNumeric(input)
+    checkVector(input)
+  }
   
-  if (any(!input$rate>0)) stop("Parameter 'rate' contains non-positive values.")
-  if (any(is.infinite(input$rate))) stop("Parameter 'rate' contains infinite values.")
+  if (choice == 1) {
+    if (any(!input$rate>0)) stop("Parameter 'rate' contains non-positive values.")
+    if (any(is.infinite(input$rate))) stop("Parameter 'rate' contains infinite values.")
+    input$location <- 0
+    input$scale <- 1 / input$rate
+    input <- input[names(input) != "rate"]
+  } else if (choice == 2) {
+    if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")
+    if (any(!input$scale>0)) stop("Parameter 'scale' contains non-positive values.")
+    if (any(is.infinite(input$scale))) stop("Parameter 'scale' contains infinite values.") 
+  }
   
   return(input)
 }
