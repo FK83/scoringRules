@@ -350,10 +350,27 @@ check.t <- function(input) {
 ### normal-mixture
 check.mixnorm <- function(input) {
   required <- c("y", "m", "s", "w")
+  optional <- c("exact", "rel.tol")
   checkNames1(required, names(input))
-  input <- input[required]
-  checkNumeric(input)
-  checkMatrix(input)
+  checkMatrix(input[required])
+  ind <- sapply(optional, checkNames3, names(input))
+  input <- input[c(required, optional[ind])]
+  if (ind[2] == TRUE) {
+    if (length(input$rel.tol) != 1) {
+      stop("Parameter 'rel.tol' needs to be of length 1.")
+    }
+  }
+  if (ind[1] == TRUE) {
+    if (length(input$exact) != 1) {
+      stop("Parameter 'exact' needs to be of length 1.")
+    }
+    if (!input$exact %in% c(TRUE, FALSE)) {
+      stop("Parameter 'exact' needs to be TRUE or FALSE.")
+    }
+    checkNumeric(input[names(input) != "exact"])
+  } else {
+    checkNumeric(input)
+  }
   
   if (any(is.infinite(input$m))) stop("Parameter 'm' contains infinite values.")
   if (any(!input$s>0)) stop("Parameter 's' contains non-positive values.")
