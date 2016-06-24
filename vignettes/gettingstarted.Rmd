@@ -23,7 +23,7 @@ where $\mathbf{1}(A)$ is the indicator function of the event $A$. The `logs` is 
 
 Suppose the forecast distribution is $\mathcal{N}(2, 4)$, and an outcome of zero realizes:\vspace{-1.5cm}
 
-```{r echo = FALSE, fig.align='center'}
+```{r echo = FALSE, fig.align='center', fig.width = 5}
 
 grid <- seq(from = -5, to = 10, length.out = 1000)
 plot(x = grid, y = dnorm(grid, mean = 2, sd = 2), bty = "n", type = "l", xlab = "Value", ylab = "Density")
@@ -31,7 +31,7 @@ abline(v = 0, lwd = 2, lty = 2)
 ```
 
 
-The following piece of code computes the \textsf{crps} for this situation:
+The following piece of code computes the `crps` for this situation:
 ```{r}
 library(scoringRules)
 # CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero
@@ -47,7 +47,7 @@ Whenever possible, our syntax and parametrization closely follow base R. For dis
 
 Via `data(gdp_mcmc)`, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:\vspace{-1.3cm}
 
-```{r echo = FALSE, fig.align='center'}
+```{r echo = FALSE, fig.align='center', fig.width = 5}
 # Load data
 data(gdp_mcmc)
 
