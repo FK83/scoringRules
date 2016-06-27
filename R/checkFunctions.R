@@ -307,12 +307,9 @@ check.norm <- function(input) {
       }
     }
     if (sum(choice2) == 2) {
-      if (input$lmass + input$umass > 1) {
-        stop("Combined masses of 'lmass' and 'umass' greater than 1.")
-      }
       if (any(input$lower > input$upper)) {
-      stop("Parameter 'lower' contains values greater than parameter 'upper'.")
-      }
+        stop("Parameter 'lower' contains values greater than parameter 'upper'.")
+      }  
     }
   } else {
     checkNumeric(input)

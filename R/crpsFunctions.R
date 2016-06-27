@@ -189,6 +189,9 @@ crps.norm <- function(y, location, scale,
   zb <- (zb - location) / scale
   
   if (ind1 & ind2) {
+    if (any(Plb + Pub > 1)){
+      stop("Sum of lmass and umass exceeds one.")
+    }
     a <- (1 - Plb - Pub) / (pnorm(ub) - pnorm(lb))
     out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
     out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
