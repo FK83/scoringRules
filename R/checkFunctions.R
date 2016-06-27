@@ -281,11 +281,12 @@ check.norm <- function(input) {
   if (any(choice2)) {
     checkNumeric(input[!names(input) %in% c("lmass", "umass")])
     if (choice2[1] == TRUE) {
-      if (is.character(input$lmass) &
-          any(!input$lmass %in% c("trunc", "cens"))) {
-        stop("Valid character input for 'lmass': 'trunc', 'cens'")
+      if (is.character(input$lmass)){
+        if (any(!input$lmass %in% c("trunc", "cens"))) {
+          stop("Valid character input for 'lmass': 'trunc', 'cens'")
+        }
       } else if (!is.numeric(input$lmass)) {
-        stop("Non-numeric input: lmass")
+        stop("Input 'lmass' is neither character nor numeric")
       } else {
         if (any(input$lmass < 0 | input$lmass > 1)) {
           stop("Parameter 'lmass' contains values not in [0, 1].")
@@ -293,11 +294,12 @@ check.norm <- function(input) {
       }
     }
     if (choice2[2] == TRUE) {
-      if (is.character(input$umass) &
-          any(!input$umass %in% c("trunc", "cens"))) {
-        stop("Valid character input for 'lmass': 'trunc', 'cens'")
+      if (is.character(input$umass)){
+        if (any(!input$umass %in% c("trunc", "cens"))) {
+          stop("Valid character input for 'lmass': 'trunc', 'cens'")
+        }
       } else if (!is.numeric(input$umass)) {
-        stop("Non-numeric input: umass")
+        stop("Input 'umass' is neither character nor numeric")
       } else {
         if (any(input$umass < 0 | input$umass > 1)) {
           stop("Parameter 'umass' contains values not in [0, 1].")
