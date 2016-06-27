@@ -152,7 +152,7 @@ crps.norm <- function(y, location, scale,
     lb <- (lower - location) / scale
     
     if (is.character(lmass)) {
-      Plb <- numeric(length(lmass))
+      Plb <- numeric(max(length(lb), length(lmass)))
       Plb[lmass == "cens"] <- pnorm(lb)
     } else {
       Plb <- lmass
@@ -163,7 +163,7 @@ crps.norm <- function(y, location, scale,
     ub <- (upper - location) / scale
     
     if (is.character(umass)) {
-      Pub <- numeric(length(lmass))
+      Pub <- numeric(max(length(ub), length(umass)))
       Pub[umass == "cens"] <- pnorm(ub, lower.tail = FALSE)
     } else {
       Pub <- umass
