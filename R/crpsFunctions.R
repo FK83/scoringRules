@@ -152,8 +152,16 @@ crps.norm <- function(y, location, scale,
     lb <- (lower - location) / scale
     
     if (is.character(lmass)) {
-      Plb <- numeric(max(length(lb), length(lmass)))
-      Plb[lmass == "cens"] <- pnorm(lb)
+      n1 <- length(lb)
+      n2 <- length(lmass)
+      if (n1 < n2) {
+        Plb <- numeric(n2)
+        Plb[lmass == "cens"] <- pnorm(lb)
+      } else {
+        Plb <- numeric(n1)
+        ind <- lmass == "cens"
+        Plb[ind] <- pnorm(lb[ind])
+      }
     } else {
       Plb <- lmass
     }
@@ -163,8 +171,16 @@ crps.norm <- function(y, location, scale,
     ub <- (upper - location) / scale
     
     if (is.character(umass)) {
-      Pub <- numeric(max(length(ub), length(umass)))
-      Pub[umass == "cens"] <- pnorm(ub, lower.tail = FALSE)
+      n1 <- length(ub)
+      n2 <- length(umass)
+      if (n1 < n2) {
+        Pub <- numeric(n2)
+        Pub[umass == "cens"] <- pnorm(ub, lower.tail = FALSE)
+      } else {
+        Pub <- numeric(n1)
+        ind <- umass == "cens"
+        Pub[ind] <- pnorm(ub[ind], lower.tail = FALSE)
+      }
     } else {
       Pub <- umass
     }
