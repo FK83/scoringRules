@@ -139,7 +139,10 @@ crps.norm <- function(y, location, scale,
   ind2 <- any(is.finite(upper))
   
   if (!ind1 & !ind2) {
-    z <- (y - location) / scale
+    z <- y
+    if (!identical(location, 0) | !identical(scale, 1)) {
+      z <- (y - location) / scale
+    }
     out <- z * (2 * pnorm(z) - 1) + 2 * dnorm(z) - 1 / sqrt(pi)
     return(scale * out)
   }
@@ -216,7 +219,10 @@ crps.t <- function(y, df, location, scale) {
   if (any(!df > 1))
     stop("Parameter 'df' contains values not greater than 1. The CRPS is not defined.")
   
-  z <- (y - location) / scale
+  z <- y
+  if (!identical(location, 0) | !identical(scale, 1)) {
+    z <- (y - location) / scale
+  }
   ind <- df == Inf
   if (any(ind)) {
     if (length(z) < length(df)) {
@@ -281,7 +287,10 @@ crps.2pnorm <- function(y, location, scale1, scale2) {
 
 # exponential
 crps.exp <- function(y, location, scale, mass = 0) {
-  z <- (y - location)/scale
+  z <- y
+  if (!identical(location, 0) | !identical(scale, 1)) {
+    z <- (y - location)/scale
+  }
   c1 <- abs(z) - 2 * (1 - mass) * pexp(z) + 0.5 * (1 - mass)^2
   return(scale * c1)
 }
@@ -334,7 +343,10 @@ crps.lnorm <- function(y, meanlog, sdlog) {
 crps.gpd <- function(y, location, scale, shape) {
   if (any(!shape < 1)) stop("Parameter 'shape' contains values not smaller than 1. The CRPS is not defined.")
   
-  z <- (y - location)/scale
+  z <- y
+  if (!identical(location, 0) | !identical(scale, 1)) {
+    z <- (y - location)/scale
+  }
   ind <- abs(shape) < 1e-12
   if (any(ind)) {
     if (any(ind & shape != 0))
@@ -345,7 +357,7 @@ crps.gpd <- function(y, location, scale, shape) {
     }
     
     out <- numeric(length(z))
-    out[ind] <- crps.exp(z[ind], 1)
+    out[ind] <- crps.exp(z[ind], 0, 1)
     out[!ind] <- crps.gpd(z[!ind], 0, 1, shape[!ind])
   } else {
     x <- 1 + shape * z
@@ -363,7 +375,10 @@ crps.gpd <- function(y, location, scale, shape) {
 crps.gev <- function(y, location, scale, shape) {
   if (any(!shape < 1)) stop("Parameter 'shape' contains values not smaller than 1. The CRPS is not defined.")
   
-  z <- (y - location) / scale
+  z <- y
+  if (!identical(location, 0) | !identical(scale, 1)) {
+    z <- (y - location)/scale
+  }
   ind <- abs(shape) < 1e-12
   if (any(ind)) {
     if (any(ind & shape != 0))
