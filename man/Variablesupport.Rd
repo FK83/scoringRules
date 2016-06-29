@@ -8,7 +8,7 @@ Supplementary distributions (not in base R) with variable support.
 }
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
-Here we document distributions with variable support: \code{fexp} - location-scale exponential distribution with a point mass on the lower boundary; \code{fgev} - generalized extreme value distribution; \code{fgdp} - generalized Pareto distribution; \code{fnorm} - normal distribution with flexible domain and point masses on the boundaries.}
+Here we document distributions with variable support: \code{fexp} - location-scale exponential distribution with a point mass on the lower boundary; \code{fgdp} - generalized Pareto distribution with a point mass on the lower boundary; \code{fgev} - generalized extreme value distribution; \code{fnorm} - normal distribution with flexible domain and point masses on the boundaries.}
 \usage{
 fexp(x, location, scale, mass, log = FALSE)
 fgpd(x, location, scale, shape, mass, log = FALSE)
@@ -29,7 +29,7 @@ fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log =
   \item{umass}{vector of point masses in \code{upper}, or strings "trunc" / "cens"}
   \item{log}{logical; if \code{TRUE}, the log of the density is returned}
 }
-\value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (e.g., when \code{lower = "cens"} in \code{fnorm}), the density functions do not integrate to one.}
+\value{Density function of the relevant distribution, evaluated at \code{x}. NOTE: For distributions involving a point mass (e.g., when \code{lmass = "cens"} in \code{fnorm}), the density functions do not integrate to one.}
 \details{
 For details on generalized extreme value and generalized Pareto distributions, see Friederichs, F. and T.L. Thorarinsdottir (2012, "Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction", Environmetrics 23, 579-594). Note that the support of both distributions depends on the input parameters; see \url{https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution} and \url{https://en.wikipedia.org/wiki/Generalized_Pareto_distribution}.
 
