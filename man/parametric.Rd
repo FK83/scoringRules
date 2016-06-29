@@ -59,7 +59,7 @@ The parameters supplied to each of the functions are numeric vectors:
     \itemize{
       \item \code{"normal"} or \code{"norm"}: \code{location} (location parameter), \code{scale} (scale parameter), \code{lower} (real-valued truncation parameter, lower bound), \code{upper} (real-valued truncation parameter, upper bound), \code{lmass} (point mass in lower bound, string "cens" or "trunc"), \code{umass} (point mass in upper bound, string "cens" or "trunc"); see \link{fnorm}
       \item \code{"exponential"} or \code{"exp"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{mass} (point mass in \code{location}); see \link{fexp}
-      \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{shape} (real-valued shape parameter); see \link{fgpd}
+      \item \code{"gpd"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{shape} (real-valued shape parameter), \code{mass} (point mass in \code{location}); see \link{fgpd}
       \item \code{"gev"}: \code{location} (real-valued location parameter), \code{scale} (positive scale parameter), \code{shape} (real-valued shape parameter); see \link{fgev}
     }
     \item Distribution for random variables defined on bounded intervals:

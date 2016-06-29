@@ -285,16 +285,6 @@ crps.2pnorm <- function(y, location, scale1, scale2) {
 ################################################################################
 ### non-negative
 
-# exponential
-crps.exp <- function(y, location, scale, mass = 0) {
-  z <- y
-  if (!identical(location, 0) | !identical(scale, 1)) {
-    z <- (y - location)/scale
-  }
-  c1 <- abs(z) - 2 * (1 - mass) * pexp(z) + 0.5 * (1 - mass)^2
-  return(scale * c1)
-}
-
 # gamma
 crps.gamma <- function(y, shape, scale) {
   c1 <- y*(2*pgamma(y, shape, scale=scale) - 1)
@@ -339,8 +329,18 @@ crps.lnorm <- function(y, meanlog, sdlog) {
 ################################################################################
 ### variable support
 
+# exponential
+crps.exp <- function(y, location, scale, mass = 0) {
+  z <- y
+  if (!identical(location, 0) | !identical(scale, 1)) {
+    z <- (y - location)/scale
+  }
+  c1 <- abs(z) - 2 * (1 - mass) * pexp(z) + 0.5 * (1 - mass)^2
+  return(scale * c1)
+}
+
 # generalized pareto distribution
-crps.gpd <- function(y, location, scale, shape) {
+crps.gpd <- function(y, location, scale, shape, mass = 0) {
   if (any(!shape < 1)) stop("Parameter 'shape' contains values not smaller than 1. The CRPS is not defined.")
   
   z <- y
@@ -352,20 +352,26 @@ crps.gpd <- function(y, location, scale, shape) {
     if (any(ind & shape != 0))
       warning("Parameter 'shape' contains values close to zero. In those cases the CRPS is calculated assuming a value of 0.")
     
-    if (length(z) < length(shape)) {
-      z <- rep(z, len = length(shape))
+    if (all(ind)) {
+      out <- crps.exp(z, 0, 1, mass)
+    } else {
+      if (length(z) < length(shape)) {
+        z <- rep(z, len = length(shape))
+      }
+      if (length(mass) < length(shape)) {
+        mass <- rep(mass, len = length(shape))
+      }
+      out <- numeric(length(z))
+      out[ind] <- crps.exp(z[ind], 0, 1, mass[ind])
+      out[!ind] <- crps.gpd(z[!ind], 0, 1, shape[!ind], mass[!ind])
     }
-    
-    out <- numeric(length(z))
-    out[ind] <- crps.exp(z[ind], 0, 1)
-    out[!ind] <- crps.gpd(z[!ind], 0, 1, shape[!ind])
   } else {
     x <- 1 + shape * z
     x[x < 0] <- 0
-    p <- 1 - x ^ (-1 / shape)
+    p <- 1 - x ^ (-1 / shape) * (1 - mass)
     p[p < 0] <- 0
     c1 <- (z + 1 / shape) * (2 * p - 1)
-    c2 <- 2 / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
+    c2 <- 2 * (1 - mass)^shape / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
     out <- c1 - c2
   }
   return(scale * out)

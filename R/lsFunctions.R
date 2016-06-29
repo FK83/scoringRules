@@ -48,12 +48,6 @@ ls.2pnorm <- function(y, location, scale1, scale2) -log(f2pnorm(y, location, sca
 ################################################################################
 ### non-negative
 
-# exponential
-ls.exp <- function(y, location, scale, mass = 0) {
-  if (mass != 0) stop("Log score unavailable due to point mass.")
-  -fexp(y, location, scale, mass, log=TRUE)
-} 
-
 # gamma
 ls.gamma <- function(y, shape, scale) -dgamma(y, shape, scale = scale, log=TRUE)
 
@@ -74,8 +68,17 @@ ls.cexp <- function(y, location, scale, mass) {
 ################################################################################
 ### variable support
 
+# exponential
+ls.exp <- function(y, location, scale, mass = 0) {
+  if (any(mass != 0)) stop("Log score unavailable due to point mass.")
+  -fexp(y, location, scale, mass, log = TRUE)
+}
+
 # generalized pareto distribution
-ls.gpd <- function(y, location, scale, shape) -log(fgpd(y, location, scale, shape))
+ls.gpd <- function(y, location, scale, shape, mass = 0) {
+  if (any(mass != 0)) stop("Log score unavailable due to point mass.")
+  -fgpd(y, location, scale, shape, mass, log = TRUE)
+} 
 
 # generalized extreme value distribution
 ls.gev <- function(y, location, scale, shape) -log(fgev(y, location, scale, shape))

@@ -12,8 +12,7 @@ synonyms <- list(
   exponential = "exp",
   'log-laplace' = "llapl",
   'log-logistic' = "llogis",
-  'log-normal' = "lnorm",
-  'censored-exponential' = "cexp"
+  'log-normal' = "lnorm"
 )
 
 ################################################################################
@@ -163,7 +162,7 @@ fllogis <- function(x, locationlog, scalelog) {
 
 fexp <- function(x, location, scale, mass, log = FALSE) {
   out <- dexp(x - location, 1 / scale, log = log)
-  if (mass == 0) {
+  if (all(mass == 0)) {
     return(out)
   } else {
     warning("Not a probability density due to a point mass in 'location'.")
@@ -175,22 +174,40 @@ fexp <- function(x, location, scale, mass, log = FALSE) {
   }
 }
 
-fgpd <- function(x, location, scale, shape) {
-  z <- (x - location) / scale
-  
+fgpd <- function(x, location, scale, shape, mass, log = FALSE) {
   ind <- abs(shape) < 1e-12
-  if (any(ind)) {
+  if (all(ind)) {
+    return(fexp(x, location, scale, mass, log))
+  } else if (any(ind)) {
+    z <- (x - location)
     if (length(z) < length(shape))
       z <- rep(z, len = length(shape))
-    if (length(scale) < length(z))
-      scale <- rep(scale, len = length(z))
+    if (length(scale) < length(shape))
+      scale <- rep(scale, len = length(shape))
+    if (length(mass) < length(shape))
+      mass <- rep(mass, len = length(shape))
     out <- numeric(length(z))
-    out[ind] <- 1/scale[ind] * dexp(z[ind], 1)
-    out[!ind] <- 1/scale[!ind] * fgpd(z[!ind], 0, 1, shape[!ind])
+    out[ind] <- fexp(z[ind], 0, scale[ind], mass[ind], log)
+    out[!ind] <- fgpd(z[!ind], 0, scale[!ind], shape[!ind], mass[!ind], log)
   } else {
-    out <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
-    out[z < 0] <- 0
-    out[z > -1/shape & shape < 0] <- 0
+    z <- (x - location) / scale
+    if (!log) {
+      out <- 1/scale * (1 + shape * z)^(- 1 - 1/shape)
+      out[z < 0] <- 0
+      out[z > -1/shape & shape < 0] <- 0
+    } else {
+      (-1 -1/shape) * log(1 + shape * z) - log(scale)
+      out[z < 0] <- -Inf
+      out[z > -1/shape & shape < 0] <- -Inf
+    }
+    if (any(mass != 0)) {
+      warning("Not a probability density due to a point mass in 'location'.")
+      if (!log) {
+        out <- out * (1 - mass)
+      } else {
+        out <- out + log(1 - mass)
+      }
+    }
   }
   
   return(out)
