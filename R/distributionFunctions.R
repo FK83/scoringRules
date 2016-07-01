@@ -196,7 +196,7 @@ fgpd <- function(x, location, scale, shape, mass, log = FALSE) {
       out[z < 0] <- 0
       out[z > -1/shape & shape < 0] <- 0
     } else {
-      (-1 -1/shape) * log(1 + shape * z) - log(scale)
+      out <- (-1 -1/shape) * log(1 + shape * z) - log(scale)
       out[z < 0] <- -Inf
       out[z > -1/shape & shape < 0] <- -Inf
     }
