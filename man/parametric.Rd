@@ -24,9 +24,33 @@ logs(y, family, ...)
 
 \emph{General background and further references on scoring rules:}
 
-Gneiting, T. and A. Raftery (2007): ``Strictly Proper Scoring Rules, Prediction and Estimation'', Journal of the American Statistical Association 102, 359-378.
+Gneiting, T. and A. Raftery (2007): `Strictly proper scoring rules, prediction and estimation', Journal of the American Statistical Association 102, 359-378.
 
-Gneiting, T. and M. Katzfuss (2014): ``Probabilistic Forecasting'', Annual Review of Statistics and Its Application 1, 125-151. 
+Gneiting, T. and M. Katzfuss (2014): `Probabilistic forecasting', Annual Review of Statistics and Its Application 1, 125-151. 
+
+\emph{Closed form expressions of the CRPS for specific distributions:}
+
+Baran, S. and S. Lerch (2015): `Log-normal distribution based Ensemble Model Output Statistics models for probabilistic wind-speed forecasting', Quarterly Journal of the Royal Meteorological Society 141, 2289-2299. \emph{(Lognormal)}
+
+Friederichs, P. and T.L. Thorarinsdottir (2012): `Forecast verification for extreme value distributions with an application to probabilistic peak wind prediction', Environmetrics 23, 579-594. \emph{(Generalized Extreme Value, Generalized Pareto)}
+
+Gneiting, T., Larson, K., Westvelt III, A.H. and T. Goldman (2005): `Calibrated probabilistic forecasting using ensemble model output statistics and minimum CRPS estimation', Monthly Weather Review 133, 1098-1118. \emph{(Normal)}
+
+Gneiting, T., Larson, K., Westrick, K., Genton, M.G. and E. Aldrich (2006): `Calibrated probabilistic forecasting at the stateline wind energy center: The regime-switching space-time method', Journal of the American Statistical Association 101, 968-979. \emph{(Censored normal)}
+
+Gneiting, T. and T.L. Thorarinsdottir (2010): `Predicting inflation: Professional experts versus no-change forecasts', arXiv preprint arXiv:1010.2318. \emph{(Two-piece normal)}
+
+Grimit, E.P.,  Gneiting, T., Berrocal, V.J. and N.A. Johnson (2006): `The continuous ranked probability score for circular variables and its application to mesoscale forecast ensemble verification', Quarterly Journal of the Royal Meteorological Society 132, 2925-2942. \emph{(Mixture of normals)}
+
+Scheuerer, M. and D. Moeller (2015): `Probabilistic wind speed forecasting on a grid based on ensemble model output statistics', Annals of Applied Statistics 9, 1328-1349. \emph{(Gamma)}
+
+Thorarinsdottir, T.L. and T. Gneiting (2010): `Probabilistic forecasts of wind speed: ensemble model output statistics by using heteroscedastic censored regression', Journal of the Royal Statistical Society (Series A) 173, 371-388. \emph{(Truncated normal)}
+
+Wei, W. and L. Held (2014): `Calibration tests for count data', TEST 23, 787-205. \emph{(Poisson, Negative Binomial)}
+
+\emph{Independent listing of closed-form solutions for the CRPS:}
+
+Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016): `Calibrated ensemble forecasts using quantile regression forests and ensemble model output statistics', Monthly Weather Review, in press. 
 
 }
 \author{
