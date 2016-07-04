@@ -29,11 +29,11 @@ logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Probabilistic forecasting and comparative model assessment based on MCMC output'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), `Probabilistic forecasting and comparative model assessment based on MCMC output', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
 
 \emph{Empirical quantile decomposition of the CRPS:}
 
-Laio, F. and S. Tamea (2007), ``Verification tools for probabilistic forecasts of continuous hydrological variables'', Hydrology and Earth System Sciences, 11, 1267-1277.
+Laio, F. and S. Tamea (2007), `Verification tools for probabilistic forecasts of continuous hydrological variables', Hydrology and Earth System Sciences, 11, 1267-1277.
 
 
 }
