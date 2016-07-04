@@ -89,10 +89,20 @@ crps.nbinom <- function(y, size, prob) {
 ### bounded interval
 
 # uniform
-crps.unif <- function(y, min, max) {
-  c1 <- (y - min) * (2*punif(y, min, max) - 1)
-  c2 <- (max - min) * (1/3 - punif(y, min, max)^2)
-  return(c1 + c2)
+crps.unif <- function(y, min, max, lmass = 0, umass = 0) {
+  c <- 1 - (lmass + umass)
+  if (any(c < 0)) {
+    stop("Sum of 'lmass' and 'umass' exceeds 1.")
+  }
+  p <- punif(y, min, max)
+  
+  c1 <- 2 * (c * p + lmass) - 1
+  c1[y < min] <- -1
+  c1[!y < max] <- 1
+  c2 <- c^2 / 3 - c * p^2
+  c3 <- umass * (2 * (y >= max) - 1 + lmass)
+  
+  return((y - min) * c1 + (max - min) * (c2 - c3))
 }
 
 # beta
@@ -193,7 +203,7 @@ crps.norm <- function(y, location, scale,
   
   if (ind1 & ind2) {
     if (any(Plb + Pub > 1)){
-      stop("Sum of lmass and umass exceeds one.")
+      stop("Sum of 'lmass' and 'umass' exceeds 1.")
     }
     a <- (1 - Plb - Pub) / (pnorm(ub) - pnorm(lb))
     out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))

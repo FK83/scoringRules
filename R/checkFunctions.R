@@ -205,10 +205,22 @@ check.nbinom <- function(input) {
 ### uniform
 check.unif <- function(input) {
   required <- c("y", "min", "max")
+  optional <- c("lmass", "umass")
   checkNames1(required, names(input))
-  input <- input[required]
+  input <- input[c(required, optional[optional %in% names(input)])]
   checkNumeric(input)
   checkVector(input)
+  
+  if ("lmass" %in% names(input)) {
+    if (any(input$lmass < 0 | input$lmass > 1)) {
+      stop("Parameter 'lmass' contains values not in [0, 1].")
+    }
+  }
+  if ("umass" %in% names(input)) {
+    if (any(input$umass < 0 | input$umass > 1)) {
+      stop("Parameter 'umass' contains values not in [0, 1].")
+    }
+  }
   
   if (any(is.infinite(c(input$min, input$max)))) stop("Invalid distribution due to infinite bounds.")
   if (any(input$min > input$max)) stop("Parameter 'min' contains greater values than parameter 'max'.")

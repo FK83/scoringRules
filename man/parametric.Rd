@@ -88,7 +88,7 @@ The parameters supplied to each of the functions are numeric vectors:
     }
     \item Distribution for random variables defined on bounded intervals:
     \itemize{
-      \item \code{"uniform"} or \code{"unif"}: \code{min}, \code{max} (lower and upper limits); see \link{Uniform}
+      \item \code{"uniform"} or \code{"unif"}: \code{min}, \code{max} (lower and upper boundaries), \code{lmass}, \code{umass} (point mass in lower or upper boundary); see \link{Uniform}
       \item \code{"beta"}: \code{shape1}, \code{shape2} (positive parameters); see \link{Beta}
     }
     \item Distributions for random variables with discrete / infinite support:

@@ -11,7 +11,10 @@ ls.nbinom <- function(y, size, prob) -dnbinom(y, size, prob, log=TRUE)
 ### bounded interval
 
 # uniform
-ls.unif <- function(y, min, max) -dunif(y, min, max, log=TRUE)
+ls.unif <- function(y, min, max, lmass = 0, umass = 0) {
+  if (any(lmass != 0 | umass != 0)) stop("Log score unavailable due to point mass.")
+  -dunif(y, min, max, log=TRUE)
+}
 
 # beta
 ls.beta <- function(y, shape1, shape2) -dbeta(y, shape1, shape2, log=TRUE)
