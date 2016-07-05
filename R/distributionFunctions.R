@@ -160,7 +160,7 @@ fllogis <- function(x, locationlog, scalelog) {
 
 ###
 
-fexp <- function(x, location, scale, mass, log = FALSE) {
+fexp <- function(x, location, scale, mass = 0, log = FALSE) {
   out <- dexp(x - location, 1 / scale, log = log)
   if (all(mass == 0)) {
     return(out)
@@ -174,7 +174,7 @@ fexp <- function(x, location, scale, mass, log = FALSE) {
   }
 }
 
-fgpd <- function(x, location, scale, shape, mass, log = FALSE) {
+fgpd <- function(x, location, scale, shape, mass = 0, log = FALSE) {
   ind <- abs(shape) < 1e-12
   if (all(ind)) {
     return(fexp(x, location, scale, mass, log))

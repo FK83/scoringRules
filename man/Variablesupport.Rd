@@ -10,8 +10,8 @@ Supplementary distributions (not in base R) with variable support.
 
 Here we document distributions with variable support: \code{fexp} - location-scale exponential distribution with a point mass on the lower boundary; \code{fgdp} - generalized Pareto distribution with a point mass on the lower boundary; \code{fgev} - generalized extreme value distribution; \code{fnorm} - normal distribution with flexible domain and point masses on the boundaries.}
 \usage{
-fexp(x, location, scale, mass, log = FALSE)
-fgpd(x, location, scale, shape, mass, log = FALSE)
+fexp(x, location, scale, mass = 0, log = FALSE)
+fgpd(x, location, scale, shape, mass = 0, log = FALSE)
 
 fgev(x, location, scale, shape)
 
