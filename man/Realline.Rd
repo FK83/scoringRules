@@ -7,7 +7,7 @@
 \title{Supplementary distributions (not in base R) supported on the real line.}
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
-Here we document distributions with support on the real line: \code{flapl} - Laplace distribution; \code{f2pexp} - two-piece exponential distribution; \code{fmixnorm} - mixture of normal distributions; \code{f2pnorm} - two-piece normal distribution.
+Here we document distributions with support on the real line: \code{flapl} - Laplace distribution; \code{ft} - location-scale Student's t distribution; \code{f2pexp} - two-piece exponential distribution; \code{fmixnorm} - mixture of normal distributions; \code{f2pnorm} - two-piece normal distribution.
 }
 \usage{
 flapl(x, location, scale)
@@ -29,7 +29,7 @@ fmixnorm(x, m, s, w)
 }
 \value{Probability density function of the relevant distribution, evaluated at \code{x}.}
 \details{
-The Laplace distribution (\code{flapl}) is described on \url{https://en.wikipedia.org/wiki/Laplace_distribution}.
+The Laplace distribution (\code{flapl}) is described on \url{https://en.wikipedia.org/wiki/Laplace_distribution}. It is a special case of the two-piece exponential distribution (\code{f2pexp}), which allows for different scale parameters to the left and right of \code{location}.
 
 The density function of a mixture of normal distributions (\code{fmixnorm}) is given by the weighted sum over the mixture components, \deqn{f(x) = \sum w_i/s_i \phi((x - m_i)/s_i),} where \eqn{\phi} is the pdf of the standard normal distribution.
 

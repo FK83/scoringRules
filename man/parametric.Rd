@@ -97,7 +97,7 @@ The parameters supplied to each of the functions are numeric vectors:
       \item \code{"negative-binomial"} or \code{"nbinom"}: \code{size} (positive dispersion parameter), \code{prob} (success probability), \code{mu} (mean, alternative to \code{prob}); see \link{NegBinomial}
     }
 }
-The length of the result is the maximum of the lengths of the numerical arguments. Numerical arguments of smaller length are recycled to the length of the result.
+All numerical arguments should be of the same length. An exception are scalars of length 1, which will be recycled.
 }
 \examples{
 crps(y = 1, family = "normal", mean = 0, sd = 2)
