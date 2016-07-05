@@ -64,9 +64,9 @@ NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, Numeric
   
   for (int j = 0; j < nrow; j++){
 	  for(int i = 0; i < N; i++) {
-		ls[j] -= (w[i]/s[i])*dnormC((y[j]-m[i])/s[i]);
+		ls[j] += (w[i]/s[i])*dnormC((y[j]-m[i])/s[i]);
 	  }
   }
   
-  return log(ls);
+  return (-1)*log(ls);
 }
