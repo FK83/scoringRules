@@ -13,7 +13,7 @@ vignette: >
 
 Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The **scoringRules** package offers mathematical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application*, 2014) for an introduction to the relevant statistical literature. 
 
-**scoringRules** supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (`logs`), given by $$\text{logs}(y, F) = \log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (`crps`), given by 
+**scoringRules** supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (`logs`), given by $$\text{logs}(y, F) = -\log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (`crps`), given by 
 $$
 \text{crps}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
 $$
