@@ -8,6 +8,7 @@ Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
 Description: Dictionary-like reference for computing scoring rules in a wide
     range of situations. Covers both parametric forecast distributions (such as
     mixtures of Gaussians) and distributions generated via simulation.
+URL: https://github.com/FK83/scoringRules
 License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.12.0),
