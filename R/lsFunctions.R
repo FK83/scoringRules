@@ -40,7 +40,7 @@ ls.norm <- function(y, location, scale,
 ls.t <- function(y, df, location, scale) -log(ft(y, df, location, scale))
 
 # mixture of normals
-ls.mixnorm <- function(y, m, s, w) -sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+ls.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 
 # two-piece-exponential
 ls.2pexp <- function(y, location, scale1, scale2) -log(f2pexp(y, location, scale1, scale2))
