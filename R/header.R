@@ -46,7 +46,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
         }
         aux1 <- integrate(function(s) FF(s)^2,-Inf, y, rel.tol = 1e-6)$value
         aux2 <- integrate(function(s) (1 - FF(s))^2, y, Inf, rel.tol = 1e-6)$value
-        out <- -(aux1 + aux2)
+        out <- aux1 + aux2
         # Message
         if (show_messages) 
           message("Used numerical integration for CRPS computation (tolerance = 1e-6).")
