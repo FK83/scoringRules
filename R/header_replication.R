@@ -48,7 +48,9 @@ run_casestudy <- function(data_df, burnin_size = 5000,
   # Loop over vintages
   for (j in 1:length(vints)){
     
-    print(paste(Sys.time(), "- now running date", j, "out of", length(vints)))
+    if ((j %% 10) == 0){
+      print(paste(Sys.time(), "- now running date", j, "out of", length(vints)))
+    }
     
     # Pick data
     cv <- vints[j]
