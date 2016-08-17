@@ -70,3 +70,33 @@ NumericVector lsmixnC(NumericVector w, NumericVector m, NumericVector s, Numeric
   
   return (-1)*log(ls);
 }
+
+// [[Rcpp::export]]
+NumericVector dmixnC(NumericVector m, NumericVector s, NumericVector y){
+  int N = m.size();
+  int nrow = y.size();
+  NumericVector out(nrow);
+  
+  for (int j = 0; j < nrow; j++){
+	  for (int i = 0; i < N; i++) {
+		out[j] += dnormC((y[j]-m[i])/s[i])/(N*s[i]);
+	  }
+  }
+  
+  return out;
+}  
+
+// [[Rcpp::export]]
+NumericVector pmixnC(NumericVector m, NumericVector s, NumericVector y){
+  int N = m.size();
+  int nrow = y.size();
+  NumericVector out(nrow);
+  
+  for (int j = 0; j < nrow; j++){
+	  for (int i = 0; i < N; i++) {
+		out[j] += (pnormC((y[j]-m[i])/s[i])/N);
+	  }
+  }
+  
+  return out;
+}  
