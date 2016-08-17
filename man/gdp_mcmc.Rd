@@ -26,6 +26,9 @@ The GDP growth rate is computed from real-time data provided by the Federal Rese
 The model from which the forecast draws are generated is described in Section 5 of KLTG (2016). Forecasts are one quarter ahead (that is, they are based on data until the previous quarter).
 
 }
+\details{
+The realizations in \code{gdp_mcmc$actuals} are also contained in \code{gdp}, based on the second available vintage for each date. For example, \code{gdp_mcmc$actuals$X2008Q1} is the entry in \code{gdp} for which \code{dt == "2008Q1"} and \code{vint == "2008Q3"}.
+}
 
 \examples{
 \dontrun{
