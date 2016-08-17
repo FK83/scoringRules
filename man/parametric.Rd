@@ -121,8 +121,3 @@ sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
 weights <- matrix(rep(1/50, 20*50), nrow = 20)
 crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 }
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{crps}
-\keyword{logs}

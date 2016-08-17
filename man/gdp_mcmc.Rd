@@ -50,6 +50,3 @@ abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 3)
 Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Probabilistic forecasting and comparative model assessment based on MCMC output'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
 
 }
-
-
-\keyword{datasets}

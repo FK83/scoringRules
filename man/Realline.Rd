@@ -45,4 +45,3 @@ curve(ff, from = -8, to = 8, bty = "n", xlab = "Value",
       ylab = "PDF", 
       main = "Laplace distribution with location 0 and scale 2")
 }
-\keyword{distributions}

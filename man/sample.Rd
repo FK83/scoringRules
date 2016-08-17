@@ -56,7 +56,3 @@ logs_sample(y = obs, dat = sample)
 crps(y = obs, family = "normal", mean = 0, sd = 1) 
 logs(y = obs, family = "normal", mean = 0, sd = 1)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{crps}
-\keyword{logs}
