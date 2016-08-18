@@ -105,7 +105,7 @@ run_casestudy <- function(data_df, burnin_size = 5000,
   }
   
   # Final print to screen
-  print(paste(Sys.time(), "- now finishin run_casestudy"))
+  print(paste(Sys.time(), "- now finishing run_casestudy"))
   
   # Return object of class "casestudy"
   structure(df, class = "casestudy")
