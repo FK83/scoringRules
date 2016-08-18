@@ -45,6 +45,9 @@ run_casestudy <- function(data_df, burnin_size = 5000,
   # Initialize data frame
   df <- data.frame()
   
+  # Initial print to screen
+  print(paste(Sys.time(), "- now starting run_casestudy"))
+  
   # Loop over vintages
   for (j in 1:length(vints)){
     
@@ -100,6 +103,10 @@ run_casestudy <- function(data_df, burnin_size = 5000,
       }
     }
   }
+  
+  # Final print to screen
+  print(paste(Sys.time(), "- now finishin run_casestudy"))
+  
   # Return object of class "casestudy"
   structure(df, class = "casestudy")
 }
