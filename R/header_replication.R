@@ -232,6 +232,9 @@ run_mcstudy <- function(s = 2, a = 0.5, n = 12, nr_iterations = 50,
   aux_approx <- c(rep(c("norm", "mixp", "kdens"), each = 2), "ecdf")
   ct <- 0
   
+  # Initial print
+  print(paste(Sys.time(), "- now starting run_mcstudy"))
+  
   # Loop over training samples
   for (i in 1:nr_iterations) {
     
@@ -289,6 +292,9 @@ run_mcstudy <- function(s = 2, a = 0.5, n = 12, nr_iterations = 50,
       
     }
   }
+  
+  # Final print
+  print(paste(Sys.time(), "- now finishing run_mcstudy"))
   
   # Output result dataframe
   structure(res_df, class = "mcstudy")
@@ -372,7 +378,7 @@ plot.mcstudy <- function(x, ...){
         points(x = xloc, y = vv[2], col = colors[m], pch = 15, cex = 1.4)
       }    
     }
-    axis(1, at = (tune/4)*(0:3) + 2.5, labels = paste(sizes/1000, "K"), cex.axis = 1.4)
+    axis(1, at = (tune/4)*(0:3) + 2.5, labels = sizes, cex.axis = 1.4)
     legend("topright", c("Mixture", "Kernel", "Normal", "ECDF")[1:n.methods], lty = 1, lwd = 3, 
            col = colors[1:n.methods], bty = "n", cex = 1.4)
     
