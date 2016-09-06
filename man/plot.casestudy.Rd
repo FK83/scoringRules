@@ -25,10 +25,14 @@ additional inputs (\code{...}), the following are currently implemented:
 either \code{"crps"} or \code{"logs"}. Defaults to \code{"crps"}. \item \code{add_main_title}, logical,
 whether to add main title to plot. Defaults to \code{TRUE}.}
 }
+\author{
+Fabian Krueger
+}
 \references{
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), `Probabilistic forecasting and comparative model assessment based on MCMC output', working paper, Heidelberg Institute for Theoretical Studies.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), `Probabilistic forecasting and comparative model assessment based on Markov Chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 }
 \seealso{
 \link{run_casestudy} produces the forecast results summarized by \link{plot.casestudy}
 }
+\keyword{replication}
 

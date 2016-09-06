@@ -1,6 +1,8 @@
 \name{parametric}
 \alias{crps}
 \alias{logs}
+\keyword{logs}
+\keyword{crps}
 \title{
 Scoring Rules for Parametric Forecast Distributions
 }

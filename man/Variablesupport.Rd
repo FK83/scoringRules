@@ -3,6 +3,8 @@
 \alias{fgev}
 \alias{fgpd}
 \alias{fnorm}
+\keyword{distributions}
+\author{Alexander Jordan}
 \title{
 Supplementary distributions (not in base R) with variable support.
 }

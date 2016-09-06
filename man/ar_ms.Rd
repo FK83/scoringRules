@@ -69,10 +69,13 @@ hist(1/fit$pars[,4], main = "Residual variance in 2nd state", xlab = "")
 print(mean(1/fit$pars[,3] < 1/fit$pars[,4]))
 }
 }
+\author{
+Fabian Krueger, based on Matlab code by Gianni Amisano (see details section)
+}
 \references{
 Amisano, G. and R. Giacomini (2007), `Comparing density forecasts via weighted likelihood ratio tests', Journal of Business and Economic Statistics 25, 177-190.
 
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), `Probabilistic forecasting and comparative model assessment based on MCMC output', working paper, Heidelberg Institute for Theoretical Studies.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), `Probabilistic forecasting and comparative model assessment based on Markov Chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 }
 \seealso{
 \link{run_casestudy} uses \link{ar_ms} to replicate the results of KLTG (2016, Section 5).

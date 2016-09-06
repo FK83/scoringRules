@@ -1,6 +1,8 @@
 \name{Supplementary distributions: Positive real line}
 \alias{fllapl}
 \alias{fllogis}
+\keyword{distributions}
+\author{Alexander Jordan}
 \title{
 Supplementary distributions (not in base R) supported on the positive real line.
 }

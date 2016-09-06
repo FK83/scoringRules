@@ -2,6 +2,7 @@
 \alias{gdp}
 \alias{gdp_mcmc}
 \docType{data}
+\keyword{datasets}
 \title{
 Data and forecasts for US GDP growth
 }
@@ -47,6 +48,6 @@ abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 3)
 
 \references{
 
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Probabilistic forecasting and comparative model assessment based on MCMC output'', working paper, Heidelberg Institute for Theoretical Studies, \emph{in preparation}.
+Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2016), ``Probabilistic forecasting and comparative model assessment based on Markov Chain Monte Carlo output'', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 
 }

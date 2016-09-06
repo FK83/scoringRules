@@ -4,6 +4,8 @@
 \alias{fmixnorm}
 \alias{f2pnorm}
 \alias{ft}
+\keyword{distributions}
+\author{Alexander Jordan}
 \title{Supplementary distributions (not in base R) supported on the real line.}
 \description{We include the probability density functions of some distributions which are part of scoringRules, but are not part of base R. The parametrizations used here are identical to the ones used when calling \code{crps} and \code{logs}.
 
