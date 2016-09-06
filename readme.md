@@ -10,11 +10,16 @@ An R package to compute scoring rules for fixed (parametric) and simulated forec
   
 ## Installation
 
+CRAN version:
+```r
+install.packages("scoringRules")
+```
+
+Development version (GitHub):
 ```r
 # install.packages("devtools")
 library(devtools)
 install_github("FK83/scoringRules")
-library(scoringRules)
 ```
 
 ## Background
