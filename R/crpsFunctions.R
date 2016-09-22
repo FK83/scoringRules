@@ -41,8 +41,8 @@ crps.edf <- function(dat, y, w = NULL){
     ord <- order(dat)
     x <- dat[ord]
     w <- w[ord]
-    p <- c(0, cumsum(w))
-    out <- sapply(y, function(s) 2 * sum((w * (s < x) - 0.5 * (p[2:(n+1)]^2 - p[1:n]^2)) * (x - s)))
+    p <- c(0, cumsum(w[-n]))
+    out <- sapply(y, function(s) 2 * sum(((s < x) - p - 0.5 * w) * w * (x - s)))
   }
   return(out)
 }
