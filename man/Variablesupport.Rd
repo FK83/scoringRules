@@ -3,6 +3,7 @@
 \alias{fgev}
 \alias{fgpd}
 \alias{fnorm}
+\alias{flogis}
 \keyword{distributions}
 \author{Alexander Jordan}
 \title{
@@ -18,6 +19,7 @@ fgpd(x, location, scale, shape, mass = 0, log = FALSE)
 fgev(x, location, scale, shape)
 
 fnorm(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log = FALSE)
+flogis(x, location, scale, lower = -Inf, upper = Inf, lmass = 0, umass = 0, log = FALSE)
 }
 \arguments{
   \item{x}{vector of quantiles}

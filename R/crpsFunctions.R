@@ -131,11 +131,91 @@ crps.lapl <- function(y, location, scale) {
 }
 
 # logistic
-crps.logis <- function(y, location, scale) {
-  z <- (y - location)/scale
-  p <- plogis(z)
-  c1 <- z*(2*p - 1) - 1 - 2*(p*log(p) + (1-p)*log(1-p))
-  return(scale*c1)
+crps.logis <- function(y, location, scale,
+                       lower = -Inf, upper = Inf,
+                       lmass = 0, umass = 0) {
+  
+  ### standard formula
+  
+  ind1 <- any(is.finite(lower))
+  ind2 <- any(is.finite(upper))
+  
+  if (!ind1 & !ind2) {
+    z <- y
+    if (!identical(location, 0) | !identical(scale, 1)) {
+      z <- (y - location) / scale
+    }
+    out <- z - 2 * log(plogis(z)) - 1
+    return(scale * out)
+  }
+  
+  ### dealing with truncation/censoring
+  
+  zb <- y
+  if (ind1) {
+    zb <- pmax(lower, zb)
+    lb <- (lower - location) / scale
+    
+    if (is.character(lmass)) {
+      n1 <- length(lb)
+      n2 <- length(lmass)
+      if (n1 < n2) {
+        Plb <- numeric(n2)
+        Plb[lmass == "cens"] <- plogis(lb)
+      } else {
+        Plb <- numeric(n1)
+        ind <- lmass == "cens"
+        Plb[ind] <- plogis(lb[ind])
+      }
+    } else {
+      Plb <- lmass
+    }
+  }
+  if (ind2) {
+    zb <- pmin(upper, zb)
+    ub <- (upper - location) / scale
+    
+    if (is.character(umass)) {
+      n1 <- length(ub)
+      n2 <- length(umass)
+      if (n1 < n2) {
+        Pub <- numeric(n2)
+        Pub[umass == "cens"] <- plogis(ub, lower.tail = FALSE)
+      } else {
+        Pub <- numeric(n1)
+        ind <- umass == "cens"
+        Pub[ind] <- plogis(ub[ind], lower.tail = FALSE)
+      }
+    } else {
+      Pub <- umass
+    }
+  }
+  res <- abs(y - zb)
+  zb <- (zb - location) / scale
+  
+  if (ind1 & ind2) {
+    if (any(Plb + Pub > 1)){
+      stop("Sum of 'lmass' and 'umass' exceeds 1.")
+    }
+    a <- (1 - Plb - Pub) / (plogis(ub) - plogis(lb))
+    b <- Plb - a * plogis(lb)
+    out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
+    out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a + b - 1)^2 * log(1 - plogis(ub)) + (b - 1)^2 * log(plogis(ub))
+    out_y <- (2 * (a + b) - 1) * y - 2 * a * log(plogis(y)) - a^2
+  } else if (ind1 & !ind2) {
+    a <- (1 - Plb) / (1 - plogis(lb))
+    b <- Plb - a * plogis(lb)
+    out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
+    out_u <- 0
+    out_y <- (2 * (a + b) - 1) * y - 2 * a * log(plogis(y)) - a^2
+  } else if (!ind1 & ind2) {
+    a <- (1 - Pub) / pnorm(ub)
+    out_l <- 0
+    out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a - 1)^2 * log(1 - plogis(ub)) + log(plogis(ub))
+    out_y <- (2 * a - 1) * y - 2 * a * log(plogis(y)) - a^2
+  }
+  
+  return(res + scale * (out_y + out_l + out_u))
 }
 
 # normal

@@ -26,7 +26,12 @@ ls.beta <- function(y, shape1, shape2) -dbeta(y, shape1, shape2, log=TRUE)
 ls.lapl <- function(y, location, scale) -log(flapl(y, location, scale))
 
 # logistic
-ls.logis <- function(y, location, scale) -dlogis(y, location, scale, log=TRUE)
+ls.logis <- function(y, location, scale,
+                     lower = -Inf, upper = Inf,
+                     lmass = 0, umass = 0) {
+  if (any(lmass != 0 | umass != 0)) stop("Log score unavailable due to point mass.")
+  -flogis(y, location, scale, lower, upper, lmass, umass, log = TRUE)
+}
 
 # normal
 ls.norm <- function(y, location, scale,

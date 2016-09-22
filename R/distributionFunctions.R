@@ -21,6 +21,67 @@ flapl <- function(x, location, scale) {
   dexp(abs(x - location), 1/scale) / 2
 }
 
+flogis <- function(x, location, scale,
+                   lower = -Inf, upper = Inf,
+                   lmass = 0, umass = 0, log = FALSE) {
+  out <- dlogis(x, location, scale, log)
+  
+  ind1 <- any(is.finite(lower))
+  ind2 <- any(is.finite(upper))
+  if (!ind1 & !ind2) {
+    return(out)
+  }
+  
+  
+  if (is.character(lmass)) {
+    Plb <- numeric(length(lmass))
+    Plb[lmass == "cens"] <- plogis(lower, location, scale)
+  } else {
+    Plb <- lmass
+  }
+  if (is.character(umass)) {
+    Pub <- numeric(length(lmass))
+    Pub[umass == "cens"] <-
+      plogis(upper, location, scale, lower.tail = FALSE)
+  } else {
+    Pub <- umass
+  }
+  
+  
+  if (ind1 & ind2) {
+    if (any(lower > upper)) {
+      stop("Parameter 'lower' contains values greater than 'upper'.")
+    }
+    if (any(Plb != 0 | Pub != 0)) {
+      warning("Not a probability density due to point masses in 'lower' and/or 'upper'.")
+    }
+    a <- (1 - Pub - Plb) /
+      (plogis(upper, location, scale) - plogis(lower, location, scale))
+    ind <- x < lower | x > upper
+  } else if (ind1 & !ind2) {
+    if (any(lmass != 0)) {
+      warning("Not a probability density due to a point mass in 'lower'.")
+    }
+    a <- (1 - Pub - Plb) / (1 - plogis(lower, location, scale))
+    ind <- x < lower
+  } else if (!ind1 & ind2) {
+    if (any(umass != 0)) {
+      warning("Not a probability density due to a point mass in 'upper'.")
+    }
+    a <- (1 - Pub - Plb) / plogis(upper, location, scale)
+    ind <- x > upper
+  }
+  
+  if (log) {
+    out <- out + log(a)
+    out[ind] <- -Inf
+  } else {
+    out <- out * a
+    out[ind] <- 0
+  }
+  return(out)
+}
+
 fnorm <- function(x, location, scale,
                   lower = -Inf, upper = Inf,
                   lmass = 0, umass = 0, log = FALSE) {
