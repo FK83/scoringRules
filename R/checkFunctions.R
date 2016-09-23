@@ -386,10 +386,51 @@ check.norm <- function(input) {
 ### t
 check.t <- function(input) {
   required <- c("y", "df", "location", "scale")
+  optional <- list(c("lower", "lmass"),
+                   c("upper", "umass"))
   checkNames1(required, names(input))
-  input <- input[required]
-  checkNumeric(input)
+  choice2 <- sapply(optional, checkNames3, names(input))
+  
+  used <- c(required, optional[choice2])
+  input <- input[do.call(c, used)]
+  
   checkVector(input)
+  if (any(choice2)) {
+    checkNumeric(input[!names(input) %in% c("lmass", "umass")])
+    if (choice2[1] == TRUE) {
+      if (is.character(input$lmass)){
+        if (any(!input$lmass %in% c("trunc", "cens"))) {
+          stop("Valid character input for 'lmass': 'trunc', 'cens'")
+        }
+      } else if (!is.numeric(input$lmass)) {
+        stop("Type of 'lmass' is neither character nor numeric.")
+      } else {
+        if (any(input$lmass < 0 | input$lmass > 1)) {
+          stop("Parameter 'lmass' contains values not in [0, 1].")
+        }
+      }
+    }
+    if (choice2[2] == TRUE) {
+      if (is.character(input$umass)){
+        if (any(!input$umass %in% c("trunc", "cens"))) {
+          stop("Valid character input for 'lmass': 'trunc', 'cens'")
+        }
+      } else if (!is.numeric(input$umass)) {
+        stop("Type of 'umass' is neither character nor numeric")
+      } else {
+        if (any(input$umass < 0 | input$umass > 1)) {
+          stop("Parameter 'umass' contains values not in [0, 1].")
+        }
+      }
+    }
+    if (sum(choice2) == 2) {
+      if (any(input$lower > input$upper)) {
+        stop("Parameter 'lower' contains values greater than parameter 'upper'.")
+      }  
+    }
+  } else {
+    checkNumeric(input)
+  }
   
   if (any(!input$df>0)) stop("Parameter 'df' contains non-positive values.")
   if (any(is.infinite(input$location))) stop("Parameter 'location' contains infinite values.")

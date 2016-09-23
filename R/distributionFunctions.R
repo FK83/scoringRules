@@ -143,9 +143,69 @@ fnorm <- function(x, location, scale,
   return(out)
 }
 
-ft <- function(x, df, location, scale) {
+ft <- function(x, df, location, scale,
+               lower = -Inf, upper = Inf,
+               lmass = 0, umass = 0, log = FALSE) {
   z <- (x - location) / scale
-  1/scale * dt(z, df)
+  
+  if (log) {
+    out <- dt(z, df, log = TRUE) - log(scale)
+  } else {
+    out <- dt(z, df) / scale
+  }
+  
+  ind1 <- any(is.finite(lower))
+  ind2 <- any(is.finite(upper))
+  if (!ind1 & !ind2) {
+    return(out)
+  }
+  
+  if (is.character(lmass)) {
+    Plb <- numeric(length(lmass))
+    Plb[lmass == "cens"] <- pt((lower - location)/scale, df)
+  } else {
+    Plb <- lmass
+  }
+  if (is.character(umass)) {
+    Pub <- numeric(length(lmass))
+    Pub[umass == "cens"] <- 
+      pt((upper - location)/scale, df, lower.tail = FALSE)
+  } else {
+    Pub <- umass
+  }
+  
+  if (ind1 & ind2) {
+    if (any(lower > upper)) {
+      stop("Parameter 'lower' contains values greater than 'upper'.")
+    }
+    if (any(Plb != 0 | Pub != 0)) {
+      warning("Not a probability density due to point masses in 'lower' and/or 'upper'.")
+    }
+    a <- (1 - Pub - Plb) /
+      (pt((upper - location) / scale, df) - pt((lower - location) / scale, df))
+    ind <- x < lower | x > upper
+  } else if (ind1 & !ind2) {
+    if (any(lmass != 0)) {
+      warning("Not a probability density due to a point mass in 'lower'.")
+    }
+    a <- (1 - Pub - Plb) / (1 - pt((lower - location) / scale, df))
+    ind <- x < lower
+  } else if (!ind1 & ind2) {
+    if (any(umass != 0)) {
+      warning("Not a probability density due to a point mass in 'upper'.")
+    }
+    a <- (1 - Pub - Plb) / pt((upper - location) / scale, df)
+    ind <- x > upper
+  }
+  
+  if (log) {
+    out <- out + log(a)
+    out[ind] <- -Inf
+  } else {
+    out <- out * a
+    out[ind] <- 0
+  }
+  return(out)
 }
 
 f2pexp <- function(x, location, scale1, scale2) {

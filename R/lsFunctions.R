@@ -42,7 +42,12 @@ ls.norm <- function(y, location, scale,
 }
 
 # t
-ls.t <- function(y, df, location, scale) -log(ft(y, df, location, scale))
+ls.t <- function(y, df, location, scale,
+                 lower = -Inf, upper = Inf,
+                 lmass = 0, umass = 0) {
+  if (any(lmass != 0 | umass != 0)) stop("Log score unavailable due to point mass.")
+  -ft(y, df, location, scale, lower, upper, lmass, umass, log = TRUE)
+}
 
 # mixture of normals
 ls.mixnorm <- function(y, m, s, w) sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
