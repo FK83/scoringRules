@@ -201,18 +201,18 @@ crps.logis <- function(y, location, scale,
     b <- Plb - a * plogis(lb)
     out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
     out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a + b - 1)^2 * log(1 - plogis(ub)) + (b - 1)^2 * log(plogis(ub))
-    out_y <- (2 * (a + b) - 1) * y - 2 * a * log(plogis(y)) - a^2
+    out_y <- (2 * (a + b) - 1) * zb - 2 * a * log(plogis(zb)) - a^2
   } else if (ind1 & !ind2) {
     a <- (1 - Plb) / (1 - plogis(lb))
     b <- Plb - a * plogis(lb)
     out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
     out_u <- 0
-    out_y <- (2 * (a + b) - 1) * y - 2 * a * log(plogis(y)) - a^2
+    out_y <- (2 * (a + b) - 1) * zb - 2 * a * log(plogis(zb)) - a^2
   } else if (!ind1 & ind2) {
     a <- (1 - Pub) / pnorm(ub)
     out_l <- 0
     out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a - 1)^2 * log(1 - plogis(ub)) + log(plogis(ub))
-    out_y <- (2 * a - 1) * y - 2 * a * log(plogis(y)) - a^2
+    out_y <- (2 * a - 1) * zb - 2 * a * log(plogis(zb)) - a^2
   }
   
   return(res + scale * (out_y + out_l + out_u))
