@@ -358,6 +358,9 @@ crps.t <- function(y, df, location, scale,
     } else {
       Plb <- lmass
     }
+  } else {
+    lb <- lower
+    Plb <- lmass
   }
   if (ind2) {
     zb <- pmin(upper, zb)
@@ -375,16 +378,19 @@ crps.t <- function(y, df, location, scale,
     } else {
       Pub <- umass
     }
+  } else {
+    ub <- upper
+    Pub <- umass
   }
   res <- abs(y - zb)
   zb <- (zb - location) / scale
   
   if (any(ind)) {
-    if (length(zb) < length(df)) zb <- rep(zb, len = df)
-    if (length(lb) < length(df)) lb <- rep(lb, len = df)
-    if (length(ub) < length(df)) ub <- rep(ub, len = df)
-    if (length(Plb) < length(df)) Plb <- rep(Plb, len = df)
-    if (length(Pub) < length(df)) Pub <- rep(Pub, len = df)
+    if (length(zb) < length(df)) zb <- rep(zb, len = length(df))
+    if (length(lb) < length(df)) lb <- rep(lb, len = length(df))
+    if (length(ub) < length(df)) ub <- rep(ub, len = length(df))
+    if (length(Plb) < length(df)) Plb <- rep(Plb, len = length(df))
+    if (length(Pub) < length(df)) Pub <- rep(Pub, len = length(df))
     
     out <- numeric(max(length(zb), length(lb), length(ub), length(Plb), length(Pub)))
     out[ind] <- crps.norm(zb[ind], 0, 1, lb[ind], ub[ind], Plb[ind], Pub[ind])
@@ -410,16 +416,16 @@ crps.t <- function(y, df, location, scale,
     out_l <- -lb * Plb^2 -
       2 * a * df / (df - 1) * (1 + lb^2/df) * dt(lb, df) * Plb -
       sign(-lb) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + lb^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_u <- 0
+    out_u <- -a^2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
     out_y <- zb * (2 * (a * (pt(zb, df) - pt(lb, df)) + Plb) - 1) +
       2 * a * df / (df - 1) * (1 + zb^2/df) * dt(zb, df)
   } else if (!ind1 & ind2) {
     a <- (1 - Pub) / pt(ub, df)
-    out_l <- 0
+    out_l <- -a^2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
     out_u <- ub * Pub^2 -
       2 * a * df / (df - 1) * (1 + ub^2/df) * dt(ub, df) * Pub -
       sign(ub) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + ub^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_y <- zb * (2 * (a * (pt(zb, df) - pt(lb, df)) + Plb) - 1) +
+    out_y <- zb * (2 * a * (pt(zb, df) + Plb) - 1) +
       2 * a * df / (df - 1) * (1 + zb^2/df) * dt(zb, df)
   }
   
