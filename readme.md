@@ -1,6 +1,6 @@
 # scoringRules 
 
-An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions
+An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (Heidelberg Institute for Theoretical Studies, HITS), Fabian Krüger (Heidelberg University) and Sebastian Lerch (HITS and Karlsruhe Institute of Technology). 
 
 ## Highlights
   - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
