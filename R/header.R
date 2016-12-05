@@ -2,7 +2,7 @@
 # (only used in functions that appear in the package: xx and xx_sample, where xx = (crps, logs, qs)
 orientation <- -1
 
-#' @export crps logs crps_sample logs_sample flapl fnorm f2pexp fmixnorm f2pnorm ft fllapl fllogis fexp fgev fgpd
+#' @export crps logs crps_sample logs_sample flapl fnorm f2pexp fmixnorm f2pnorm ft fllapl flogis fllogis fexp fgev fgpd
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods existsFunction
 #' @importFrom stats bw.nrd dbeta dexp dgamma dlnorm dlogis dnbinom dnorm dpois dt dunif integrate
