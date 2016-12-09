@@ -209,7 +209,7 @@ crps.logis <- function(y, location, scale,
     out_u <- 0
     out_y <- (2 * (a + b) - 1) * zb - 2 * a * log(plogis(zb)) - a^2
   } else if (!ind1 & ind2) {
-    a <- (1 - Pub) / pnorm(ub)
+    a <- (1 - Pub) / plogis(ub)
     out_l <- 0
     out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a - 1)^2 * log(1 - plogis(ub)) + log(plogis(ub))
     out_y <- (2 * a - 1) * zb - 2 * a * log(plogis(zb)) - a^2
