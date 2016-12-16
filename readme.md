@@ -1,6 +1,6 @@
 # scoringRules 
 
-An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (Heidelberg Institute for Theoretical Studies, HITS), Fabian Krüger (Heidelberg University) and Sebastian Lerch (HITS and Karlsruhe Institute of Technology). 
+An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (Heidelberg Institute for Theoretical Studies, HITS), Fabian Krüger (Heidelberg University), Sebastian Lerch (HITS and Karlsruhe Institute of Technology, KIT) and Maximiliane Graeter (KIT). 
 
 ## Highlights
   - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
@@ -27,11 +27,14 @@ install_github("FK83/scoringRules")
 Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast distribution F, given that an outcome y was observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of distributions F that come up in applied work, and two popular choices of S. Two main classes of distributions are
 
   - Parametric distributions like normal, t, and gamma. For example, most weather forecasts (which apply statistical postprocessing to physical models) take such a form. 
-  - Distributions that are not known analytically, but are indirectly described through a sample of simulaton draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
+  - Distributions that are not known analytically, but are indirectly described through a sample of simulation draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
 
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976) and the logarithmic score (Good, 1952).
 
+The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
+
 ## History
+  - December 2016: Added multivariate energy and variogram score
   - September 6, 2016: Version 0.9.1 published on CRAN 
   - August 2016: Added replication materials for our paper on MCMC based forecasting 
     (see <http://arxiv.org/abs/1608.06802>)
