@@ -10,13 +10,14 @@ Multivariate Scoring Rules for Simulated Forecast Distributions
 Compute multivariate scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a d-dimensional realization vector and \eqn{dat} is a simulated sample of multivariate forecasts. Available are the energy score and the variogram score of order \eqn{p}.
 }
 \usage{
-es_sample(y, dat)
+es_sample(y, dat, use_dist = FALSE)
 vs_sample(y, dat, w = NULL, p = 0.5)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{y}{Realized values (numeric vector of length d).}
 \item{dat}{Numeric matrix of data (columns are simulation draws from multivariate forecast distribution).}
+\item{use_dist}{Logical of length one, whether or not to use the \code{dist} function (may speed up computation).}
 \item{w}{Numeric matrix of weights for \code{dat} used in the variogram score.  
           If no weights are specified, constant weights with \eqn{w = 1} are used.}
 \item{p}{Order of variogram score. Standard choices include \eqn{p = 1} and \eqn{p = 0.5}.}
@@ -24,6 +25,8 @@ vs_sample(y, dat, w = NULL, p = 0.5)
 
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample from the multivariate forecast distribution, the number of rows of \code{dat} thus has to match the length of the observation vector \code{y}, and the number of columns of \code{dat} is the number of simulated samples. 
+
+In \link{es_sample} it is possible to use the \code{dist} function of base R by setting \code{use_dist = TRUE}. This will often speed up computation, but can lead to objects that exceed the memory limits in case of large numbers of simulation draws.
 
 In \link{vs_sample} it is possible to specify a matrix \code{w} of non-negative weights that allow to emphasize or downweight pairs of component combinations based on subjective expert decisions. \code{w} is a square matrix with dimensions equal to the length of the input vector \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of \code{"w"} corresponds to the weight assigned to the combination of the corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples, see Scheuerer and Hamill (2015).
 }
@@ -64,6 +67,7 @@ w_vs <- matrix(NA, nrow = d, ncol = d)
 for(d1 in 1:d){for(d2 in 1:d){w_vs[d1,d2] <- 0.5^abs(d1-d2)}}
 
 es_sample(y = obs, dat = fc_sample)
+es_sample(y = obs, dat = fc_sample, use_dist = TRUE)
 
 vs_sample(y = obs, dat = fc_sample) 
 vs_sample(y = obs, dat = fc_sample, w = w_vs) 

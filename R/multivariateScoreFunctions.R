@@ -8,17 +8,21 @@ euclnorm <- function(x) {
   sqrt(sum(x %*% x))
 }
 
-es_sample <- function(y, dat) {
+es_sample <- function(y, dat, use_dist = FALSE) {
   input <- list(y = y, dat = dat)
   check.multivsample(input)
   
   out <- numeric()
   m <- dim(dat)[2]
   s1 <- sum(sapply(1:m, function(i){euclnorm(dat[, i] - y) } ))
-  s2 <- 0
-  for (j in 1:m) {
-    for (k in j:m) {
-      s2 <- s2 +2 * euclnorm(dat[, j]-dat[, k]) 
+  if (use_dist) {
+    s2 <- 2*sum(dist(t(dat)))
+  } else {
+    s2 <- 0
+    for (j in 1:m) {
+      for (k in j:m) {
+        s2 <- s2 +2 * euclnorm(dat[, j] - dat[, k]) 
+      }
     }
   }
   out <- (s1 / m) - s2 / (2 * m * m)
@@ -35,7 +39,7 @@ vs_sample <- function(y, dat, w = NULL,  p = 0.5) {
   d <- length(y)
   
   # additional input checks for weighting matrix w and order p
-  if(is.null(w)) {
+  if (is.null(w)) {
     w <- matrix(1, nrow = d, ncol = d)
   } else {
     if (!is.matrix(w)) {
