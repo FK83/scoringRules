@@ -44,3 +44,7 @@ The package further provides functions to compute the multivariate energy and va
   - February 6, 2015: Re-design of internal function structure
   - November 19, 2014: Split functions according to parametric versus simulated forecast distributions
   - September 15, 2014: First commit 
+
+## Acknowledgements
+
+The work of Alexander Jordan and Fabian Krüger has been funded by the European Union Seventh Framework Programme under grant agreement 290976. Sebastian Lerch and Maximiliane Graeter gratefully acknowledge financial support by  Deutsche Forschungsgemeinschaft (DFG) through project C7 ("Statistical postprocessing and stochastic physics for ensemble predictions") within SFB/TRR 165 "Waves to Weather". 
