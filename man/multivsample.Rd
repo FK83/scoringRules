@@ -39,7 +39,7 @@ In \link{vs_sample} it is possible to specify a matrix \code{w} of non-negative 
 
 Gneiting, T., Stanberry, L. I., Grimit, E. P., Held, L. and Johnson, N. A. (2008), `Assessing probabilistic forecasts of multivariate quantities, with an application to ensemble predictions of surface winds', Test, 17, 211-235.
 
-\emph{Variogram-Based	Proper Scoring Rules}
+\emph{Variogram-based	proper scoring rules}
 
 Scheuerer, M. and Hamill, T. M. (2015), `Variogram-based proper scoring rules for probabilistic forecasts of multivariate quantities', Monthly Weather Review, 143, 1321-1334.
 }
@@ -62,12 +62,12 @@ S0[S0==0] <- 0.2
 obs <- drop(mu0 + rnorm(d) \%*\% chol(S0))
 fc_sample <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
 
+es_sample(y = obs, dat = fc_sample)
+es_sample(y = obs, dat = fc_sample, use_dist = TRUE)
+
 # weighting matrix for variogram score
 w_vs <- matrix(NA, nrow = d, ncol = d)
 for(d1 in 1:d){for(d2 in 1:d){w_vs[d1,d2] <- 0.5^abs(d1-d2)}}
-
-es_sample(y = obs, dat = fc_sample)
-es_sample(y = obs, dat = fc_sample, use_dist = TRUE)
 
 vs_sample(y = obs, dat = fc_sample) 
 vs_sample(y = obs, dat = fc_sample, w = w_vs) 
