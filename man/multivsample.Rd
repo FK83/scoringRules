@@ -28,7 +28,7 @@ In the input matrix \code{dat} each column is expected to represent a sample fro
 
 In \link{es_sample} it is possible to use the \code{dist} function of base R by setting \code{use_dist = TRUE}. This will often speed up computation, but can lead to objects that exceed the memory limits in case of large numbers of simulation draws.
 
-In \link{vs_sample} it is possible to specify a matrix \code{w} of non-negative weights that allow to emphasize or downweight pairs of component combinations based on subjective expert decisions. \code{w} is a square matrix with dimensions equal to the length of the input vector \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of \code{"w"} corresponds to the weight assigned to the combination of the corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples, see Scheuerer and Hamill (2015).
+In \link{vs_sample} it is possible to specify a matrix \code{w} of non-negative weights that allow to emphasize or downweight pairs of component combinations based on subjective expert decisions. \code{w} is a square matrix with dimensions equal to the length of the input vector \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of \code{w} corresponds to the weight assigned to the combination of the corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples, see Scheuerer and Hamill (2015).
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
