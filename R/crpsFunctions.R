@@ -126,8 +126,14 @@ crps.lapl <- function(y, location, scale) {
   z <- (y - location)/scale
   p <- 0.5 + 0.5 * sign(z) * pexp(abs(z))
   minp <- pmin(p, 1-p)
-  c1 <- z*(2*p - 1) - 2*minp*(log(2*minp) - 1) - 0.75
-  return(scale*c1)  
+  c1 <- z*(2*p - 1) - 0.75
+  c2 <- log(2 * minp)
+  ind <- !is.finite(c2)
+  if (any(ind)) {
+    c2[ind] <- 0
+  }
+  
+  return(scale*(c1 - 2 * minp * (c2 - 1)))  
 }
 
 # logistic
