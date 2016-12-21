@@ -145,7 +145,7 @@ crps.logis <- function(y, location, scale,
     if (!identical(location, 0) | !identical(scale, 1)) {
       z <- (y - location) / scale
     }
-    out <- z - 2 * log(plogis(z)) - 1
+    out <- z - 2 * plogis(z, log.p = TRUE) - 1
     return(scale * out)
   }
   
