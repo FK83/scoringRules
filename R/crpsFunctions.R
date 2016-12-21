@@ -379,7 +379,7 @@ crps.t <- function(y, df, location, scale,
         Pub <- rep(pt(ub, df, lower.tail = FALSE), len = n)
         Pub[!ind_cens] <- 0
       } else {
-        Plb <- 0
+        Pub <- 0
       }
     } else {
       Pub <- umass
