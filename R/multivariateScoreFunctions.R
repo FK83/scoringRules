@@ -34,7 +34,7 @@ es_sample <- function(y, dat, use_dist = FALSE) {
 }
 
 ################################################################################
-### variogram score of order p
+# variogram score of order p
 
 vs_sample <- function(y, dat, w = NULL,  p = 0.5) {
   input <- list(y = y, dat = dat)
