@@ -203,22 +203,37 @@ crps.logis <- function(y, location, scale,
     if (any(Plb + Pub > 1)){
       stop("Sum of 'lmass' and 'umass' exceeds 1.")
     }
-    a <- (1 - Plb - Pub) / (plogis(ub) - plogis(lb))
+    a <- ifelse(1 - Plb - Pub < 1e-12, 0,
+                (1 - Plb - Pub) / (plogis(ub) - plogis(lb)))
+    a[a > 1e12] <- NaN
     b <- Plb - a * plogis(lb)
-    out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
-    out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a + b - 1)^2 * log(1 - plogis(ub)) + (b - 1)^2 * log(plogis(ub))
-    out_y <- (2 * (a + b) - 1) * zb - 2 * a * log(plogis(zb)) - a^2
+    
+    out_l <- a^2 * plogis(lb) +
+      ifelse(a == 0, 0, a * (a + 2 * b) * plogis(-lb, log.p = TRUE)) -
+      ifelse(is.finite(lb), b^2 * lb, 0)
+    out_u <- a^2 * plogis(ub, lower.tail = FALSE) -
+      ifelse(a == 0, 0, a * (a + 2 * b - 2) * plogis(ub, log.p = TRUE)) +
+      ifelse(is.finite(ub), (a + b - 1)^2 * ub, 0)
+    out_y <- zb * (2 * (a + b) - 1) - 2 * a * plogis(zb, log.p = TRUE) - a^2
   } else if (ind1 & !ind2) {
-    a <- (1 - Plb) / (1 - plogis(lb))
+    a <- ifelse(1 - Plb < 1e-12, 0, (1 - Plb) / (1 - plogis(lb)))
+    a[a > 1e12] <- NaN
     b <- Plb - a * plogis(lb)
-    out_l <- a^2 * plogis(lb) + (a + b)^2 * log(1 - plogis(lb)) - b^2 * log(plogis(lb))
+    
+    out_l <- a^2 * plogis(lb) +
+      ifelse(a == 0, 0, a * (a + 2 * b) * plogis(-lb, log.p = TRUE)) -
+      ifelse(is.finite(lb), b^2 * lb, 0)
     out_u <- 0
-    out_y <- (2 * (a + b) - 1) * zb - 2 * a * log(plogis(zb)) - a^2
+    out_y <- zb * (2 * (a + b) - 1) - 2 * a * plogis(zb, log.p = TRUE) - a^2
   } else if (!ind1 & ind2) {
-    a <- (1 - Pub) / plogis(ub)
+    a <- ifelse(1 - Pub < 1e-12, 0, (1 - Pub) / plogis(ub))
+    a[a > 1e12] <- NaN
+    
     out_l <- 0
-    out_u <- a^2 * plogis(ub, lower.tail = FALSE) - (a - 1)^2 * log(1 - plogis(ub)) + log(plogis(ub))
-    out_y <- (2 * a - 1) * zb - 2 * a * log(plogis(zb)) - a^2
+    out_u <- a^2 * plogis(ub, lower.tail = FALSE) -
+      ifelse(a == 0, 0, a * (a - 2) * plogis(ub, log.p = TRUE)) +
+      ifelse(is.finite(ub), (a - 1)^2 * ub, 0)
+    out_y <- zb * (2 * a - 1) - 2 * a * plogis(zb, log.p = TRUE) - a^2
   }
   
   return(res + scale * (out_y + out_l + out_u))
