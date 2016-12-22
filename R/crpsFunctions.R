@@ -306,20 +306,38 @@ crps.norm <- function(y, location, scale,
     if (any(Plb + Pub > 1)){
       stop("Sum of 'lmass' and 'umass' exceeds 1.")
     }
-    a <- (1 - Plb - Pub) / (pnorm(ub) - pnorm(lb))
-    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
-    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
-    out_y <- zb * (2 * (a * (pnorm(zb) - pnorm(lb)) + Plb) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+    a <- ifelse(1 - Plb - Pub < 1e-12, 0,
+                (1 - Plb - Pub) / (pnorm(ub) - pnorm(lb)))
+    a[a > 1e12] <- NaN
+    
+    out_l <- -2 * a * dnorm(lb) * Plb +
+      a^2 / sqrt(pi) * pnorm(lb * sqrt(2)) -
+      ifelse(is.finite(lb), lb * Plb^2, 0)
+    out_u <- -2 * a * dnorm(ub) * Pub +
+      a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE) +
+      ifelse(is.finite(ub), ub * Pub^2, 0)
+    out_y <- zb * (2 * (a * (pnorm(zb) - pnorm(lb)) + Plb) - 1) +
+      2 * a * dnorm(zb) - a^2 / sqrt(pi)
   } else if (ind1 & !ind2) {
-    a <- (1 - Plb) / (1 - pnorm(lb))
-    out_l <- -lb * Plb^2 - 2 * a * dnorm(lb) * Plb + a^2 / sqrt(pi) * pnorm(lb * sqrt(2))
+    a <- ifelse(1 - Plb < 1e-12, 0, (1 - Plb) / (1 - pnorm(lb)))
+    a[a > 1e12] <- NaN
+    
+    out_l <- -2 * a * dnorm(lb) * Plb +
+      a^2 / sqrt(pi) * pnorm(lb * sqrt(2)) -
+      ifelse(is.finite(lb), lb * Plb^2, 0)
     out_u <- 0
-    out_y <- zb * (2 * (1 - a * pnorm(zb, lower.tail = FALSE)) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+    out_y <- zb * (2 * (1 - a * pnorm(zb, lower.tail = FALSE)) - 1) +
+      2 * a * dnorm(zb) - a^2 / sqrt(pi)
   } else if (!ind1 & ind2) {
-    a <- (1 - Pub) / pnorm(ub)
+    a <- ifelse(1 - Pub < 1e-12, 0, (1 - Pub) / pnorm(ub))
+    a[a > 1e12] <- NaN
+    
     out_l <- 0
-    out_u <- ub * Pub^2 - 2 * a * dnorm(ub) * Pub + a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE)
-    out_y <- zb * (2 * a * pnorm(zb) - 1) + 2 * a * dnorm(zb) - a^2 / sqrt(pi)
+    out_u <- -2 * a * dnorm(ub) * Pub +
+      a^2 / sqrt(pi) * pnorm(ub * sqrt(2), lower.tail = FALSE) +
+      ifelse(is.finite(ub), ub * Pub^2, 0)
+    out_y <- zb * (2 * a * pnorm(zb) - 1) +
+      2 * a * dnorm(zb) - a^2 / sqrt(pi)
   }
   
   return(res + scale * (out_y + out_l + out_u))
