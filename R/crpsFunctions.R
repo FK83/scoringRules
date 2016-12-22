@@ -408,30 +408,55 @@ crps.t <- function(y, df, location, scale,
     if (any(Plb + Pub > 1)){
       stop("Sum of 'lmass' and 'umass' exceeds 1.")
     }
-    a <- (1 - Plb - Pub) / (pt(ub, df) - pt(lb, df))
-    out_l <- -lb * Plb^2 -
-      2 * a * df / (df - 1) * (1 + lb^2/df) * dt(lb, df) * Plb -
-      sign(-lb) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + lb^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_u <- ub * Pub^2 -
-      2 * a * df / (df - 1) * (1 + ub^2/df) * dt(ub, df) * Pub -
-      sign(ub) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + ub^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
+    a <- ifelse(1 - Plb - Pub < 1e-12, 0,
+                (1 - Plb - Pub) / (pt(ub, df) - pt(lb, df)))
+    a[a > 1e12] <- NaN
+
+    out_l <- sign(lb) * a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2 *
+      pbeta(df / (df + lb^2), df - 0.5, 0.5, lower.tail = FALSE) +
+      ifelse(is.finite(lb),
+             -lb * Plb^2 -
+               2 * a * df / (df - 1) * (1 + lb^2/df) * dt(lb, df) * Plb,
+             0)
+    out_u <- -sign(ub) * a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2 *
+      pbeta(df / (df + ub^2), df - 0.5, 0.5, lower.tail = FALSE) +
+      ifelse(is.finite(ub),
+             ub * Pub^2 -
+               2 * a * df / (df - 1) * (1 + ub^2/df) * dt(ub, df) * Pub,
+             0)
     out_y <- zb * (2 * (a * (pt(zb, df) - pt(lb, df)) + Plb) - 1) +
       2 * a * df / (df - 1) * (1 + zb^2/df) * dt(zb, df)
   } else if (ind1 & !ind2) {
-    a <- (1 - Plb) / (1 - pt(lb, df))
-    out_l <- -lb * Plb^2 -
-      2 * a * df / (df - 1) * (1 + lb^2/df) * dt(lb, df) * Plb -
-      sign(-lb) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + lb^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_u <- -a^2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_y <- zb * (2 * (a * (pt(zb, df) - pt(lb, df)) + Plb) - 1) +
+    a <- ifelse(1 - Plb < 1e-12, 0, (1 - Plb) / (1 - pt(lb, df)))
+    a[a > 1e12] <- NaN
+    
+    out_l <- sign(lb) * a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2 *
+      pbeta(df / (df + lb^2), df - 0.5, 0.5, lower.tail = FALSE) +
+      ifelse(is.finite(lb),
+             -lb * Plb^2 -
+               2 * a * df / (df - 1) * (1 + lb^2/df) * dt(lb, df) * Plb,
+             0)
+    out_u <- -a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
+    out_y <- zb * (2 * (1 - a * pt(zb, df, lower.tail = FALSE)) - 1) +
       2 * a * df / (df - 1) * (1 + zb^2/df) * dt(zb, df)
   } else if (!ind1 & ind2) {
-    a <- (1 - Pub) / pt(ub, df)
-    out_l <- -a^2 * sqrt(df) / (df - 1) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_u <- ub * Pub^2 -
-      2 * a * df / (df - 1) * (1 + ub^2/df) * dt(ub, df) * Pub -
-      sign(ub) * a^2 * sqrt(df) / (df - 1) * pbeta(df / (df + ub^2), df - 0.5, 0.5, lower.tail = FALSE) * beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
-    out_y <- zb * (2 * a * (pt(zb, df) + Plb) - 1) +
+    a <- ifelse(1 - Pub < 1e-12, 0, (1 - Pub) / pt(ub, df))
+    a[a > 1e12] <- NaN
+    
+    out_l <- -a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2
+    out_u <- -sign(ub) * a^2 * sqrt(df) / (df - 1) *
+      beta(0.5, df - 0.5) / beta(0.5, 0.5 * df)^2 *
+      pbeta(df / (df + ub^2), df - 0.5, 0.5, lower.tail = FALSE) +
+      ifelse(is.finite(ub),
+             ub * Pub^2 -
+               2 * a * df / (df - 1) * (1 + ub^2/df) * dt(ub, df) * Pub,
+           0)
+    out_y <- zb * (2 * a * pt(zb, df) - 1) +
       2 * a * df / (df - 1) * (1 + zb^2/df) * dt(zb, df)
   }
   
