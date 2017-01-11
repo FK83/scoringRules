@@ -32,6 +32,7 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976) and the logarithmic score (Good, 1952).
 
 ## History
+  - January 11, 2017: Version 0.9.2 published on CRAN
   - December 2016: Small fixes for truncated/censored distributions
   - September 6, 2016: Version 0.9.1 published on CRAN 
   - August 2016: Added replication materials for our paper on MCMC based forecasting 
