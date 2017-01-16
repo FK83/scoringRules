@@ -7,7 +7,7 @@ An R package to compute scoring rules for fixed (parametric) and simulated forec
   - Previously unavailable closed-form expressions of the CRPS for many parametric distributions
   - Efficient implementation thanks to R/Rcpp 
   - Whenever more than one implementation variant exists, we offer statistically principled default choices
-  
+
 ## Installation
 
 CRAN version:
@@ -34,7 +34,9 @@ The scoring rules we cover are the continuous ranked probability score (CRPS; Ma
 The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
 
 ## History
-  - December 2016: Added multivariate energy and variogram score
+  - Janaury 2017: Added multivariate energy and variogram score
+  - January 11, 2017: Version 0.9.2 published on CRAN
+  - December 2016: Small fixes for truncated/censored distributions
   - September 6, 2016: Version 0.9.1 published on CRAN 
   - August 2016: Added replication materials for our paper on MCMC based forecasting 
     (see <http://arxiv.org/abs/1608.06802>)
@@ -44,7 +46,3 @@ The package further provides functions to compute the multivariate energy and va
   - February 6, 2015: Re-design of internal function structure
   - November 19, 2014: Split functions according to parametric versus simulated forecast distributions
   - September 15, 2014: First commit 
-
-## Acknowledgements
-
-The work of Alexander Jordan and Fabian Krüger has been funded by the European Union Seventh Framework Programme under grant agreement 290976. Sebastian Lerch and Maximiliane Graeter gratefully acknowledge financial support by  Deutsche Forschungsgemeinschaft (DFG) through project C7 ("Statistical postprocessing and stochastic physics for ensemble predictions") within SFB/TRR 165 "Waves to Weather". 
