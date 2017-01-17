@@ -2,8 +2,13 @@ Package: scoringRules
 Type: Package
 Title: Scoring Rules for Parametric and Simulated Distribution Forecasts
 Version: 0.9.2
-Date: 2016-12-22
+<<<<<<< HEAD
+Date: 2016-12-05
 Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch, Maximiliane Graeter
+=======
+Date: 2016-12-22
+Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch
+>>>>>>> d1c3274c79e4b7ba82972613359c557c08ae7158
 Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
 Description: Dictionary-like reference for computing scoring rules in a wide
     range of situations. Covers both parametric forecast distributions (such as
