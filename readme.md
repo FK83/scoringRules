@@ -34,7 +34,7 @@ The scoring rules we cover are the continuous ranked probability score (CRPS; Ma
 The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
 
 ## History
-  - Janaury 2017: Added multivariate energy and variogram score
+  - January 2017: Added multivariate energy and variogram score
   - January 11, 2017: Version 0.9.2 published on CRAN
   - December 2016: Small fixes for truncated/censored distributions
   - September 6, 2016: Version 0.9.1 published on CRAN 
