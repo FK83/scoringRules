@@ -4,35 +4,6 @@
 ################################################################################
 # energy score
 
-# euclnorm <- function(x) {
-#   sqrt(sum(x %*% x))
-# }
-
-# es_sample <- function(y, dat, use_dist = FALSE) {
-#   input <- list(y = y, dat = dat)
-#   check.multivsample(input)
-#   if (length(use_dist) > 1 | !is.logical(use_dist)) {
-#     stop("'use_dist' must be logical of length 1")
-#   }
-#   
-#   out <- numeric()
-#   m <- dim(dat)[2]
-#   s1 <- sum(sapply(1:m, function(i){euclnorm(dat[, i] - y) } ))
-#   if (use_dist) {
-#     s2 <- 2*sum(dist(t(dat)))
-#   } else {
-#     s2 <- 0
-#     for (j in 1:m) {
-#       for (k in j:m) {
-#         s2 <- s2 +2 * euclnorm(dat[, j] - dat[, k]) 
-#       }
-#     }
-#   }
-#   out <- (s1 / m) - s2 / (2 * m * m)
-#   
-#   return(out)
-# }
-
 es_sample <- function(y, dat) {
   input <- list(y = y, dat = dat)
   check.multivsample(input)
