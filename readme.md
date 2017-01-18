@@ -1,6 +1,6 @@
 # scoringRules 
 
-An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (Heidelberg Institute for Theoretical Studies, HITS), Fabian Krüger (Heidelberg University) and Sebastian Lerch (HITS and Karlsruhe Institute of Technology). 
+An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (Heidelberg Institute for Theoretical Studies, HITS), Fabian Krüger (Heidelberg University) and Sebastian Lerch (HITS and Karlsruhe Institute of Technology, KIT) and Maximiliane Graeter (KIT). 
 
 ## Highlights
   - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
@@ -31,7 +31,10 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
 
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976) and the logarithmic score (Good, 1952).
 
+The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
+
 ## History
+  - Janaury 2017: Added multivariate energy and variogram score
   - January 11, 2017: Version 0.9.2 published on CRAN
   - December 2016: Small fixes for truncated/censored distributions
   - September 6, 2016: Version 0.9.1 published on CRAN 

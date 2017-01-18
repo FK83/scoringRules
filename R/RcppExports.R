@@ -73,3 +73,11 @@ filterMarkovMixtureC <- function(p, P, lnpdat) {
     .Call('scoringRules_filterMarkovMixtureC', PACKAGE = 'scoringRules', p, P, lnpdat)
 }
 
+euclnormC <- function(x) {
+    .Call('scoringRules_euclnormC', PACKAGE = 'scoringRules', x)
+}
+
+energyscoreC <- function(y, dat) {
+    .Call('scoringRules_energyscoreC', PACKAGE = 'scoringRules', y, dat)
+}
+

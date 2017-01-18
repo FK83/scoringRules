@@ -248,3 +248,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// euclnormC
+double euclnormC(arma::colvec x);
+RcppExport SEXP scoringRules_euclnormC(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::colvec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(euclnormC(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// energyscoreC
+double energyscoreC(arma::colvec y, arma::mat dat);
+RcppExport SEXP scoringRules_energyscoreC(SEXP ySEXP, SEXP datSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::colvec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dat(datSEXP);
+    rcpp_result_gen = Rcpp::wrap(energyscoreC(y, dat));
+    return rcpp_result_gen;
+END_RCPP
+}
