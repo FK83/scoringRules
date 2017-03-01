@@ -23,12 +23,24 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
     }
     check.sample(input)
     
-    # Throw error if weights are not equal
+    # Further checks for inconsistent/not implemented inputs
+    if (method == "edf"){
+      if (!is.null(bw)){
+        warning("Bandwidth parameter is ignored (not meaningful for edf method)")
+      }
+      if (num_int){
+        warning("Numerical integration is *NOT* used (not meaningful for edf method)")
+      }
+    }
     if (method == "kde" & !is.null(w)) {
-      warning("Observation weights not implemented for kernel density estimation - edf used instead.")
+      warning("Observation weights not implemented for kernel density estimation - edf used instead. Any inputs on bandwidth and numerical integration are being ignored.")
       method <- "edf"
     }
+    if (!method %in% c("edf", "kde")){
+      stop("Unexpected choice of method - please select either edf or kde")
+    }
     
+    # Score computations
     if (method == "edf") {
       out <- crps.edf(dat = dat, y = y, w = w)
     } else if (method == "kde") {
@@ -51,9 +63,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
         if (show_messages) 
           message("Used numerical integration for CRPS computation (tolerance = 1e-6).")
       }
-    } else {
-      stop("Unexpected choice of method - please select either edf or kde")
-    }
+    } 
     return(out)
   }
 
