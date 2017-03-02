@@ -19,10 +19,10 @@ logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 \item{y}{Realized value (numeric vector of length one).}
 \item{dat}{Numeric vector of data (simulation draws from forecast distribution).}
 \item{method}{String, approximation method used in \link{crps_sample}. Currently implemented: "edf" (empirical distribution function) and "kde" (kernel density estimation).}
-\item{w}{Numeric vector of observation weights for \code{dat}.}
-\item{bw}{Bandwidth parameter for kernel density estimator (numeric vector of length one).}
-\item{num_int}{Logical of length one, whether or not to use numerical integration (may speed up computation for \link{crps_sample} in case of large samples \code{dat} if \code{method = "kde"}).}
-\item{show_messages}{Logical of length one, on/off switch for messages (does not affect warnings and errors, which are always printed).}
+\item{w}{Numeric vector of weights for \code{dat} (if \code{method = "edf"}).}
+\item{bw}{Numeric scalar for bandwidth (if \code{method = "kde"}).}
+\item{num_int}{Logical; if TRUE numerical integration is used (if \code{method = "kde"}).}
+\item{show_messages}{Logical; on/off switch for messages (does not affect warnings and errors, which are always printed).}
 }
 
 \value{Value of the score. \emph{A lower score indicates a better forecast.}}
@@ -43,7 +43,7 @@ Laio, F. and S. Tamea (2007), `Verification tools for probabilistic forecasts of
 Alexander Jordan, Fabian Krueger
 }
 \details{
-When using \code{method = "edf"}, \link{crps_sample} employs an empirical version of the quantile decomposition of the CRPS (Laio and Tamea, 2007). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}.
+When using \code{method = "edf"}, \link{crps_sample} employs an empirical version of the quantile decomposition of the CRPS (Laio and Tamea, 2007). When using \code{method = "kde"}, the function does kernel density estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be specified manually, in which case it must be a positive number. If \code{bandwidth == NULL}, the bandwidth is selected using the core function \link{bw.nrd}. Numerical integration may speed up computation for \link{crps_sample} in case of large samples \code{dat} if \code{method = "kde"}.
 
 \link{logs_sample} \emph{always} uses kernel density estimation with a Gaussian kernel (the EDF option is not available since the score requires a density). The choice of bandwidth is handled as in \link{crps_sample}.
 }
