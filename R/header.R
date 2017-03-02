@@ -26,15 +26,16 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
     # Further checks for inconsistent/not implemented inputs
     if (method == "edf"){
       if (!is.null(bw)){
-        warning("Bandwidth parameter is ignored (not meaningful for edf method)")
+        warning("Parameter 'bw' is ignored for edf method.")
       }
       if (num_int){
-        warning("Numerical integration is *NOT* used (not meaningful for edf method)")
+        warning("Parameter 'num_int' is ignored for edf method.")
       }
     }
-    if (method == "kde" & !is.null(w)) {
-      warning("Observation weights not implemented for kernel density estimation - edf used instead. Any inputs on bandwidth and numerical integration are being ignored.")
-      method <- "edf"
+    if (method == "kde") {
+      if (!is.null(w)) {
+        warning("Parameter 'w' is ignored for kde method.")
+      }
     }
     if (!method %in% c("edf", "kde")){
       stop("Unexpected choice of method - please select either edf or kde")
