@@ -511,7 +511,6 @@ crps.2pexp <- function(y, location, scale1, scale2) {
   s <- scale1 + scale2
   a1 <- scale1 / s
   a2 <- scale2 / s
-  b2 <- a1 - a2
   
   crps.exp(-y1, -location, scale1, a2) +
     crps.exp(y2, location, scale2, a1)
