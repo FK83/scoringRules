@@ -615,7 +615,7 @@ crps.gpd <- function(y, location, scale, shape, mass = 0) {
     x <- 1 + shape * z
     x[x < 0] <- 0
     p <- 1 - x ^ (-1 / shape) * (1 - mass)
-    p[p < 0] <- 0
+    p[p < mass] <- 0
     c1 <- (z + 1 / shape) * (2 * p - 1)
     c2 <- 2 * (1 - mass)^shape / shape / (shape - 1) * (1 / (shape - 2) + (1 - p) ^ (1 - shape))
     out <- c1 - c2
