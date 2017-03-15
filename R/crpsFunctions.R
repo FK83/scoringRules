@@ -123,17 +123,8 @@ crps.beta <- function(y, shape1, shape2) {
 
 # laplace
 crps.lapl <- function(y, location, scale) {
-  z <- (y - location)/scale
-  p <- 0.5 + 0.5 * sign(z) * pexp(abs(z))
-  minp <- pmin(p, 1-p)
-  c1 <- z*(2*p - 1) - 0.75
-  c2 <- log(2 * minp)
-  ind <- !is.finite(c2)
-  if (any(ind)) {
-    c2[ind] <- 0
-  }
-  
-  return(scale*(c1 - 2 * minp * (c2 - 1)))  
+  abs_z <- abs((y - location)/scale)
+  return(scale * (abs_z + exp(-abs_z) - 0.75))
 }
 
 # logistic
