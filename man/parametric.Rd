@@ -1,8 +1,6 @@
 \name{parametric}
-\alias{crps}
-\alias{logs}
-\keyword{logs}
-\keyword{crps}
+\alias{crps.default}
+\alias{logs.default}
 \title{
 Scoring Rules for Parametric Forecast Distributions
 }
@@ -10,8 +8,9 @@ Scoring Rules for Parametric Forecast Distributions
 Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
 }
 \usage{
-crps(y, family, ...)
-logs(y, family, ...)
+## Default S3 method:
+\method{crps}{default}(y, family, ...)
+\method{logs}{default}(y, family, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

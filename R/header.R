@@ -87,7 +87,12 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
 ################################################################################
 ### parametric
 
-crps <- function(y, family, ...) {
+crps <- function(y, ...) UseMethod("crps")
+
+logs <- function(y, ...) UseMethod("logs")
+
+#' @export
+crps.default <- function(y, family, ...) {
   family <- checkFamily(family, "crps")
   checkInput <- get(paste0("check.", family))
   calculateCRPS <- get(paste0("crps.", family))
@@ -110,7 +115,8 @@ crps <- function(y, family, ...) {
   return(out)
 }
 
-logs <- function(y, family, ...) {
+#' @export
+logs.default <- function(y, family, ...) {
   family <- checkFamily(family, "ls")
   checkInput <- get(paste0("check.", family))
   calculateLS <- get(paste0("ls.", family))
