@@ -130,7 +130,7 @@ hesstlogis <- function(y, location, scale,
   PDF <- dlogis(z_lb_ub) / denom
   PDFp_over_PDF <- - 1 + 2 * (1 + exp(-z_lb_ub)) * dlogis(z_lb_ub)
   G <- ifelse(is.finite(z_lb_ub),
-              plogis(z_lb_ub, log = TRUE) -
+              plogis(z_lb_ub, log.p = TRUE) -
                 z_lb_ub * plogis(z_lb_ub, lower.tail = FALSE),
               0) / denom
   CRPS <- crps.logis(z, 0, 1, lb, ub, "trunc", "trunc")
