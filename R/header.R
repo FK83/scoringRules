@@ -7,7 +7,7 @@ orientation <- -1
 #' @importFrom methods existsFunction
 #' @importFrom stats bw.nrd dbeta dexp dgamma dlnorm dlogis dnbinom dnorm dpois dt dunif integrate
 #' @importFrom stats pbeta pexp pgamma plnorm plogis pnbinom pnorm ppois pt punif
-#' @useDynLib scoringRules
+#' @useDynLib scoringRules, .registration = TRUE
 
 ################################################################################
 ### xx_sample
