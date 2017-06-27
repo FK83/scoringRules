@@ -1,6 +1,7 @@
 ### crps ###
 
 # standard
+#' @export
 crps_norm <- function(y, mean = 0, sd = 1) {
   if (identical(mean, 0) && identical(sd , 1)) {
     y * (2 * pnorm(y) - 1) + 2 * dnorm(y) - 1 / sqrt(pi)
@@ -23,6 +24,7 @@ crps_norm <- function(y, mean = 0, sd = 1) {
 
 
 # censored
+#' @export
 crps_cnorm <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -90,6 +92,7 @@ crps_cnorm <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 crps_tnorm <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -165,19 +168,21 @@ crps_tnorm <- function(y, location = 0, scale = 1,
 ### gradient (location, scale) ###
 
 # standard
-gradcrps_norm <- function(y , location = 0, scale = 1) {
-  if (identical(location, 0) &&
-      identical(scale, 1)) {
+#' @export
+gradcrps_norm <- function(y , mean = 0, sd = 1) {
+  if (identical(mean, 0) &&
+      identical(sd, 1)) {
     
     term0 <- crps_norm(y)
     term1 <- 1 - 2 * pnorm(y)
     
-    cbind(dloc = term1, dscale = term0 + y * term1)
-  } else if (all(is.finite(scale) & scale > 0)) {
-    gradcrps_norm((y - location) / scale)
+    cbind(dmean = term1, dsd = term0 + y * term1)
+  } else if (all(is.finite(sd) & sd > 0)) {
+    gradcrps_norm((y - mean) / sd)
   } else {
     input <- data.frame(z = y - mean, sd = sd)
-    out <- rep(NaN, dim(input)[1L])
+    out <- matrix(NaN, dim(input)[1L], 2,
+                  dimnames = list(NULL, c("dmean", "dsd")))
     isNaN <- with(input, is.na(sd) | sd <= 0)
     ind2 <- !isNaN
     if (any(ind2)) {
@@ -190,6 +195,7 @@ gradcrps_norm <- function(y , location = 0, scale = 1) {
 
 
 # censored
+#' @export
 gradcrps_cnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -246,6 +252,7 @@ gradcrps_cnorm <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 gradcrps_tnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -331,7 +338,39 @@ gradcrps_tnorm <- function(y, location = 0, scale = 1,
 
 ### Hessian (location, scale) ###
 
+# standard
+#' @export
+hesscrps_norm <- function(y , mean = 0, sd = 1) {
+  if (identical(mean, 0) &&
+      identical(sd, 1)) {
+    
+    term1 <- dnorm(y)
+    
+    d2mean <- term1
+    dmean.dsd <- dsd.dmean <- term1 * y
+    d2sd <- term1 * y^2
+    
+    2 * cbind(d2mean, d2sd, dmean.dsd, dsd.dmean)
+  } else if (all(is.finite(sd) & sd > 0)) {
+    hesscrps_norm((y - mean) / sd) / sd
+  } else {
+    input <- data.frame(z = y - mean, sd = sd)
+    out <- matrix(NaN, dim(input)[1L], 4,
+                  dimnames = list(NULL, c("d2mean", "d2sd",
+                                          "dmean.dsd", "dsd.dmean")))
+    isNaN <- with(input, is.na(sd) | sd <= 0)
+    ind2 <- !isNaN
+    if (any(ind2)) {
+      out[ind2] <- with(input[ind2, ],
+                        hesscrps_norm(z / sd) / sd)
+    }
+    out
+  }
+}
+
+
 # censored
+#' @export
 hesscrps_cnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -348,15 +387,15 @@ hesscrps_cnorm <- function(y, location = 0, scale = 1,
     term2 <- dnorm(lower) * pnorm(lower)
     term3 <- dnorm(upper) * pnorm(upper, lower.tail = FALSE)
     
-    d2mu <- term1 - term2 - term3
-    dmu.dsigma <- dsigma.dmu <- term1 * z -
+    d2loc <- term1 - term2 - term3
+    dloc.dscale <- dscale.dloc <- term1 * z -
       term2 * ifelse(is.finite(lower), lower, 0) -
       term3 * ifelse(is.finite(upper), upper, 0)
-    d2sigma <- term1 * z^2 -
+    d2scale <- term1 * z^2 -
       term2 * ifelse(is.finite(lower), lower^2, 0) -
       term3 * ifelse(is.finite(upper), upper^2, 0)
     
-    out <- 2 * cbind(d2mu, d2sigma, dmu.dsigma, dsigma.dmu)
+    out <- 2 * cbind(d2loc, d2scale, dloc.dscale, dscale.dloc)
     out[lower > upper, ] <- NaN
     out[lower == upper, ] <- 0
     out
@@ -370,7 +409,9 @@ hesscrps_cnorm <- function(y, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- with(input, {
       is.na(scale) | scale <= 0 |
         is.na(lower) | is.na(upper)
@@ -389,6 +430,7 @@ hesscrps_cnorm <- function(y, location = 0, scale = 1,
   
 
 # truncated
+#' @export
 hesscrps_tnorm <- function(y, location = 0, scale = 1,
                       lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -426,7 +468,9 @@ hesscrps_tnorm <- function(y, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- with(input, {
       is.na(scale) | scale <= 0 |
         is.na(lower) | is.na(upper)

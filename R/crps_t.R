@@ -1,6 +1,7 @@
 ### crps ###
 
 # standard
+#' @export
 crps_t <- function(y, df, location = 0, scale = 1) {
   all_df_in_1_to_Inf <- all(is.finite(df) & df > 1)
   if (all_df_in_1_to_Inf &&
@@ -37,6 +38,7 @@ crps_t <- function(y, df, location = 0, scale = 1) {
 
 
 # censored
+#' @export
 crps_ct <- function(y, df, location = 0, scale = 1,
                     lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -124,6 +126,7 @@ crps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 crps_tt <- function(y, df, location = 0, scale = 1,
                     lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -217,6 +220,7 @@ crps_tt <- function(y, df, location = 0, scale = 1,
 ### gradient (location, scale) ###
 
 # standard
+#' @export
 gradcrps_t <- function(y , df, location = 0, scale = 1) {
   all_df_in_1_to_Inf <- all(is.finite(df) & df > 1)
   if (all_df_in_1_to_Inf &&
@@ -250,6 +254,7 @@ gradcrps_t <- function(y , df, location = 0, scale = 1) {
 }
 
 # censored
+#' @export
 gradcrps_ct <- function(y, df, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -316,6 +321,7 @@ gradcrps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 gradcrps_tt <- function(y, df, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -417,7 +423,47 @@ gradcrps_tt <- function(y, df, location = 0, scale = 1,
 
 ### Hessian (location, scale) ###
 
+# standard
+#' @export
+hesscrps_t <- function(y , df, location = 0, scale = 1) {
+  all_df_in_1_to_Inf <- all(is.finite(df) & df > 1)
+  if (all_df_in_1_to_Inf &&
+      identical(location, 0) &&
+      identical(scale, 1)) {
+    
+    term1 <- dt(y, df)
+    d2loc <- term1
+    dloc.dscale <- dscale.dloc <- term1 * y
+    d2scale <- term1 * y^2
+    
+    2 * cbind(d2loc, d2scale, dloc.dscale, dscale.dloc)
+  } else if (all_df_in_1_to_Inf &&
+             all(is.finite(scale) & scale > 0)) {
+    hesscrps_t((y - location) / scale, df) / scale
+  } else {
+    input <- data.frame(z = y - location,
+                        df = df,
+                        scale = scale)
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
+    isNaN <- with(input, is.na(df) | df <= 1 |
+                    is.na(scale) | scale <= 0)
+    ind2 <- !isNaN & input$df == Inf
+    ind3 <- !isNaN & !ind2
+    if (any(ind2)) {
+      out[ind2] <- with(input[ind2, ], hesscrps_norm(z / scale) / scale)
+    }
+    if (any(ind3)) {
+      out[ind3] <- with(input[ind3, ], gesscrps_t(z / scale, df) / scale)
+    }
+    out
+  }
+}
+
+
 # censored
+#' @export
 hesscrps_ct <- function(y, df, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -457,7 +503,9 @@ hesscrps_ct <- function(y, df, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- is.na(input$z) |
       is.na(input$df) | input$df <= 1 |
       is.na(input$scale) | input$scale <= 0
@@ -481,6 +529,7 @@ hesscrps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 hesscrps_tt <- function(y, df, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -522,7 +571,9 @@ hesscrps_tt <- function(y, df, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- is.na(input$z) |
       is.na(input$df) | input$df <= 1 |
       is.na(input$scale) | input$scale <= 0

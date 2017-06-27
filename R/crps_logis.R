@@ -8,6 +8,7 @@
 ### crps ###
 
 # standard
+#' @export
 crps_logis <- function(y, location = 0, scale = 1) {
   if (identical(location, 0) & identical(scale, 1)) {
     y - 2 * plogis(y, log.p = TRUE) - 1
@@ -30,6 +31,7 @@ crps_logis <- function(y, location = 0, scale = 1) {
 
 
 # censored
+#' @export
 crps_clogis <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
   
@@ -97,6 +99,7 @@ crps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 crps_tlogis <- function(y, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -180,7 +183,8 @@ crps_tlogis <- function(y, location = 0, scale = 1,
 ### gradients (location, scale)
 
 # standard
-gradcrps_norm <- function(y , location = 0, scale = 1) {
+#' @export
+gradcrps_logis <- function(y , location = 0, scale = 1) {
   if (identical(location, 0) &&
       identical(scale, 1)) {
     
@@ -191,19 +195,22 @@ gradcrps_norm <- function(y , location = 0, scale = 1) {
   } else if (all(is.finite(scale) & scale > 0)) {
     gradcrps_logis((y - location) / scale)
   } else {
-    input <- data.frame(z = y - mean, sd = sd)
-    out <- rep(NaN, dim(input)[1L])
-    isNaN <- with(input, is.na(sd) | sd <= 0)
+    input <- data.frame(z = y - location, scale = scale)
+    out <- matrix(NaN, dim(input)[1L], 2,
+                  dimnames = list(NULL, c("dloc", "dscale")))
+    isNaN <- with(input, is.na(scale) | scale <= 0)
     ind2 <- !isNaN
     if (any(ind2)) {
-      out[ind2] <- with(input[ind2, ],
-                        gradcrps_logis(z / sd))
+      out[ind2, ] <- with(input[ind2, ], {
+        gradcrps_logis(z / scale)
+      })
     }
     out
   }
 }
 
 # censored
+#' @export
 gradcrps_clogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -260,6 +267,7 @@ gradcrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 gradcrps_tlogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -350,7 +358,39 @@ gradcrps_tlogis <- function(y, location = 0, scale = 1,
 
 ### Hessian (location, scale) ###
 
+# standard
+#' @export
+hesscrps_logis <- function(y , location = 0, scale = 1) {
+  if (identical(location, 0) &&
+      identical(scale, 1)) {
+    
+    term1 <- dlogis(y)
+    
+    d2mu <- term1
+    dmu.dsigma <- dsigma.dmu <- term1 * y
+    d2sigma <- term1 * y^2
+    
+    2 * cbind(d2mu, d2sigma, dmu.dsigma, dsigma.dmu)
+  } else if (all(is.finite(scale) & scale > 0)) {
+    hesscrps_logis((y - location) / scale) / scale
+  } else {
+    input <- data.frame(z = y - location, scale = scale)
+    out <- matrix(NaN, dim(input)[1L], 4,
+                  dimnames = list(NULL, c("d2loc", "d2scale",
+                                          "dloc.dscale", "dscale.dloc")))
+    isNaN <- with(input, is.na(scale) | scale <= 0)
+    ind2 <- !isNaN
+    if (any(ind2)) {
+      out[ind2, ] <- with(input[ind2, ], {
+        hesscrps_logis(z / scale) / scale
+      })
+    }
+    out
+  }
+}
+
 # censored
+#' @export
 hesscrps_clogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -367,15 +407,15 @@ hesscrps_clogis <- function(y, location = 0, scale = 1,
     term2 <- dlogis(lower) * plogis(lower)
     term3 <- dlogis(upper) * plogis(upper, lower.tail = FALSE)
     
-    d2mu <- term1 - term2 - term3
-    dmu.dsigma <- dsigma.dmu <- term1 * z -
+    d2loc <- term1 - term2 - term3
+    dloc.dscale <- dscale.dloc <- term1 * z -
       term2 * ifelse(is.finite(lower), lower, 0) -
       term3 * ifelse(is.finite(upper), upper, 0)
-    d2sigma <- term1 * z^2 -
+    d2scale <- term1 * z^2 -
       term2 * ifelse(is.finite(lower), lower^2, 0) -
       term3 * ifelse(is.finite(upper), upper^2, 0)
     
-    out <- 2 * cbind(d2mu, d2sigma, dmu.dsigma, dsigma.dmu)
+    out <- 2 * cbind(d2loc, d2scale, dloc.dscale, dscale.dloc)
     out[lower > upper, ] <- NaN
     out[lower == upper, ] <- 0
     out
@@ -389,7 +429,9 @@ hesscrps_clogis <- function(y, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- with(input, {
       is.na(scale) | scale <= 0 |
         is.na(lower) | is.na(upper)
@@ -408,6 +450,7 @@ hesscrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @export
 hesscrps_tlogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
   nan_in_bounds <- anyNA(lower) || anyNA(upper)
@@ -447,7 +490,9 @@ hesscrps_tlogis <- function(y, location = 0, scale = 1,
     input <- data.frame(z = y - location, scale = scale,
                         lower = lower - location,
                         upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
+    out <- rep(NaN, dim(input)[1L], 4,
+               dimnames = list(NULL, c("d2loc", "d2scale",
+                                       "dloc.dscale", "dscale.dloc")))
     isNaN <- with(input, {
       is.na(scale) | scale <= 0 |
         is.na(lower) | is.na(upper)
