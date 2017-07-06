@@ -6,6 +6,7 @@ output:
   rmarkdown::html_vignette:
     toc: TRUE
     toc_depth: 2
+    number_sections: TRUE
 vignette: >
   %\VignetteIndexEntry{CRPS formulas}
   %\VignetteEngine{knitr::rmarkdown}
