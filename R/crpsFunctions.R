@@ -522,7 +522,6 @@ crps.2pnorm <- function(y, location, scale1, scale2) {
   s <- scale1 + scale2
   a1 <- scale1 / s
   a2 <- scale2 / s
-  b2 <- a1 - a2
   
   crps.norm(y1, location, scale1, upper = location, umass = a2) +
     crps.norm(y2, location, scale2, lower = location, lmass = a1)
