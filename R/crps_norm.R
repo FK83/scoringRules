@@ -2,21 +2,21 @@
 
 # standard
 #' @export
-crps_norm <- function(y, mean = 0, sd = 1) {
-  if (identical(mean, 0) && identical(sd , 1)) {
+crps_norm <- function(y, location = 0, scale = 1) {
+  if (identical(location, 0) && identical(scale , 1)) {
     y * (2 * pnorm(y) - 1) + 2 * dnorm(y) - 1 / sqrt(pi)
-  } else if (all(is.finite(sd) & sd > 0)) {
-    sd * crps_norm((y - mean) / sd)
+  } else if (all(is.finite(scale) & scale > 0)) {
+    scale * crps_norm((y - location) / scale)
   } else {
-    input <- data.frame(z = abs(y - mean), sd = sd)
+    input <- data.frame(z = abs(y - location), scale = scale)
     out <- rep(NaN, dim(input)[1L])
-    isNaN <- with(input, is.na(sd) | sd < 0)
-    ind1 <- input$sd == 0 & !isNaN
+    isNaN <- with(input, is.na(scale) | scale < 0)
+    ind1 <- input$scale == 0 & !isNaN
     ind2 <- !isNaN & !ind1
     if (any(ind1)) out[ind1] <- input$z[ind1]
     if (any(ind2)) {
       out[ind2] <- with(input[ind2, ],
-                        sd * crps_norm(-z / sd))
+                        scale * crps_norm(-z / scale))
     }
     out
   }
@@ -169,25 +169,25 @@ crps_tnorm <- function(y, location = 0, scale = 1,
 
 # standard
 #' @export
-gradcrps_norm <- function(y , mean = 0, sd = 1) {
-  if (identical(mean, 0) &&
-      identical(sd, 1)) {
+gradcrps_norm <- function(y , location = 0, scale = 1) {
+  if (identical(location, 0) &&
+      identical(scale, 1)) {
     
     term0 <- crps_norm(y)
     term1 <- 1 - 2 * pnorm(y)
     
-    cbind(dmean = term1, dsd = term0 + y * term1)
-  } else if (all(is.finite(sd) & sd > 0)) {
-    gradcrps_norm((y - mean) / sd)
+    cbind(dloc = term1, dscale = term0 + y * term1)
+  } else if (all(is.finite(scale) & scale > 0)) {
+    gradcrps_norm((y - location) / scale)
   } else {
-    input <- data.frame(z = y - mean, sd = sd)
+    input <- data.frame(z = y - location, scale = scale)
     out <- matrix(NaN, dim(input)[1L], 2,
-                  dimnames = list(NULL, c("dmean", "dsd")))
-    isNaN <- with(input, is.na(sd) | sd <= 0)
+                  dimnames = list(NULL, c("dloc", "dscale")))
+    isNaN <- with(input, is.na(scale) | scale <= 0)
     ind2 <- !isNaN
     if (any(ind2)) {
       out[ind2] <- with(input[ind2, ],
-                        gradcrps_norm(z / sd))
+                        gradcrps_norm(z / scale))
     }
     out
   }
@@ -340,29 +340,29 @@ gradcrps_tnorm <- function(y, location = 0, scale = 1,
 
 # standard
 #' @export
-hesscrps_norm <- function(y , mean = 0, sd = 1) {
-  if (identical(mean, 0) &&
-      identical(sd, 1)) {
+hesscrps_norm <- function(y , location = 0, scale = 1) {
+  if (identical(location, 0) &&
+      identical(scale, 1)) {
     
     term1 <- dnorm(y)
     
-    d2mean <- term1
-    dmean.dsd <- dsd.dmean <- term1 * y
-    d2sd <- term1 * y^2
+    d2loc <- term1
+    dloc.dscale <- dscale.dloc <- term1 * y
+    d2scale <- term1 * y^2
     
-    2 * cbind(d2mean, d2sd, dmean.dsd, dsd.dmean)
-  } else if (all(is.finite(sd) & sd > 0)) {
-    hesscrps_norm((y - mean) / sd) / sd
+    2 * cbind(d2loc, d2scale, dloc.dscale, dscale.dloc)
+  } else if (all(is.finite(scale) & scale > 0)) {
+    hesscrps_norm((y - location) / scale) / scale
   } else {
-    input <- data.frame(z = y - mean, sd = sd)
+    input <- data.frame(z = y - location, scale = scale)
     out <- matrix(NaN, dim(input)[1L], 4,
-                  dimnames = list(NULL, c("d2mean", "d2sd",
-                                          "dmean.dsd", "dsd.dmean")))
-    isNaN <- with(input, is.na(sd) | sd <= 0)
+                  dimnames = list(NULL, c("d2loc", "d2scale",
+                                          "dloc.dscale", "dscale.dloc")))
+    isNaN <- with(input, is.na(scale) | scale <= 0)
     ind2 <- !isNaN
     if (any(ind2)) {
       out[ind2] <- with(input[ind2, ],
-                        hesscrps_norm(z / sd) / sd)
+                        hesscrps_norm(z / scale) / scale)
     }
     out
   }
