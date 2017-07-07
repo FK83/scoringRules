@@ -2,82 +2,82 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 dnormC <- function(x) {
-    .Call('scoringRules_dnormC', PACKAGE = 'scoringRules', x)
+    .Call(scoringRules_dnormC, x)
 }
 
 pnormC <- function(x) {
-    .Call('scoringRules_pnormC', PACKAGE = 'scoringRules', x)
+    .Call(scoringRules_pnormC, x)
 }
 
 auxcrpsC <- function(m, s) {
-    .Call('scoringRules_auxcrpsC', PACKAGE = 'scoringRules', m, s)
+    .Call(scoringRules_auxcrpsC, m, s)
 }
 
 crpsmixnC <- function(w, m, s, y) {
-    .Call('scoringRules_crpsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
+    .Call(scoringRules_crpsmixnC, w, m, s, y)
 }
 
 lsmixnC <- function(w, m, s, y) {
-    .Call('scoringRules_lsmixnC', PACKAGE = 'scoringRules', w, m, s, y)
+    .Call(scoringRules_lsmixnC, w, m, s, y)
 }
 
 dmixnC <- function(m, s, y) {
-    .Call('scoringRules_dmixnC', PACKAGE = 'scoringRules', m, s, y)
+    .Call(scoringRules_dmixnC, m, s, y)
 }
 
 pmixnC <- function(m, s, y) {
-    .Call('scoringRules_pmixnC', PACKAGE = 'scoringRules', m, s, y)
+    .Call(scoringRules_pmixnC, m, s, y)
 }
 
 mvndrawC <- function(mu, sig) {
-    .Call('scoringRules_mvndrawC', PACKAGE = 'scoringRules', mu, sig)
+    .Call(scoringRules_mvndrawC, mu, sig)
 }
 
 carterkohn <- function(y, Z, Ht, Qt, m, p, t, B0, V0) {
-    .Call('scoringRules_carterkohn', PACKAGE = 'scoringRules', y, Z, Ht, Qt, m, p, t, B0, V0)
+    .Call(scoringRules_carterkohn, y, Z, Ht, Qt, m, p, t, B0, V0)
 }
 
 drawsigmaC <- function(yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar) {
-    .Call('scoringRules_drawsigmaC', PACKAGE = 'scoringRules', yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar)
+    .Call(scoringRules_drawsigmaC, yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar)
 }
 
 drawbetaC <- function(y, Z, s2, betapriorm, betaprioriv) {
-    .Call('scoringRules_drawbetaC', PACKAGE = 'scoringRules', y, Z, s2, betapriorm, betaprioriv)
+    .Call(scoringRules_drawbetaC, y, Z, s2, betapriorm, betaprioriv)
 }
 
 makeregs_fcC <- function(ydat, p) {
-    .Call('scoringRules_makeregs_fcC', PACKAGE = 'scoringRules', ydat, p)
+    .Call(scoringRules_makeregs_fcC, ydat, p)
 }
 
 getfcsts <- function(beta, Sigt0, Wdraw, ydat, nf, p) {
-    .Call('scoringRules_getfcsts', PACKAGE = 'scoringRules', beta, Sigt0, Wdraw, ydat, nf, p)
+    .Call(scoringRules_getfcsts, beta, Sigt0, Wdraw, ydat, nf, p)
 }
 
 meye <- function(n) {
-    .Call('scoringRules_meye', PACKAGE = 'scoringRules', n)
+    .Call(scoringRules_meye, n)
 }
 
 matmult <- function(x, nt) {
-    .Call('scoringRules_matmult', PACKAGE = 'scoringRules', x, nt)
+    .Call(scoringRules_matmult, x, nt)
 }
 
 bvarFcstC <- function(b, sig, y, nf) {
-    .Call('scoringRules_bvarFcstC', PACKAGE = 'scoringRules', b, sig, y, nf)
+    .Call(scoringRules_bvarFcstC, b, sig, y, nf)
 }
 
 drawMultinomC <- function(probs) {
-    .Call('scoringRules_drawMultinomC', PACKAGE = 'scoringRules', probs)
+    .Call(scoringRules_drawMultinomC, probs)
 }
 
 filterMarkovMixtureC <- function(p, P, lnpdat) {
-    .Call('scoringRules_filterMarkovMixtureC', PACKAGE = 'scoringRules', p, P, lnpdat)
+    .Call(scoringRules_filterMarkovMixtureC, p, P, lnpdat)
 }
 
 euclnormC <- function(x) {
-    .Call('scoringRules_euclnormC', PACKAGE = 'scoringRules', x)
+    .Call(scoringRules_euclnormC, x)
 }
 
 energyscoreC <- function(y, dat) {
-    .Call('scoringRules_energyscoreC', PACKAGE = 'scoringRules', y, dat)
+    .Call(scoringRules_energyscoreC, y, dat)
 }
 

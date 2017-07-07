@@ -129,15 +129,15 @@ gradtlogis <- function(y, location, scale,
   
   renorm <- 1 / (plogis(ub) - plogis(lb))
   FF <- renorm * (plogis(z) - plogis(lb))
-  Gz <- plogis(z, log = TRUE) - z * plogis(z, lower.tail = FALSE)
+  Gz <- plogis(z, log.p = TRUE) - z * plogis(z, lower.tail = FALSE)
   Glb <- ifelse(
     is.finite(lb),
-    plogis(lb, log = TRUE, lower.tail = FALSE) + lb * plogis(lb),
+    plogis(lb, log.p = TRUE, lower.tail = FALSE) + lb * plogis(lb),
     0
   )
   Gub <- ifelse(
     is.finite(ub),
-    plogis(ub, log = TRUE) - ub * plogis(ub, lower.tail = FALSE),
+    plogis(ub, log.p = TRUE) - ub * plogis(ub, lower.tail = FALSE),
     0
   )
   

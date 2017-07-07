@@ -1,13 +1,10 @@
-# !!! Important !!! Set orientation = 1 for positive orientation, to - 1 for negative orientation
-# (only used in functions that appear in the package: xx and xx_sample, where xx = (crps, logs, qs)
-orientation <- -1
-
+################################################################################
 #' @export crps logs crps_sample logs_sample flapl fnorm f2pexp fmixnorm f2pnorm ft fllapl flogis fllogis fexp fgev fgpd es_sample vs_sample
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods existsFunction
 #' @importFrom stats bw.nrd dbeta dexp dgamma dlnorm dlogis dnbinom dnorm dpois dt dunif integrate
 #' @importFrom stats pbeta pexp pgamma plnorm plogis pnbinom pnorm ppois pt punif
-#' @useDynLib scoringRules
+#' @useDynLib scoringRules, .registration = TRUE
 
 ################################################################################
 ### xx_sample
@@ -87,7 +84,12 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
 ################################################################################
 ### parametric
 
-crps <- function(y, family, ...) {
+crps <- function(y, ...) UseMethod("crps")
+
+logs <- function(y, ...) UseMethod("logs")
+
+#' @export
+crps.default <- function(y, family, ...) {
   family <- checkFamily(family, "crps")
   checkInput <- get(paste0("check.", family))
   calculateCRPS <- get(paste0("crps.", family))
@@ -110,7 +112,8 @@ crps <- function(y, family, ...) {
   return(out)
 }
 
-logs <- function(y, family, ...) {
+#' @export
+logs.default <- function(y, family, ...) {
   family <- checkFamily(family, "ls")
   checkInput <- get(paste0("check.", family))
   calculateLS <- get(paste0("ls.", family))

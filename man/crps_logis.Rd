@@ -1,0 +1,51 @@
+\name{crps_logis}
+\alias{crps_logis}
+\alias{crps_clogis}
+\alias{crps_tlogis}
+\alias{gradcrps_logis}
+\alias{gradcrps_clogis}
+\alias{gradcrps_tlogis}
+\alias{hesscrps_logis}
+\alias{hesscrps_clogis}
+\alias{hesscrps_tlogis}
+\title{
+Calculating the CRPS for the logistic distribution
+}
+\description{
+These functions calculate the CRPS and its gradient and Hessian with respect
+to the parameters of a location-scale transformed logistic
+distribution. Furthermore, the censoring transformation and
+the truncation transformation may be introduced on top of the
+location-scale transformed logistic distribution.
+}
+\usage{
+## CRPS functions
+crps_logis(y, location = 0, scale = 1)
+crps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+crps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+
+## gradient (location, scale) functions
+gradcrps_logis(y, location = 0, scale = 1)
+gradcrps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+gradcrps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+
+## Hessian (location, scale) functions
+hesscrps_logis(y, location = 0, scale = 1)
+hesscrps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+hesscrps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+}
+\arguments{
+  \item{y}{observation}
+  \item{location}{location parameter}
+  \item{scale}{scale parameter}
+  \item{lower}{lower bound}
+  \item{upper}{upper bound}
+}
+\value{
+For the CRPS functions: a vector of score values.
+
+For the gradient and Hessian functions: a matrix with column names corresponding to the respective partial derivatives.
+}
+\author{
+Alexander Jordan
+}

@@ -1,8 +1,6 @@
 \name{parametric}
-\alias{crps}
-\alias{logs}
-\keyword{logs}
-\keyword{crps}
+\alias{crps.default}
+\alias{logs.default}
 \title{
 Scoring Rules for Parametric Forecast Distributions
 }
@@ -10,10 +8,9 @@ Scoring Rules for Parametric Forecast Distributions
 Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
 }
 \usage{
-crps(y, family, ...)
-logs(y, family, ...)
+\method{crps}{default}(y, family, ...)
+\method{logs}{default}(y, family, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{y}{Vector of realized values}
 \item{family}{String which specifies the parametric family; currently implemented: "beta", "exponential", "gamma", "gev", "gpd", "laplace", "log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal", "negative-binomial", "normal", "poisson", "t", "two-piece-normal", "uniform".}
