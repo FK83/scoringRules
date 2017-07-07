@@ -8,18 +8,15 @@
 \alias{hesscrps_t}
 \alias{hesscrps_ct}
 \alias{hesscrps_tt}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculating the CRPS for the t distribution
-%%  ~~function to do ... ~~
+Calculating the CRPS for Student's \eqn{t}-distribution
 }
 \description{
 These functions calculate the CRPS and its gradient and Hessian with respect
-to the parameters of a location-scale transformation for the standard t
-distribution. Furthermore, the censoring transformation and
-the truncation transformation may be imposed on the
-location-scale transformed t distribution.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+to the parameters of a location-scale transformed Student's \eqn{t}-distribution.
+Furthermore, the censoring transformation and
+the truncation transformation may be introduced on top of the
+location-scale transformed Student's \eqn{t}-distribution.
 }
 \usage{
 ## CRPS functions
@@ -46,37 +43,11 @@ hesscrps_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
   \item{lower}{lower bound}
   \item{upper}{upper bound}
 }
-\details{something on t (standard/censored/truncated)
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
-Vector for CRPS functions
+For the CRPS functions: a vector of score values.
 
-Matrix with column names corresponding to the respective partial derivatives
-for gradient and Hessian functions
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+For the gradient and Hessian functions: a matrix with column names corresponding to the respective partial derivatives.
 }
 \author{
 Alexander Jordan
-%%  ~~who you are~~
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{others
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-}
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
