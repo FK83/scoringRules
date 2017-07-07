@@ -44,4 +44,4 @@ Sometimes truncated or censored versions of the normal distribution are used to 
 
 The location-scale family based on Student's t-distribution (\code{ft}) has mean \eqn{location} for \eqn{df > 1} and variance \eqn{df/(df-2) * scale^2} for \eqn{df > 2}. Note that the \link{crps} exists only for \eqn{df > 1}. For details, see \url{https://en.wikipedia.org/wiki/Student's_t-distribution#Non-standardized_Student.27s_t-distribution}.
 }
-\seealso{The documentation for \link{crps} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
+\seealso{The documentation for \link{crps.default} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
