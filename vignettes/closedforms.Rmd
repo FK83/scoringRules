@@ -155,7 +155,7 @@ See also: [Generalized truncated/censored Student's $t$-distribution](#GenStuden
 ## Two-piece exponential distribution (``"2pexp"``) {#tpexp}
 CRPS formula:
 \begin{align*}
-	\mathrm{CRPS}(F_{\sigma_1, \sigma_2}, y) &= \begin{cases}	\left\lvert \frac{y}{\sigma_1} \right\rvert + \frac{2\sigma_1}{\sigma_1 + \sigma_2}\exp\left(-\left\lvert \frac{y}{\sigma_1}\right\rvert \right) - \frac{ 2\sigma_1}{\sigma_1 + \sigma_2} + \frac{\sigma_1^2 + \sigma_2^2}{2(\sigma_1 + \sigma_2)^2}, & y < 0, \\ \left\lvert \frac{y}{\sigma_2}\right\rvert + \frac{2\sigma_2}{\sigma_1 + \sigma_2}\exp\left(-\left\lvert \frac{y}{\sigma_2}\right\rvert \right) - \frac{ 2\sigma_2}{\sigma_1 + \sigma_2} + \frac{\sigma_1^2 + \sigma_2^2}{2(\sigma_1 + \sigma_2)^2}, & y \ge 0, \end{cases} \\
+	\mathrm{CRPS}(F_{\sigma_1, \sigma_2}, y) &= \begin{cases}	\left\lvert y \right\rvert + \frac{2\sigma_1^2}{\sigma_1 + \sigma_2}\exp\left(-\left\lvert \frac{y}{\sigma_1}\right\rvert \right) - \frac{ 2\sigma_1^2}{\sigma_1 + \sigma_2} + \frac{\sigma_1^3 + \sigma_2^3}{2(\sigma_1 + \sigma_2)^2}, & y < 0, \\ \left\lvert y \right\rvert + \frac{2\sigma_2^2}{\sigma_1 + \sigma_2}\exp\left(-\left\lvert \frac{y}{\sigma_2}\right\rvert \right) - \frac{ 2\sigma_2^2}{\sigma_1 + \sigma_2} + \frac{\sigma_1^3 + \sigma_2^3}{2(\sigma_1 + \sigma_2)^2}, & y \ge 0, \end{cases} \\
 	\mathrm{CRPS}(F_{\mu, \sigma_1, \sigma_2}, y) &= \mathrm{CRPS}(F_{\sigma_1, \sigma_2}, y - \mu).
 \end{align*}
 Two-piece exponential distribution:
