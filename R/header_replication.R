@@ -194,7 +194,7 @@ plot.casestudy <- function(x, ...){
 }
 
 #' Run the Monte Carlo study by KLTG (2017), or a smaller version thereof
-#' @param s,a,n Parameters characterizing the process from which data are simulated (see Section 4 and Table 4 of KLTG, 2016). Defaults to the values reported in the main text of the paper.
+#' @param s,a,n Parameters characterizing the process from which data are simulated (see Section 4 and Table 4 of KLTG, 2017). Defaults to the values reported in the main text of the paper.
 #' @param nr_iterations Number of Monte Carlo iterations (defaults to 50). 
 #' @param zoom Set to \code{TRUE} to produce results for a fine grid of small (MCMC) sample sizes, as in Figure 2 of KLTG (2017).
 #' @param random_seed Seed used for running the simulation experiment. Defaults to 816.
@@ -413,7 +413,7 @@ plot.mcstudy <- function(x, ...){
 #' @param n_burn,n_rep Integers, number of MCMC iterations for burn-in and main analysis. 
 #' @param forecast_periods Number of future periods for which forecasts are computed.
 #' @param printout Logical, whether to print progress report during MCMC (defaults to \code{FALSE}).
-#' @param Hm1_delta,mu_delta,s_,nu_,R Prior parameters as described in KLTG (2016, Appendix E and Table 5).
+#' @param Hm1_delta,mu_delta,s_,nu_,R Prior parameters as described in KLTG (2017, Appendix E and Table 5).
 #' @return List containing parameter estimates and forecasts, with the following elements:
 #' \itemize{
 #' \item \code{pars}, matrix of posterior draws for parameters (rows are MCMC iterations, columns are parameters)
@@ -421,7 +421,7 @@ plot.mcstudy <- function(x, ...){
 #' \item \code{filprobs}, matrix of filtered probabilities for first latent state (rows are MCMC iterations, columns are time periods, excluding the first \code{nlag} values for initialization). 
 #' \item \code{count}, integer, counter for the number of states that were relabeled based on \code{identification_constraint}.
 #' }
-#' @details The default parameters are as set by KLTG (2016, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
+#' @details The default parameters are as set by KLTG (2017, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
 #' the mixture-of-parameters estimator analyzed by KLTG. While many of the model features can be changed as described above, the number of Markov regimes is always fixed at two. 
 #' 
 #' \link{ar_ms} is an R/C++ implementation of Matlab code kindly shared by Gianni Amisano via his website (\url{https://sites.google.com/site/gianniamisanowebsite/}). See Amisano and Giacomini (2007) who analyze a similar model.
