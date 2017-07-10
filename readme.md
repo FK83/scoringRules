@@ -32,6 +32,7 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
 The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976) and the logarithmic score (Good, 1952). The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
 
 ## History
+  - July 2017: Version 0.93, including vignette for closed-form expressions of the CRPS (Alexander  Jordan), and functions for CRPS-based fitting of truncated/censored distributions
   - January 2017: Added multivariate energy and variogram score
   - January 11, 2017: Version 0.9.2 published on CRAN
   - December 2016: Small fixes for truncated/censored distributions
