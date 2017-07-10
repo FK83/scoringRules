@@ -27,7 +27,7 @@ dependence in regression parameters and residual variance, respectively. Default
 
 \item{printout}{Logical, whether to print progress report during MCMC (defaults to \code{FALSE}).}
 
-\item{Hm1_delta, mu_delta, s_, nu_, R}{Prior parameters as described in KLTG (2016, Appendix E and Table 5).}
+\item{Hm1_delta, mu_delta, s_, nu_, R}{Prior parameters as described in KLTG (2017, Appendix E and Table 5).}
 }
 \value{
 List containing parameter estimates and forecasts, with the following elements:
@@ -42,7 +42,7 @@ List containing parameter estimates and forecasts, with the following elements:
 Bayesian analysis of a Markov Switching autoregressive model
 }
 \details{
-The default parameters are as set by KLTG (2016, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
+The default parameters are as set by KLTG (2017, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
 the mixture-of-parameters estimator analyzed by KLTG. While many of the model features can be changed as described above, the number of Markov regimes is always fixed at two. 
 
 \link{ar_ms} is an R/C++ implementation of Matlab code kindly shared by Gianni Amisano via his website (\url{https://sites.google.com/site/gianniamisanowebsite/}). See Amisano and Giacomini (2007) who analyze a similar model.
