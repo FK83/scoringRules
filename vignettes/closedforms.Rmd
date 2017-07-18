@@ -232,7 +232,7 @@ See also: [Exponential distribution with point mass](#GenExp), [Generalized Pare
 ## Gamma distribution (`"gamma"`)
 CRPS formula:
 	\[
-	\mathrm{CRPS}(F_{\alpha,\beta},y) = y\Big(2F_{\alpha,\beta}(y)-1\Big) - \frac{\alpha}{\beta}\left(2F_{\alpha + 1, \beta}(y) -1\right) + \frac{\alpha}{B\left(\tfrac{1}{2},\alpha\right)}
+	\mathrm{CRPS}(F_{\alpha,\beta},y) = y\left(2F_{\alpha,\beta}(y)-1\right) - \frac{\alpha}{\beta}\left(2F_{\alpha + 1, \beta}(y) -1\right) - \frac{1}{\beta B\left(\tfrac{1}{2},\alpha\right)}
 	\]
 Gamma distribution:
 \begin{align*}
