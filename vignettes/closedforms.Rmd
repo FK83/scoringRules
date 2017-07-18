@@ -552,6 +552,9 @@ Truncated logistic distribution:
 \end{align*}
 where all other symbols are as given in [Generalized truncated/censored logistic distribution](#GenLogistic).
 
+Notes:
+
+- @moeller2013 give a CRPS formula for a left-truncated logistic distribution with boundary 0.
 
 ## Generalized truncated/censored normal distribution (`"norm"`) {#GenNormal}
 CRPS formula:
