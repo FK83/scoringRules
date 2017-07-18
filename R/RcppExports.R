@@ -2,82 +2,82 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 dnormC <- function(x) {
-    .Call(scoringRules_dnormC, x)
+    .Call(`_scoringRules_dnormC`, x)
 }
 
 pnormC <- function(x) {
-    .Call(scoringRules_pnormC, x)
+    .Call(`_scoringRules_pnormC`, x)
 }
 
 auxcrpsC <- function(m, s) {
-    .Call(scoringRules_auxcrpsC, m, s)
+    .Call(`_scoringRules_auxcrpsC`, m, s)
 }
 
 crpsmixnC <- function(w, m, s, y) {
-    .Call(scoringRules_crpsmixnC, w, m, s, y)
+    .Call(`_scoringRules_crpsmixnC`, w, m, s, y)
 }
 
 lsmixnC <- function(w, m, s, y) {
-    .Call(scoringRules_lsmixnC, w, m, s, y)
+    .Call(`_scoringRules_lsmixnC`, w, m, s, y)
 }
 
 dmixnC <- function(m, s, y) {
-    .Call(scoringRules_dmixnC, m, s, y)
+    .Call(`_scoringRules_dmixnC`, m, s, y)
 }
 
 pmixnC <- function(m, s, y) {
-    .Call(scoringRules_pmixnC, m, s, y)
+    .Call(`_scoringRules_pmixnC`, m, s, y)
 }
 
 mvndrawC <- function(mu, sig) {
-    .Call(scoringRules_mvndrawC, mu, sig)
+    .Call(`_scoringRules_mvndrawC`, mu, sig)
 }
 
 carterkohn <- function(y, Z, Ht, Qt, m, p, t, B0, V0) {
-    .Call(scoringRules_carterkohn, y, Z, Ht, Qt, m, p, t, B0, V0)
+    .Call(`_scoringRules_carterkohn`, y, Z, Ht, Qt, m, p, t, B0, V0)
 }
 
 drawsigmaC <- function(yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar) {
-    .Call(scoringRules_drawsigmaC, yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar)
+    .Call(`_scoringRules_drawsigmaC`, yts, qs, ms, u2s, Sigtdraw, Zs, Wdraw, sigma_prmean, sigma_prvar)
 }
 
 drawbetaC <- function(y, Z, s2, betapriorm, betaprioriv) {
-    .Call(scoringRules_drawbetaC, y, Z, s2, betapriorm, betaprioriv)
+    .Call(`_scoringRules_drawbetaC`, y, Z, s2, betapriorm, betaprioriv)
 }
 
 makeregs_fcC <- function(ydat, p) {
-    .Call(scoringRules_makeregs_fcC, ydat, p)
+    .Call(`_scoringRules_makeregs_fcC`, ydat, p)
 }
 
 getfcsts <- function(beta, Sigt0, Wdraw, ydat, nf, p) {
-    .Call(scoringRules_getfcsts, beta, Sigt0, Wdraw, ydat, nf, p)
+    .Call(`_scoringRules_getfcsts`, beta, Sigt0, Wdraw, ydat, nf, p)
 }
 
 meye <- function(n) {
-    .Call(scoringRules_meye, n)
+    .Call(`_scoringRules_meye`, n)
 }
 
 matmult <- function(x, nt) {
-    .Call(scoringRules_matmult, x, nt)
+    .Call(`_scoringRules_matmult`, x, nt)
 }
 
 bvarFcstC <- function(b, sig, y, nf) {
-    .Call(scoringRules_bvarFcstC, b, sig, y, nf)
+    .Call(`_scoringRules_bvarFcstC`, b, sig, y, nf)
 }
 
 drawMultinomC <- function(probs) {
-    .Call(scoringRules_drawMultinomC, probs)
+    .Call(`_scoringRules_drawMultinomC`, probs)
 }
 
 filterMarkovMixtureC <- function(p, P, lnpdat) {
-    .Call(scoringRules_filterMarkovMixtureC, p, P, lnpdat)
+    .Call(`_scoringRules_filterMarkovMixtureC`, p, P, lnpdat)
 }
 
 euclnormC <- function(x) {
-    .Call(scoringRules_euclnormC, x)
+    .Call(`_scoringRules_euclnormC`, x)
 }
 
 energyscoreC <- function(y, dat) {
-    .Call(scoringRules_energyscoreC, y, dat)
+    .Call(`_scoringRules_energyscoreC`, y, dat)
 }
 
