@@ -230,8 +230,8 @@ gradcrps_clogis <- function(y, location = 0, scale = 1,
     
     dloc <- term1 + term2 - term3
     dscale <- term0 + term1 * z +
-      term2 * ifelse(lower == -Inf, lower, 0) -
-      term3 * ifelse(upper ==  Inf, upper, 0)
+      term2 * ifelse(lower == -Inf, 0, lower) -
+      term3 * ifelse(upper ==  Inf, 0, upper)
     
     out <- cbind(dloc, dscale)
     out[lower > upper, ] <- NaN
@@ -320,8 +320,8 @@ gradcrps_tlogis <- function(y, location = 0, scale = 1,
     
     dloc <- (term1 - term2 + term3) * sign
     dscale <- term0 + term1 * z - 
-      term2 * ifelse(lower == -Inf, lower, 0) +
-      term3 * ifelse(upper ==  Inf, upper, 0)
+      term2 * ifelse(lower == -Inf, 0, lower) +
+      term3 * ifelse(upper ==  Inf, 0, upper)
     
     out <- cbind(dloc, dscale)
     out[lower > upper, ] <- NaN
