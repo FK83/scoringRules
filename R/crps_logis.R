@@ -1,3 +1,41 @@
+#' Calculating the CRPS for the logistic distribution
+#' 
+#' These functions calculate the CRPS and its gradient and Hessian with respect
+#' to the parameters of a location-scale transformed logistic
+#' distribution. Furthermore, the censoring transformation and
+#' the truncation transformation may be introduced on top of the
+#' location-scale transformed logistic distribution.
+#' 
+#' @usage
+#' ## CRPS functions
+#' crps_logis(y, location = 0, scale = 1)
+#' crps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' crps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' crps_gtclogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
+#'
+#' ## gradient (location, scale) functions
+#' gradcrps_logis(y, location = 0, scale = 1)
+#' gradcrps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' gradcrps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#'
+#' ## Hessian (location, scale) functions
+#' hesscrps_logis(y, location = 0, scale = 1)
+#' hesscrps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' hesscrps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' 
+#' @param y vector of observations.
+#' @param location vector of location parameters.
+#' @param scale vector of scale paramters.
+#' @param lower,upper lower and upper truncation/censoring bounds.
+#' @param lmass,umass vectors of point masses in \code{lower} and \code{upper}
+#'  respectively. 
+#' @return For the CRPS functions: a vector of score values.
+#' 
+#' For the gradient and Hessian functions: a matrix with column names
+#' corresponding to the respective partial derivatives.
+#' @name crps_logis
+NULL
+
 # logistic distribution
 # z = plogis(z, log.p = TRUE) - plogis(-z, log.p = TRUE)
 # Gz = z * plogis(z) + plogis(-z, log.p = TRUE)
@@ -8,6 +46,8 @@
 ### crps ###
 
 # standard
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 crps_logis <- function(y, location = 0, scale = 1) {
   if (identical(location, 0) & identical(scale, 1)) {
@@ -31,6 +71,8 @@ crps_logis <- function(y, location = 0, scale = 1) {
 
 
 # censored
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 crps_clogis <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
@@ -99,6 +141,8 @@ crps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 crps_tlogis <- function(y, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
@@ -179,10 +223,117 @@ crps_tlogis <- function(y, location = 0, scale = 1,
 }
 
 
+# generalized truncated/censored
+#' @rdname crps_logis
+#' @usage NULL
+#' @export
+crps_gtclogis <- function(y, location = 0, scale = 1,
+                          lower = -Inf, upper = Inf,
+                          lmass = 0, umass = 0) {
+  if (!identical(location, 0)) {
+    y <- y - location
+    if (!identical(lower, -Inf)) lower <- lower - location
+    if (!identical(upper,  Inf)) upper <- upper - location
+  }
+  
+  if (identical(scale, 1)) {
+    ind_swap <- lower > 3
+    if (any(ind_swap, na.rm = TRUE)) {
+      sign <- 1 - 2 * ind_swap
+      y <- y * sign
+      lower <- lower * sign
+      upper <- upper * sign
+      l_tmp <- lower[ind_swap]
+      u_tmp <- upper[ind_swap]
+      lower[ind_swap] <- u_tmp
+      upper[ind_swap] <- l_tmp
+      if (length(lmass) < length(lower))
+        lmass <- rep_len(lmass, length(lower))
+      if (length(umass) < length(upper))
+        umass <- rep_len(umass, length(upper))
+      l_tmp <- lmass[ind_swap]
+      u_tmp <- umass[ind_swap]
+      lmass[ind_swap] <- u_tmp
+      umass[ind_swap] <- l_tmp
+    }
+    
+    out_l1 <- out_l2 <- out_l3 <- out_u1 <- out_u2 <- p_l <- 0
+    out_u3 <- p_u <- 1
+    z <- y
+    if (!identical(lower, -Inf) || !identical(lmass, 0)) {
+      lmass[lmass < 0 & lmass > 1] <- NaN
+      p_l <- plogis(lower)
+      lp_ml <- plogis(-lower, log.p = TRUE)
+      ind <- lower == -Inf
+      out_l1 <- lower * lmass^2
+      out_l1[ind] <- 0
+      out_l2 <- 2 * (lower * p_l + lp_ml) * lmass
+      out_l2[ind] <- 0
+      # Taylor series expansion of 'x + log(1-x)' at 0 to avoid underflow
+      out_l3 <- ifelse(p_l > 1e-8, p_l + lp_ml, -p_l^2/2 - p_l^3/3) -
+        p_l * (lower * p_l + 2 * lp_ml)
+      out_l3[ind] <- 0
+      z <- pmax(lower, z)
+    }
+    if (!identical(upper, Inf) || !identical(umass, 0)) {
+      umass[umass < 0 & umass > 1] <- NaN
+      p_u <- plogis(upper)
+      lp_mu <- plogis(-upper, log.p = TRUE)
+      ind <- upper == Inf
+      out_u1 <- upper * umass^2
+      out_u1[ind] <- 0
+      out_u2 <- 2 * (upper * p_u + lp_mu) * umass
+      out_u2[ind] <- 0
+      out_u3 <- ifelse(p_u > 1e-8, p_u + lp_mu, -p_u^2/2 - p_u^3/3) -
+        p_u * (upper * p_u + 2 * lp_mu)
+      out_u3[ind] <- 1
+      z <- pmin(upper, z)
+    }
+    
+    a1 <- p_u - p_l
+    a2 <- 1 - (umass + lmass)
+    a2[a2 < 0 | a2 > 1] <- NaN
+    b <- out_u3 - out_l3
+    b[b == 0] <- NaN
+    
+    out <- out_u1 - out_l1 -
+      (z * ((1 - 2 * lmass) * p_u + (1 - 2 * umass) * p_l) +
+         (2 * plogis(-z, log.p = TRUE) - out_u2 - out_l2 + a2 * b / a1) * a2
+      ) / a1
+    
+    out[lower > upper] <- NaN
+    out[lower == upper] <- 0
+    out + abs(y - z)
+  } else {
+    scale[scale < 0] <- NaN
+    if (!identical(lower, -Inf)) lower <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
+    if (all(scale > 0, na.rm = TRUE)) {
+      scale * crps_gtclogis(y / scale,
+                            lower = lower, upper = upper,
+                            lmass = lmass, umass = umass)
+    } else {
+      out <- scale * crps_gtclogis(y / scale,
+                                   lower = lower, upper = upper,
+                                   lmass = lmass, umass = umass)
+      ind <- scale == 0 & lower < 0 & upper > 0
+      out[ind] <- rep_len(
+        (pmin(y, 0) - lower) * lmass^2 - pmin(y, 0) * (1 - lmass)^2 +
+          (upper - pmax(y, 0)) * umass^2 + pmax(y, 0) * (1 - umass)^2,
+        length(out)
+      )[ind]
+      out
+    }
+  }
+}
+
+
 
 ### gradients (location, scale)
 
 # standard
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 gradcrps_logis <- function(y , location = 0, scale = 1) {
   if (identical(location, 0) &&
@@ -210,6 +361,8 @@ gradcrps_logis <- function(y , location = 0, scale = 1) {
 }
 
 # censored
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 gradcrps_clogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
@@ -267,6 +420,8 @@ gradcrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 gradcrps_tlogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
@@ -359,6 +514,8 @@ gradcrps_tlogis <- function(y, location = 0, scale = 1,
 ### Hessian (location, scale) ###
 
 # standard
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 hesscrps_logis <- function(y , location = 0, scale = 1) {
   if (identical(location, 0) &&
@@ -390,6 +547,8 @@ hesscrps_logis <- function(y , location = 0, scale = 1) {
 }
 
 # censored
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 hesscrps_clogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
@@ -450,6 +609,8 @@ hesscrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @rdname crps_logis
+#' @usage NULL
 #' @export
 hesscrps_tlogis <- function(y, location = 0, scale = 1,
                             lower = -Inf, upper = Inf) {
@@ -500,7 +661,7 @@ hesscrps_tlogis <- function(y, location = 0, scale = 1,
     ind2 <- !isNaN
     if (any(ind2)) {
       out[ind2] <- with(input[ind2, ], {
-        hesscrps_cnorm(z / scale,
+        hesscrps_tlogis(z / scale,
                        lower = lower / scale,
                        upper = upper / scale) / scale
       })
