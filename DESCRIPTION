@@ -20,7 +20,8 @@ Suggests:
     gsl (>= 1.8-3),
     hypergeo(>= 1.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
