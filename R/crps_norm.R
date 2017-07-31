@@ -1,38 +1,74 @@
+#' Calculating the CRPS for the normal distribution
+#' 
+#' These functions calculate the CRPS and its gradient and Hessian with respect
+#' to the parameters of a location-scale transformed normal
+#' distribution. Furthermore, the censoring transformation and
+#' the truncation transformation may be introduced on top of the
+#' location-scale transformed normal distribution.
+#' 
+#' @usage
+#' ## CRPS functions
+#' crps_norm(y, location = 0, scale = 1)
+#' crps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
+#'
+#' ## gradient (location, scale) functions
+#' gradcrps_norm(y, location = 0, scale = 1)
+#' gradcrps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' gradcrps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#'
+#' ## Hessian (location, scale) functions
+#' hesscrps_norm(y, location = 0, scale = 1)
+#' hesscrps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' hesscrps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' 
+#' @param y vector of observations.
+#' @param location vector of location parameters.
+#' @param scale vector of scale paramters.
+#' @param lower,upper lower and upper truncation/censoring bounds.
+#' @param lmass,umass vectors of point masses in \code{lower} and \code{upper}
+#'  respectively. 
+#' @return For the CRPS functions: a vector of score values.
+#' 
+#' For the gradient and Hessian functions: a matrix with column names
+#' corresponding to the respective partial derivatives.
+#' @name crps_norm
+NULL
+
+
 ### crps ###
 
 # standard
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 crps_norm <- function(y, location = 0, scale = 1) {
-  if (identical(location, 0) && identical(scale , 1)) {
-    y * (2 * pnorm(y) - 1) + 2 * dnorm(y) - 1 / sqrt(pi)
-  } else if (all(is.finite(scale) & scale > 0)) {
-    scale * crps_norm((y - location) / scale)
+  if (!identical(location, 0)) y <- y - location
+  if (identical(scale, 1)) {
+    y * (2 * pnorm(y) - 1) + (sqrt(2) * exp(-0.5 * y^2) - 1) / sqrt(pi)
   } else {
-    input <- data.frame(z = abs(y - location), scale = scale)
-    out <- rep(NaN, dim(input)[1L])
-    isNaN <- with(input, is.na(scale) | scale < 0)
-    ind1 <- input$scale == 0 & !isNaN
-    ind2 <- !isNaN & !ind1
-    if (any(ind1)) out[ind1] <- input$z[ind1]
-    if (any(ind2)) {
-      out[ind2] <- with(input[ind2, ],
-                        scale * crps_norm(-z / scale))
-    }
-    out
+    z <- y / scale
+    z[y == 0 & scale == 0] <- 0
+    y * (2 * pnorm(y, sd = scale) - 1) +
+      scale * (sqrt(2) * exp(-0.5 * z^2) - 1) / sqrt(pi)
   }
 }
 
 
 # censored
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 crps_cnorm <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
-  nan_in_bounds <- anyNA(lower) || anyNA(upper)
+  if (!identical(location, 0)) {
+    y <- y - location
+    if (!identical(lower, -Inf)) lower <- lower - location
+    if (!identical(upper,  Inf)) upper <- upper - location
+  }
   
-  if (!nan_in_bounds &&
-      identical(location, 0) &&
-      identical(scale, 1)) {
-    
+  if (identical(scale, 1)) {
     out_l1 <- out_u1 <- out_l2 <- 0
     out_u2 <- 1
     z <- y
@@ -57,50 +93,36 @@ crps_cnorm <- function(y, location = 0, scale = 1,
     out[lower > upper] <- NaN
     out[lower == upper] <- 0
     out + abs(y - z)
-  } else if (!nan_in_bounds &&
-             all(is.finite(scale) & scale > 0)) {
-    if (!identical(lower, -Inf)) lower <- (lower - location) / scale
-    if (!identical(upper,  Inf)) upper <- (upper - location) / scale
-    scale * crps_cnorm((y - location) / scale,
-                       lower = lower, upper = upper)
   } else {
-    input <- data.frame(z = y - location, scale = scale,
-                        lower = lower - location,
-                        upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
-    isNaN <- with(input, {
-      is.na(scale) | scale < 0 |
-        is.na(lower) | is.na(upper)
-    })
-    ind1 <- !isNaN & with(input, scale == 0 & lower <= upper)
-    ind2 <- !isNaN & input$scale > 0
-    if (any(ind1)) {
-      out[ind1] <- with(input[ind1, ], {
-        abs(z - pmax(lower, 0) - pmin(upper, 0))
-      })
+    scale[scale < 0] <- NaN
+    if (!identical(lower, -Inf)) lower <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
+    if (all(scale > 0, na.rm = TRUE)) {
+      scale * crps_cnorm(y / scale, lower = lower, upper = upper)
+    } else {
+      out <- scale * crps_cnorm(y / scale, lower = lower, upper = upper)
+      ind <- scale == 0 & lower <= upper
+      out[ind] <-
+        rep_len(abs(y - pmax(lower, 0) - pmin(upper, 0)), length(out))[ind]
+      out
     }
-    if (any(ind2)) {
-      out[ind2] <- with(input[ind2, ], {
-        scale * crps_cnorm(z / scale,
-                           lower = lower / scale,
-                           upper = upper / scale)
-      })
-    }
-    out
   }
 }
 
 
 # truncated
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 crps_tnorm <- function(y, location = 0, scale = 1,
                        lower = -Inf, upper = Inf) {
-  nan_in_bounds <- anyNA(lower) || anyNA(upper)
+  if (!identical(location, 0)) {
+    y <- y - location
+    if (!identical(lower, -Inf)) lower <- lower - location
+    if (!identical(upper,  Inf)) upper <- upper - location
+  }
   
-  if (!nan_in_bounds &&
-      identical(location, 0) &&
-      identical(scale, 1)) {
-    
+  if (identical(scale, 1)) {
     ind_swap <- lower > 3
     if (any(ind_swap)) {
       sign <- 1 - 2 * ind_swap
@@ -135,32 +157,114 @@ crps_tnorm <- function(y, location = 0, scale = 1,
     out[lower > upper] <- NaN
     out[lower == upper] <- 0
     out + abs(y - z)
-  } else if (!nan_in_bounds &&
-             all(is.finite(scale) & scale > 0)) {
-    if (!identical(lower, -Inf)) lower <- (lower - location) / scale
-    if (!identical(upper,  Inf)) upper <- (upper - location) / scale
-    scale * crps_tnorm((y - location) / scale,
-                       lower = lower, upper = upper)
   } else {
-    input <- data.frame(z = y - location, scale = scale,
-                        lower = lower - location,
-                        upper = upper - location)
-    out <- rep(NaN, dim(input)[1L])
-    isNaN <- with(input, {
-      is.na(scale) | scale < 0 |
-        is.na(lower) | is.na(upper)
-    })
-    ind1 <- !isNaN & with(input, scale == 0 & lower < 0 & upper > 0)
-    ind2 <- !isNaN & input$scale > 0
-    if (any(ind1)) out[ind1] <- abs(input$z[ind1])
-    if (any(ind2)) {
-      out[ind2] <- with(input[ind2, ], {
-        scale * crps_tnorm(z / scale,
-                           lower = lower / scale,
-                           upper = upper / scale)
-      })
+    scale[scale < 0] <- NaN
+    if (!identical(lower, -Inf)) lower <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
+    if (all(scale > 0, na.rm = TRUE)) {
+      scale * crps_tnorm(y / scale, lower = lower, upper = upper)
+    } else {
+      out <- scale * crps_tnorm(y / scale, lower = lower, upper = upper)
+      ind <- scale == 0 & lower < 0 & upper > 0
+      out[ind] <- rep_len(abs(y), length(out))[ind]
+      out
     }
-    out
+  }
+}
+
+# generalized truncated/censored
+#' @rdname crps_norm
+#' @usage NULL
+#' @export
+crps_gtcnorm <- function(y, location = 0, scale = 1,
+                         lower = -Inf, upper = Inf,
+                         lmass = 0, umass = 0) {
+  if (!identical(location, 0)) {
+    y <- y - location
+    if (!identical(lower, -Inf)) lower <- lower - location
+    if (!identical(upper,  Inf)) upper <- upper - location
+  }
+  
+  if (identical(scale, 1)) {
+    ind_swap <- lower > 3
+    if (any(ind_swap, na.rm = TRUE)) {
+      sign <- 1 - 2 * ind_swap
+      y <- y * sign
+      lower <- lower * sign
+      upper <- upper * sign
+      l_tmp <- lower[ind_swap]
+      u_tmp <- upper[ind_swap]
+      lower[ind_swap] <- u_tmp
+      upper[ind_swap] <- l_tmp
+      if (length(lmass) < length(lower))
+        lmass <- rep_len(lmass, length(lower))
+      if (length(umass) < length(upper))
+        umass <- rep_len(umass, length(upper))
+      l_tmp <- lmass[ind_swap]
+      u_tmp <- umass[ind_swap]
+      lmass[ind_swap] <- u_tmp
+      umass[ind_swap] <- l_tmp
+    }
+    
+    out_l1 <- out_l2 <- out_l3 <- out_u1 <- out_u2 <- p_l <- 0
+    out_u3 <- p_u <- 1
+    z <- y
+    if (!identical(lower, -Inf) || !identical(lmass, 0)) {
+      lmass[lmass < 0 & lmass > 1] <- NaN
+      p_l <- pnorm(lower)
+      out_l1 <- lower * lmass^2
+      out_l1[lmass == 0] <- 0
+      out_l2 <- 2 * dnorm(lower) * lmass
+      out_l3 <- pnorm(lower, sd = sqrt(0.5))
+      z <- pmax(lower, z)
+    }
+    if (!identical(upper, Inf) || !identical(umass, 0)) {
+      umass[umass < 0 & umass > 1] <- NaN
+      p_u <- pnorm(upper)
+      out_u1 <- upper * umass^2
+      out_u1[umass == 0] <- 0
+      out_u2 <- 2 * dnorm(upper) * umass
+      out_u3 <- pnorm(upper, sd = sqrt(0.5))
+      z <- pmin(upper, z)
+    }
+    a1 <- p_u - p_l
+    a2 <- 1 - (umass + lmass)
+    a2[a2 < 0 | a2 > 1] <- NaN
+    b <- out_u3 - out_l3
+    b[b == 0] <- NaN
+    
+    out <- out_u1 - out_l1 +
+      (z * (2 * a2 * pnorm(z) -
+             (1 - 2 * lmass) * p_u -
+             (1 - 2 * umass) * p_l) +
+         (2 * dnorm(z) - out_u2 - out_l2 -
+            a2 * b / a1 / sqrt(pi)
+         ) * a2
+      ) / a1
+
+    out[lower > upper] <- NaN
+    out[lower == upper] <- 0
+    out + abs(y - z)
+  } else {
+    scale[scale < 0] <- NaN
+    if (!identical(lower, -Inf)) lower <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
+    if (all(scale > 0, na.rm = TRUE)) {
+      scale * crps_gtcnorm(y / scale,
+                           lower = lower, upper = upper,
+                           lmass = lmass, umass = umass)
+    } else {
+      out <- scale * crps_gtcnorm(y / scale,
+                                  lower = lower, upper = upper,
+                                  lmass = lmass, umass = umass)
+      ind <- scale == 0 & lower < 0 & upper > 0
+      out[ind] <- rep_len(
+        (pmin(y, 0) - lower) * lmass^2 - pmin(y, 0) * (1 - lmass)^2 +
+        (upper - pmax(y, 0)) * umass^2 + pmax(y, 0) * (1 - umass)^2,
+        length(out)
+      )[ind]
+      out
+    }
   }
 }
 
@@ -168,6 +272,8 @@ crps_tnorm <- function(y, location = 0, scale = 1,
 ### gradient (location, scale) ###
 
 # standard
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 gradcrps_norm <- function(y, location = 0, scale = 1) {
   if (identical(location, 0) &&
@@ -195,6 +301,8 @@ gradcrps_norm <- function(y, location = 0, scale = 1) {
 
 
 # censored
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 gradcrps_cnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
@@ -252,6 +360,8 @@ gradcrps_cnorm <- function(y, location = 0, scale = 1,
 
 
 # truncated
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 gradcrps_tnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
@@ -339,6 +449,8 @@ gradcrps_tnorm <- function(y, location = 0, scale = 1,
 ### Hessian (location, scale) ###
 
 # standard
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 hesscrps_norm <- function(y , location = 0, scale = 1) {
   if (identical(location, 0) &&
@@ -370,6 +482,8 @@ hesscrps_norm <- function(y , location = 0, scale = 1) {
 
 
 # censored
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 hesscrps_cnorm <- function(y, location = 0, scale = 1,
                            lower = -Inf, upper = Inf) {
@@ -430,6 +544,8 @@ hesscrps_cnorm <- function(y, location = 0, scale = 1,
   
 
 # truncated
+#' @rdname crps_norm
+#' @usage NULL
 #' @export
 hesscrps_tnorm <- function(y, location = 0, scale = 1,
                       lower = -Inf, upper = Inf) {
