@@ -1,10 +1,14 @@
-#' Calculating the CRPS for the uniform distribution
+#' Calculating scores for the uniform distribution
 #'
 #' @param y vector of observations.
 #' @param min,max lower and upper limits of the distribution. Must be finite.
 #' @param lmass,umass vectors of point masses in \code{min} and \code{max}
 #'  respectively.
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @name scores_unif
+NULL
+
+#' @rdname scores_unif
 #' @export
 crps_unif <- function(y, min = 0, max = 1, lmass = 0, umass = 0) {
   if (identical(min, 0) && identical(max, 1)) {
@@ -30,3 +34,8 @@ crps_unif <- function(y, min = 0, max = 1, lmass = 0, umass = 0) {
     }
   }
 }
+
+#' @rdname scores_unif
+#' @export
+logs_unif <- function(y, min, max)
+  -dunif(y, min, max, log=TRUE)
