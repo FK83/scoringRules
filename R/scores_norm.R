@@ -30,7 +30,7 @@
 #' @param lower,upper lower and upper truncation/censoring bounds.
 #' @param lmass,umass vectors of point masses in \code{lower} and \code{upper}
 #'  respectively. 
-#' @return For the CRPS functions: a vector of score values.
+#' @return For the score functions: a vector of score values.
 #' 
 #' For the gradient and Hessian functions: a matrix with column names
 #' corresponding to the respective partial derivatives.
