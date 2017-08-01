@@ -13,6 +13,7 @@
 #' crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 #' logs_norm(y, location = 0, scale = 1)
+#' logs_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_norm(y, location = 0, scale = 1)
@@ -277,6 +278,14 @@ crps_gtcnorm <- function(y, location = 0, scale = 1,
 #' @export
 logs_norm <- function(y, location = 0, scale = 1) {
   -dnorm(y, location, scale, log = TRUE)
+}
+
+#' @rdname scores_norm
+#' @usage NULL
+#' @export
+logs_tnorm <- function(y, location = 0, scale = 1,
+                    lower = -Inf, upper = Inf) {
+  -fnorm(y, location, scale, lower, upper, log = TRUE)
 }
 
 
