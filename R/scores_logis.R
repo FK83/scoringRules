@@ -1,17 +1,19 @@
-#' Calculating the CRPS for the logistic distribution
+#' Calculating scores for the logistic distribution
 #' 
-#' These functions calculate the CRPS and its gradient and Hessian with respect
+#' These functions calculate scores (CRPS, logarithmic score) and its gradient and Hessian with respect
 #' to the parameters of a location-scale transformed logistic
 #' distribution. Furthermore, the censoring transformation and
 #' the truncation transformation may be introduced on top of the
 #' location-scale transformed logistic distribution.
 #' 
 #' @usage
-#' ## CRPS functions
+#' ## score functions
 #' crps_logis(y, location = 0, scale = 1)
 #' crps_clogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_gtclogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
+#' logs_logis(y, location = 0, scale = 1)
+#' logs_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_logis(y, location = 0, scale = 1)
@@ -29,11 +31,12 @@
 #' @param lower,upper lower and upper truncation/censoring bounds.
 #' @param lmass,umass vectors of point masses in \code{lower} and \code{upper}
 #'  respectively. 
-#' @return For the CRPS functions: a vector of score values.
+#' @return For the score functions: a vector of score values.
 #' 
 #' For the gradient and Hessian functions: a matrix with column names
 #' corresponding to the respective partial derivatives.
-#' @name crps_logis
+#' @name scores_logis
+#' @importFrom stats plogis
 NULL
 
 # logistic distribution
@@ -46,7 +49,7 @@ NULL
 ### crps ###
 
 # standard
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 crps_logis <- function(y, location = 0, scale = 1) {
@@ -71,7 +74,7 @@ crps_logis <- function(y, location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 crps_clogis <- function(y, location = 0, scale = 1,
@@ -141,7 +144,7 @@ crps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 crps_tlogis <- function(y, location = 0, scale = 1,
@@ -224,7 +227,7 @@ crps_tlogis <- function(y, location = 0, scale = 1,
 
 
 # generalized truncated/censored
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 crps_gtclogis <- function(y, location = 0, scale = 1,
@@ -327,12 +330,26 @@ crps_gtclogis <- function(y, location = 0, scale = 1,
   }
 }
 
+#' @rdname scores_logis
+#' @usage NULL
+#' @export
+logs_logis <- function(y, location = 0, scale = 1) {
+  -flogis(y, location, scale, log = TRUE)
+}
+
+#' @rdname scores_logis
+#' @usage NULL
+#' @export
+logs_tlogis <- function(y, location = 0, scale = 1,
+                        lower = -Inf, upper = Inf) {
+  -flogis(y, location, scale, lower, upper, log = TRUE)
+}
 
 
 ### gradients (location, scale)
 
 # standard
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 gradcrps_logis <- function(y , location = 0, scale = 1) {
@@ -361,7 +378,7 @@ gradcrps_logis <- function(y , location = 0, scale = 1) {
 }
 
 # censored
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 gradcrps_clogis <- function(y, location = 0, scale = 1,
@@ -420,7 +437,7 @@ gradcrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 gradcrps_tlogis <- function(y, location = 0, scale = 1,
@@ -514,7 +531,7 @@ gradcrps_tlogis <- function(y, location = 0, scale = 1,
 ### Hessian (location, scale) ###
 
 # standard
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 hesscrps_logis <- function(y , location = 0, scale = 1) {
@@ -547,7 +564,7 @@ hesscrps_logis <- function(y , location = 0, scale = 1) {
 }
 
 # censored
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 hesscrps_clogis <- function(y, location = 0, scale = 1,
@@ -609,7 +626,7 @@ hesscrps_clogis <- function(y, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_logis
+#' @rdname scores_logis
 #' @usage NULL
 #' @export
 hesscrps_tlogis <- function(y, location = 0, scale = 1,
