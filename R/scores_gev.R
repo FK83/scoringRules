@@ -1,10 +1,14 @@
-#' Calculating the CRPS for the generalized extreme value distribution
+#' Calculating scores for the generalized extreme value distribution
 #'
 #' @param y vector of observations.
 #' @param shape vector of positive shape parameters.
 #' @param location vector of location parameters.
 #' @param scale vector of positive scale parameters.
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @name scores_gev
+NULL
+
+#' @rdname scores_gev
 #' @export
 crps_gev <- function(y, shape, location = 0, scale = 1) {
   shape[shape >= 1] <- NaN
@@ -37,3 +41,8 @@ crps_gev <- function(y, shape, location = 0, scale = 1) {
   }
   return(scale * out)
 }
+
+#' @rdname scores_gev
+#' @export
+logs_gev <- function(y, shape, location = 0, scale = 1)
+  -log(fgev(y, location, scale, shape))
