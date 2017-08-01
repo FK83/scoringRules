@@ -1,8 +1,13 @@
-#' Calculating the CRPS for the negative binomial distribution
+#' Calculating scores for the negative binomial distribution
 #'
 #' @param y vector of observations.
 #' @inheritParams stats::pnbinom
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @name scores_nbinom
+#' @importFrom stats pnbinom dnbinom
+NULL
+
+#' @rdname scores_nbinom
 #' @export
 crps_nbinom <- function(y, size, prob) {
   if (!requireNamespace("hypergeo", quietly = TRUE)) {
@@ -16,3 +21,8 @@ crps_nbinom <- function(y, size, prob) {
   c3 <- prob * (2 * pnbinom(y - 1, size + 1, prob) - 1) + Re(hypergeo::hypergeo(size + 1, 0.5, 2,-4 * c2))
   return(c1 - size * c2 * c3)
 }
+
+#' @rdname scores_nbinom
+#' @export
+logs_nbinom <- function(y, size, prob) 
+  -dnbinom(y, size, prob, log = TRUE)
