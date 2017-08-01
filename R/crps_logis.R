@@ -266,7 +266,7 @@ crps_gtclogis <- function(y, location = 0, scale = 1,
       lp_ml <- plogis(-lower, log.p = TRUE)
       ind <- lower == -Inf
       out_l1 <- lower * lmass^2
-      out_l1[ind] <- 0
+      out_l1[lmass == 0] <- 0
       out_l2 <- 2 * (lower * p_l + lp_ml) * lmass
       out_l2[ind] <- 0
       # Taylor series expansion of 'x + log(1-x)' at 0 to avoid underflow
@@ -281,7 +281,7 @@ crps_gtclogis <- function(y, location = 0, scale = 1,
       lp_mu <- plogis(-upper, log.p = TRUE)
       ind <- upper == Inf
       out_u1 <- upper * umass^2
-      out_u1[ind] <- 0
+      out_u1[umass == 0] <- 0
       out_u2 <- 2 * (upper * p_u + lp_mu) * umass
       out_u2[ind] <- 0
       out_u3 <- ifelse(p_u > 1e-8, p_u + lp_mu, -p_u^2/2 - p_u^3/3) -
