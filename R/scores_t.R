@@ -1,17 +1,19 @@
-#' Calculating the CRPS for Student's \eqn{t}-distribution
+#' Calculating scores for Student's \eqn{t}-distribution
 #' 
-#' These functions calculate the CRPS and its gradient and Hessian with respect
+#' These functions calculate scores (CRPS, logarithmic score) and their gradient and Hessian with respect
 #' to the parameters of a location-scale transformed Student's
 #' \eqn{t}-distribution. Furthermore, the censoring transformation and
 #' the truncation transformation may be introduced on top of the
 #' location-scale transformed normal distribution.
 #' 
 #' @usage
-#' ## CRPS functions
+#' ## score functions
 #' crps_t(y, df, location = 0, scale = 1)
 #' crps_ct(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_gtct(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
+#' logs_t(y, df, location = 0, scale = 1)
+#' logs_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_t(y, df, location = 0, scale = 1)
@@ -34,14 +36,14 @@
 #' 
 #' For the gradient and Hessian functions: a matrix with column names
 #' corresponding to the respective partial derivatives.
-#' @name crps_t
+#' @name scores_t
 NULL
 
 
 ### crps ###
 
 # standard
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 crps_t <- function(y, df, location = 0, scale = 1) {
@@ -69,7 +71,7 @@ crps_t <- function(y, df, location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 crps_ct <- function(y, df, location = 0, scale = 1,
@@ -136,7 +138,7 @@ crps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 crps_tt <- function(y, df, location = 0, scale = 1,
@@ -210,7 +212,7 @@ crps_tt <- function(y, df, location = 0, scale = 1,
 
 
 # generalized truncated/censored
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 crps_gtct <- function(y, df, location = 0, scale = 1,
@@ -322,11 +324,26 @@ crps_gtct <- function(y, df, location = 0, scale = 1,
   }
 }
 
+#' @rdname scores_t
+#' @usage NULL
+#' @export
+logs_t <- function(y, df, location = 0, scale = 1) {
+  -ft(y, df, location, scale, log = TRUE)
+}
+
+#' @rdname scores_t
+#' @usage NULL
+#' @export
+logs_tt <- function(y, df, location = 0, scale = 1,
+                    lower = -Inf, upper = Inf) {
+  -ft(y, df, location, scale, lower, upper, log = TRUE)
+}
+
 
 ### gradient (location, scale) ###
 
 # standard
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 gradcrps_t <- function(y , df, location = 0, scale = 1) {
@@ -362,7 +379,7 @@ gradcrps_t <- function(y , df, location = 0, scale = 1) {
 }
 
 # censored
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 gradcrps_ct <- function(y, df, location = 0, scale = 1,
@@ -431,7 +448,7 @@ gradcrps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 gradcrps_tt <- function(y, df, location = 0, scale = 1,
@@ -536,7 +553,7 @@ gradcrps_tt <- function(y, df, location = 0, scale = 1,
 ### Hessian (location, scale) ###
 
 # standard
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 hesscrps_t <- function(y , df, location = 0, scale = 1) {
@@ -577,7 +594,7 @@ hesscrps_t <- function(y , df, location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 hesscrps_ct <- function(y, df, location = 0, scale = 1,
@@ -645,7 +662,7 @@ hesscrps_ct <- function(y, df, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_t
+#' @rdname scores_t
 #' @usage NULL
 #' @export
 hesscrps_tt <- function(y, df, location = 0, scale = 1,
