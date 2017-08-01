@@ -1,6 +1,6 @@
 \name{parametric}
-\alias{crps.default}
-\alias{logs.default}
+\alias{crps.numeric}
+\alias{logs.numeric}
 \title{
 Scoring Rules for Parametric Forecast Distributions
 }
@@ -8,8 +8,8 @@ Scoring Rules for Parametric Forecast Distributions
 Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a parametric family of distributions. 
 }
 \usage{
-\method{crps}{default}(y, family, ...)
-\method{logs}{default}(y, family, ...)
+\method{crps}{numeric}(y, family, ...)
+\method{logs}{numeric}(y, family, ...)
 }
 \arguments{
 \item{y}{Vector of realized values}
@@ -110,11 +110,6 @@ logs(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
 ## Arguments can have different lengths:
 crps(y = rnorm(20), family = "normal", mean = 0, sd = 2)
 crps(y = 1, family = "normal", mean = 1:20, sd = sqrt(1:20))
-
-## Lists are accepted as input if elements with the required names are present:
-df <- data.frame(y = rnorm(20), mean = 1:20, sd = 1)
-crps(df, family = "normal")
-logs(df, family = "normal")
 
 ## Mixture of normal distributions requires matrix input for parameters:
 mval <- matrix(rnorm(20*50), nrow = 20)

@@ -7,7 +7,7 @@ Generic Scoring Rule Calculation
 \description{
 Generic functions for calculating the Continuous Ranked Probability Score and the Logarithmic Score of R objects.
 
-\code{scoringRules} provides default methods (\link{crps.default}, \link{logs.default}) to calculate scores of forecasts that are members of families of parametric distributions.
+\code{scoringRules} provides default methods (\link{crps.numeric}, \link{logs.numeric}) to calculate scores of forecasts that are members of families of parametric distributions.
 }
 \usage{
 crps(y, ...)
@@ -24,5 +24,5 @@ Returns a vector of scores. One for each forecast-observation pair.
 Alexander Jordan, Fabian Krueger, Sebastian Lerch
 }
 \seealso{
-\link{crps.default}, \link{logs.default}
+\link{crps.numeric}, \link{logs.numeric}
 }

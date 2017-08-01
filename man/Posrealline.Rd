@@ -22,4 +22,4 @@ fllogis(x, locationlog, scalelog)
 \details{
 To be added.
 }
-\seealso{The documentation for \link{crps.default} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}
+\seealso{The documentation for \link{crps.numeric} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).}

@@ -34,7 +34,7 @@ The density function of a mixture of normal distributions (\code{fmixnorm}) is g
 
 For details on the two-piece normal distribution (\code{f2pnorm}), see Box A of Wallis (2004, "An Assessment of Bank of England and National Institute Inflation Forecast Uncertainties", National Institute Economic Review).
 }
-\seealso{The documentation for \link{crps.default} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).
+\seealso{The documentation for \link{crps.numeric} contains the full list of distributions supported by scoringRules (includes the ones documented here, as well as many others).
 
 \link{fnorm}, \link{flogis}, \link{ft}
 }

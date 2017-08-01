@@ -89,17 +89,13 @@ crps <- function(y, ...) UseMethod("crps")
 logs <- function(y, ...) UseMethod("logs")
 
 #' @export
-crps.default <- function(y, family, ...) {
+#' @export crps.numeric
+crps.numeric <- function(y, family, ...) {
   family <- checkFamily(family, "crps")
   checkInput <- get(paste0("check.", family))
   calculateCRPS <- get(paste0("crps.", family))
   
-  if (is.list(y)) {
-    input <- c(y, list(...))
-  } else {
-    input <- list(y = y, ...)
-  }
-  
+  input <- list(y = y, ...)
   input <- checkInput(input)
   out <- do.call(calculateCRPS, input)
   
@@ -113,17 +109,13 @@ crps.default <- function(y, family, ...) {
 }
 
 #' @export
-logs.default <- function(y, family, ...) {
+#' @export logs.numeric
+logs.numeric <- function(y, family, ...) {
   family <- checkFamily(family, "ls")
   checkInput <- get(paste0("check.", family))
   calculateLS <- get(paste0("ls.", family))
   
-  if (is.list(y)) {
-    input <- c(y, list(...))
-  } else {
-    input <- list(y = y, ...)
-  }
-  
+  input <- list(y = y, ...)
   input <- checkInput(input)
   out <- do.call(calculateLS, input)
   
