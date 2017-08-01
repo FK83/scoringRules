@@ -1,9 +1,13 @@
-#' Calculating the CRPS for the Laplace distribution
+#' Calculating scores for the Laplace distribution
 #'
 #' @param y vector of observations.
 #' @param location vector of location parameters.
 #' @param scale vector of positive scale parameters.
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @name scores_lapl
+NULL
+
+#' @rdname scores_lapl
 #' @export
 crps_lapl <- function(y, location = 0, scale = 1) {
   if (!identical(location, 0)) y <- y - location
@@ -22,3 +26,8 @@ crps_lapl <- function(y, location = 0, scale = 1) {
     }
   }
 }
+
+#' @rdname scores_lapl
+#' @export
+logs_lapl <- function(y, location = 0, scale = 1)
+  -log(flapl(y, location, scale))
