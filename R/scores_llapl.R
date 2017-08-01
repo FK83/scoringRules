@@ -1,9 +1,13 @@
-#' Calculating the CRPS for the log-Laplace distribution
+#' Calculating scores for the log-Laplace distribution
 #'
 #' @param y vector of observations.
 #' @param locationlog vector of location parameters on the log scale.
 #' @param scalelog vector of positive scale parameters on the log scale.
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @name scores_llapl
+NULL
+
+#' @rdname scores_llapl
 #' @export
 crps_llapl <- function(y, locationlog, scalelog) {
   scalelog[scalelog < 0 | scalelog >= 1] <- NaN
@@ -19,3 +23,8 @@ crps_llapl <- function(y, locationlog, scalelog) {
   c3 <- scalelog / (4 - scalelog^2)
   c1 + exp(locationlog) * (c2 + c3)
 }
+
+#' @rdname scores_llapl
+#' @export
+logs_llapl <- function(y, locationlog, scalelog)
+  -log(fllapl(y, locationlog, scalelog))
