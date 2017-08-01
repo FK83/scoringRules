@@ -1,17 +1,18 @@
-#' Calculating the CRPS for the normal distribution
+#' Calculating scores for the normal distribution
 #' 
-#' These functions calculate the CRPS and its gradient and Hessian with respect
+#' These functions calculate scores (CRPS, logarithmic score) and their gradient and Hessian with respect
 #' to the parameters of a location-scale transformed normal
 #' distribution. Furthermore, the censoring transformation and
 #' the truncation transformation may be introduced on top of the
 #' location-scale transformed normal distribution.
 #' 
 #' @usage
-#' ## CRPS functions
+#' ## score functions
 #' crps_norm(y, location = 0, scale = 1)
 #' crps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
+#' logs_norm(y, location = 0, scale = 1)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_norm(y, location = 0, scale = 1)
@@ -33,14 +34,15 @@
 #' 
 #' For the gradient and Hessian functions: a matrix with column names
 #' corresponding to the respective partial derivatives.
-#' @name crps_norm
+#' @name scores_norm
+#' @importFrom stats pnorm dnorm
 NULL
 
 
 ### crps ###
 
 # standard
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 crps_norm <- function(y, location = 0, scale = 1) {
@@ -57,7 +59,7 @@ crps_norm <- function(y, location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 crps_cnorm <- function(y, location = 0, scale = 1,
@@ -111,7 +113,7 @@ crps_cnorm <- function(y, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 crps_tnorm <- function(y, location = 0, scale = 1,
@@ -173,7 +175,7 @@ crps_tnorm <- function(y, location = 0, scale = 1,
 }
 
 # generalized truncated/censored
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 crps_gtcnorm <- function(y, location = 0, scale = 1,
@@ -268,11 +270,20 @@ crps_gtcnorm <- function(y, location = 0, scale = 1,
   }
 }
 
+### log score ###
+
+#' @rdname scores_norm
+#' @usage NULL
+#' @export
+logs_norm <- function(y, location = 0, scale = 1) {
+  -dnorm(y, location, scale, log = TRUE)
+}
+
 
 ### gradient (location, scale) ###
 
 # standard
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 gradcrps_norm <- function(y, location = 0, scale = 1) {
@@ -301,7 +312,7 @@ gradcrps_norm <- function(y, location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 gradcrps_cnorm <- function(y, location = 0, scale = 1,
@@ -360,7 +371,7 @@ gradcrps_cnorm <- function(y, location = 0, scale = 1,
 
 
 # truncated
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 gradcrps_tnorm <- function(y, location = 0, scale = 1,
@@ -449,7 +460,7 @@ gradcrps_tnorm <- function(y, location = 0, scale = 1,
 ### Hessian (location, scale) ###
 
 # standard
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 hesscrps_norm <- function(y , location = 0, scale = 1) {
@@ -482,7 +493,7 @@ hesscrps_norm <- function(y , location = 0, scale = 1) {
 
 
 # censored
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 hesscrps_cnorm <- function(y, location = 0, scale = 1,
@@ -544,7 +555,7 @@ hesscrps_cnorm <- function(y, location = 0, scale = 1,
   
 
 # truncated
-#' @rdname crps_norm
+#' @rdname scores_norm
 #' @usage NULL
 #' @export
 hesscrps_tnorm <- function(y, location = 0, scale = 1,
