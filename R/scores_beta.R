@@ -1,9 +1,14 @@
-#' Calculating the CRPS for the beta distribution
+#' Calculating scores for the beta distribution
 #'
 #' @param y vector of observations.
 #' @param shape1,shape2 vectors of positive shape parameters.
 #' @param lower,upper vectors of lower and upper limits of the distribution. Must be finite.
-#' @return A vector of CRPS values.
+#' @return A vector of score values.
+#' @importFrom stats pbeta dbeta
+#' @name scores_beta
+NULL
+
+#' @rdname scores_beta
 #' @export
 crps_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
   if (identical(lower, 0) && identical(upper, 1)) {
@@ -31,5 +36,19 @@ crps_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
       out[ind] <- rep_len(abs(y - lower), length(out))[ind]
       out
     }
+  }
+}
+
+#' @rdname scores_beta
+#' @export
+logs_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
+  if (identical(lower, 0) & identical(upper, 1)) {
+    -dbeta(y, shape1, shape2, log = TRUE)
+  } else {
+    lower[!is.finite(lower)] <- NaN
+    upper[!is.finite(upper)] <- NaN
+    scale <- upper - lower
+    scale[scale <= 0] <- NaN
+    -dbeta((y - lower) / scale, shape1, shape2) + log(scale)
   }
 }
