@@ -1,10 +1,14 @@
-#' Calculating the CRPS for the two-piece-exponential distribution
+#' Calculating scores for the two-piece-exponential distribution
 #'
 #' @param y vector of observations.
 #' @param scale1,scale2 vectors of positive scale parameters.
 #' @param location vector of location parameters.
-#' @return A vector of CRPS values.
-#' @export
+#' @return A vector of score values.
+#' @name scores_2pexp
+NULL
+
+#' @rdname scores_2pexp
+#' @export 
 crps_2pexp <- function(y, scale1, scale2, location = 0) {
   if (!identical(location, 0)) y <- y - location
   z <- y
@@ -15,3 +19,8 @@ crps_2pexp <- function(y, scale1, scale2, location = 0) {
   crps_expM(-y, scale = scale1, mass = scale2 / s) +
     crps_expM(z, scale = scale2, mass = scale1 / s)
 }
+
+#' @rdname scores_2pexp
+#' @export 
+logs_2pexp <- function(y, scale1, scale2, location = 0)
+  -log(f2pexp(y, location, scale1, scale2))
