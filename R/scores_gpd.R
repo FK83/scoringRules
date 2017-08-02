@@ -26,7 +26,7 @@ crps_gpd <- function(y, shape, location = 0, scale = 1, mass = 0) {
   x <- 1 + shape * z
   x[x < 0] <- 0
   x <- x^(-1/shape)
-  if (any(ind <- !is.na(shape) & abs(shape) < 1e-12)) {
+  if (any(ind <- abs(shape) < 1e-12, na.rm = TRUE)) {
     x <- ifelse(ind & seq_along(x), exp(-z), x)
   }
   x[x > 1] <- 1
