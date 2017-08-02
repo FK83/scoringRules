@@ -9,15 +9,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+This vignette provides a two-page introduction to the *scoringRules* package; it summarizes the paper 'Evaluating probabilistic forecasts with the scoringRules package' (Jordan, Kr&uuml;ger, and Lerch, 2017, available at XXX). A second vignette called *closedforms* provides mathematical details.
+
 # Background 
 
-Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The **scoringRules** package offers mathematical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application*, 2014) for an introduction to the relevant statistical literature. 
+Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The *scoringRules* package offers mathematical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application*, 2014) for an introduction to the relevant statistical literature. 
 
-**scoringRules** supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (`logs`), given by $$\text{logs}(y, F) = -\log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (`crps`), given by 
+*scoringRules* supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (LogS), given by $$\text{LogS}(y, F) = -\log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (CRPS), given by 
 $$
-\text{crps}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
+\text{CRPS}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
 $$
-where $\mathbf{1}(A)$ is the indicator function of the event $A$. The `logs` is typically easy to compute, and we include it mainly for reference purposes. By contrast, the `crps` can be very tricky to compute analytically, and cumbersome to approximate numerically. The **scoringRules** package implements several new methods to tackle this challenge. Specifically, we include many previously unknown analytical expressions, and incorporate recent findings on how to best compute the `crps` of a simulated forecast distribution.  
+where $\mathbf{1}(A)$ is the indicator function of the event $A$. The LogS is typically easy to compute, and we include it mainly for reference purposes. By contrast, the CRPS can be very tricky to compute analytically, and cumbersome to approximate numerically. The *scoringRules* package implements several new methods to tackle this challenge. Specifically, we include many previously unknown analytical expressions, and incorporate recent findings on how to best compute the CRPS of a simulated forecast distribution.  
 
 # Example 1: Parametric forecast distribution
 
@@ -31,17 +33,17 @@ abline(v = 0, lwd = 2, lty = 2)
 ```
 
 
-The following piece of code computes the `crps` for this situation:
+The following piece of code computes the CRPS for this situation:
 ```{r}
 library(scoringRules)
 # CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero
 crps(y = 0, family = "normal", mean = 2, sd = 2)
 ```
-As documented under `?crps`, the parametric family used in the example is one of 15 choices currently implemented in **scoringRules**: 
+As documented under `?crps`, the parametric family used in the example is one of 22 choices currently implemented in *scoringRules*: 
 
-- Laplace, Logistic, Normal, Mixture of Normals, Two-piece-normal, (Scaled) Student t, Exponential, Gamma, Log-Laplace, Log-Logistic, Log-Normal, Generalized Pareto, Generalized Extreme Value, Uniform, Beta
+- Normal, Mixture of normals, Two-piece normal, Log-normal, Generalized truncated/censored normal, (Scaled) Student t, Generalized truncated/censored Student t, Laplace, Log-Laplace, Logistic, Log-logistic, Generalized truncated/censored logistic, Exponential, Exponential with point mass, Two-piece exponential, Beta, Gamma, Uniform, Generalized extreme value, Generalized Pareto, Negative binomial, Poisson
 
-Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
+We provide details and analytical CRPS formulas in the *closedforms* vignette. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
 
 # Example 2: Simulated forecast distribution
 
@@ -63,7 +65,7 @@ plot(h, xlab = "Value", ylab = "Probability", main = "")
 abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 2, lty = 2)
 ```
 
-Let's now compute the `crps` for this simulated forecast distribution:
+Let's now compute the CRPS for this simulated forecast distribution:
 
 ```{r}
 # Load data
