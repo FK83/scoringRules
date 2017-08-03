@@ -1,8 +1,7 @@
-#' Scoring Rules for Parametric Forecast Distributions
+#' Logarithmic Score for Parametric Forecast Distributions
 #' 
-#' Compute scores of the form \eqn{S(y, F)}, where \eqn{S} is a proper scoring
-#' rule, \eqn{y} is a vector of realizations, and \eqn{F} belongs to a
-#' parametric family of distributions.
+#' Calculate the logarithmic score (LogS) given observations
+#' and parameters of a family of distributions.
 #' 
 #' @param y Vector of realized values.
 #' @param family String which specifies the parametric family; currently
@@ -12,79 +11,8 @@
 #' @param ... Vectors of parameter values; expected input depends on the chosen
 #' \code{family}. See details below.
 #' 
-#' @return Vector of score score values.
+#' @return Vector of score values.
 #' \emph{A lower score indicates a better forecast.}
-#' 
-#' @references
-#' \emph{General background and further references on scoring rules:}
-#' 
-#' Gneiting, T. and A. Raftery (2007):
-#' `Strictly proper scoring rules, prediction and estimation',
-#' Journal of the American Statistical Association 102, 359-378.
-#' 
-#' Gneiting, T. and M. Katzfuss (2014):
-#' `Probabilistic forecasting',
-#' Annual Review of Statistics and Its Application 1, 125-151. 
-#' 
-#' \emph{Closed form expressions of the CRPS for specific distributions:}
-#' 
-#' Baran, S. and S. Lerch (2015):
-#' `Log-normal distribution based Ensemble Model Output Statistics models for
-#' probabilistic wind-speed forecasting',
-#' Quarterly Journal of the Royal Meteorological Society 141, 2289-2299.
-#' \emph{(Lognormal)}
-#' 
-#' Friederichs, P. and T.L. Thorarinsdottir (2012):
-#' `Forecast verification for extreme value distributions with an application
-#' to probabilistic peak wind prediction',
-#' Environmetrics 23, 579-594.
-#' \emph{(Generalized Extreme Value, Generalized Pareto)}
-#' 
-#' Gneiting, T., Larson, K., Westvelt III, A.H. and T. Goldman (2005):
-#' `Calibrated probabilistic forecasting using ensemble model output statistics
-#' and minimum CRPS estimation',
-#' Monthly Weather Review 133, 1098-1118.
-#' \emph{(Normal)}
-#' 
-#' Gneiting, T., Larson, K., Westrick, K., Genton, M.G. and E. Aldrich (2006):
-#' `Calibrated probabilistic forecasting at the stateline wind energy center:
-#' The regime-switching space-time method',
-#' Journal of the American Statistical Association 101, 968-979.
-#' \emph{(Censored normal)}
-#' 
-#' Gneiting, T. and T.L. Thorarinsdottir (2010):
-#' `Predicting inflation: Professional experts versus no-change forecasts',
-#' arXiv preprint arXiv:1010.2318.
-#' \emph{(Two-piece normal)}
-#' 
-#' Grimit, E.P.,  Gneiting, T., Berrocal, V.J. and N.A. Johnson (2006):
-#' `The continuous ranked probability score for circular variables and its
-#' application to mesoscale forecast ensemble verification',
-#' Quarterly Journal of the Royal Meteorological Society 132, 2925-2942.
-#' \emph{(Mixture of normals)}
-#' 
-#' Scheuerer, M. and D. Moeller (2015):
-#' `Probabilistic wind speed forecasting on a grid based on ensemble model
-#' output statistics', Annals of Applied Statistics 9, 1328-1349.
-#' \emph{(Gamma)}
-#' 
-#' Thorarinsdottir, T.L. and T. Gneiting (2010):
-#' `Probabilistic forecasts of wind speed: ensemble model output statistics by
-#' using heteroscedastic censored regression',
-#' Journal of the Royal Statistical Society (Series A) 173, 371-388.
-#' \emph{(Truncated normal)}
-#' 
-#' Wei, W. and L. Held (2014):
-#' `Calibration tests for count data',
-#' TEST 23, 787-205.
-#' \emph{(Poisson, Negative Binomial)}
-#' 
-#' \emph{Independent listing of closed-form solutions for the CRPS:}
-#' 
-#' Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016):
-#' `Calibrated ensemble forecasts using quantile regression forests and
-#' ensemble model output statistics',
-#' Monthly Weather Review, in press. 
 #' 
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #' 
@@ -239,57 +167,35 @@
 #' An exception are scalars of length 1, which will be recycled.
 #' 
 #' @examples
-#' crps(y = 1, family = "normal", mean = 0, sd = 2)
-#' logs(y = 1, family = "normal", mean = 0, sd = 2)
-#' 
-#' crps(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
+#' logs(y = 1, family = "normal", mean = 0, sd = 2) 
 #' logs(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
 #' 
 #' ## Arguments can have different lengths:
-#' crps(y = rnorm(20), family = "normal", mean = 0, sd = 2)
-#' crps(y = 1, family = "normal", mean = 1:20, sd = sqrt(1:20))
+#' logs(y = rnorm(20), family = "normal", mean = 0, sd = 2)
+#' logs(y = 1, family = "normal", mean = 1:20, sd = sqrt(1:20))
 #' 
 #' ## Mixture of normal distributions requires matrix input for parameters:
 #' mval <- matrix(rnorm(20*50), nrow = 20)
 #' sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
 #' weights <- matrix(rep(1/50, 20*50), nrow = 20)
-#' crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
+#' logs(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 #' 
-#' @name scores.numeric
-NULL
-
-#' @rdname scores.numeric
+#' @seealso \link{crps.numeric}
+#' 
+#' @export logs.numeric
 #' @export
-#' @export crps.numeric
-crps.numeric <- function(y, family, ...) {
-  family <- checkFamily(family, "crps")
-  checkInput <- get(paste0("check.", family))
-  calculateCRPS <- get(paste0("crps.", family))
+logs.numeric <- function(y, family, ...) {
+  family <- getFamily(family, "logs")
+  checkInput <- get(paste0("check_logs_", family))
+  calculateLogS <- get(paste0("logs_", family))
   
   input <- list(y = y, ...)
-  input <- checkInput(input)
-  out <- do.call(calculateCRPS, input)
+  checkInput(input)
+  out <- do.call(calculateLogS, input)
   
   if (any(is.na(out))) {
-    warning("Missing CRPS values. Probably due to numerical instabilities as a result of extreme parameter choices.")
-  } else if (any(out < 0)) {
-    warning("Negative CRPS values. Check parameter combinations and/or contact package maintainer(s).")
+    warning("Missing LogS values.")
   }
   
-  return(out)
-}
-
-#' @rdname scores.numeric
-#' @export
-#' @export logs.numeric
-logs.numeric <- function(y, family, ...) {
-  family <- checkFamily(family, "ls")
-  checkInput <- get(paste0("check.", family))
-  calculateLS <- get(paste0("ls.", family))
-  
-  input <- list(y = y, ...)
-  input <- checkInput(input)
-  out <- do.call(calculateLS, input)
-  
-  return(out)
+  out
 }
