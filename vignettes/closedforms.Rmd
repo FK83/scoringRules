@@ -27,7 +27,7 @@ where the first is the kernel representation, followed by the threshold decompos
 
 # Distributions for variables on the real line
 
-## Laplace distribution (``"lapl"``) {#Laplace}
+## Laplace distribution (`"lapl"`) {#Laplace}
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}(F, y) &= |y| + \exp(-|y|) - \frac{3}{4}, \\
@@ -380,7 +380,7 @@ Continuous uniform:
 See also: [Beta distribution](#Beta)
 
 
-### Generalized continuous uniform
+### Generalized continuous uniform (`"unif"`)
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}(F_{L}^{U}, y) &= |y - z| + z^2(1 - L - U) - z(1 - 2L) \\
@@ -403,7 +403,7 @@ Name | Domain
 `"umass"` | $U \ge 0$, $L + U < 1$
 
 
-## Exponential distribution with point mass (`"exp"`) {#GenExp}
+## Exponential distribution with point mass (`"expM"`) {#GenExp}
 \begin{align*}
 	\mathrm{CRPS}(F_{M}, y) &= |y| - 2  (1 - M)F(y) + \frac{(1 - M)^2}{2}, \\
 	\mathrm{CRPS}(F_{M, \mu, \sigma}, y) &= \sigma\, \mathrm{CRPS}\left(F_M, \tfrac{y - \mu}{\sigma} \right).
@@ -493,7 +493,7 @@ Notes:
 See also: [Exponential distribution](#Exponential), [Exponential distribution with point mass](#GenExp)
 
 
-## Generalized truncated/censored logistic distribution (`"logis"`) {#GenLogistic}
+## Generalized truncated/censored logistic distribution (`"gtclogis"`) {#GenLogistic}
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l, L}^{u, U}, y\right) &= |y - z| + uU^2 - lL^2 \\
@@ -524,7 +524,7 @@ Name | Domain
 
 See also: [Logistic distribution](#Logistic)
 
-### Censored logistic distribution
+### Censored logistic distribution (`"clogis"`)
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l}^{u}, y\right) &= |y - z| +  z + \log \left(\frac{F(-l)F(u)}{F(z)^2}\right) - F(u) + F(l), \\
@@ -541,7 +541,7 @@ Notes:
 -	@taillardat2016 give a CRPS formula for a left-censored logistic distribution with boundary 0.
 
 
-### Truncated logistic distribution
+### Truncated logistic distribution (`"tlogis"`)
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l}^{u}, y\right) &= |y - z| - \frac{zF(u) + zF(l) + 2\log F(-z)}{F(u) - F(l)} - \frac{H(u) - H(l)}{(F(u) - F(l))^2}, \\
 	\text{where}\quad z&= \begin{cases} l, & y < l, \\ y, & l \le y < u, \\ u, & y \ge u. \end{cases}
@@ -556,7 +556,7 @@ Notes:
 
 - @moeller2013 give a CRPS formula for a left-truncated logistic distribution with boundary 0.
 
-## Generalized truncated/censored normal distribution (`"norm"`) {#GenNormal}
+## Generalized truncated/censored normal distribution (`"gtcnorm"`) {#GenNormal}
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l, L}^{u, U}, y\right) &= |y - z| + uU^2 - lL^2 \\
@@ -586,7 +586,7 @@ Name | Domain
 
 See also: [Normal distribution](#Normal)
 
-### Censored normal distribution
+### Censored normal distribution (`"cnorm"`)
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l}^{u}, y\right) &= |y - z| + uF(-u)^2 - lF(l)^2 \\
@@ -606,7 +606,7 @@ Notes:
 - @thorarinsdottir2010 give a CRPS formula for a left-censored normal distribution with boundary 0.
 
 
-### Truncated normal distribution
+### Truncated normal distribution (`"tnorm"`)
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l}^{u}, y\right) &= |y - z| \\
@@ -626,7 +626,7 @@ Notes:
 -	@gneiting2006 give a CRPS formula for a left-truncated normal distribution with boundary 0.
 
 
-## Generalized truncated/censored Student's $t$-distribution (`"t"`) {#GenStudent}
+## Generalized truncated/censored Student's $t$-distribution (`"gtct"`) {#GenStudent}
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l, L, \nu}^{u, U}, y\right) &= |y - z| + uU^2 - lL^2 \\
@@ -669,7 +669,7 @@ $\mathrm{sgn}$ | sign function
 
 See also: [Student's $t$-distribution](#Student)
 
-### Censored $t$-distribution
+### Censored $t$-distribution (`"ct"`)
 CRPS formula:
 	\begin{align*}
 	\mathrm{CRPS}\left(F_{l, \nu}^{u}, y\right) &= |y - z| + uF_\nu(-u)^2 - lF_\nu(l)^2 \\
@@ -685,7 +685,7 @@ Censored Student's $t$-distribution:
 where all other symbols are as given in [Generalized truncated/censored Student's $t$-distribution](#GenStudent).
 
 
-### Truncated $t$-distribution
+### Truncated $t$-distribution (`"tt"`)
 CRPS formula:
 \begin{align*}
 	\mathrm{CRPS}\left(F_{l, \nu}^{u}, y\right) &= |y - z| \\
