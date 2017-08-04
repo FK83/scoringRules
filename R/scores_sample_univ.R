@@ -170,7 +170,7 @@ crps.kdens = function(dat, y, bw = NULL){
   }
   m <- matrix(dat, nrow = 1, ncol = n)
   w <- matrix(1/n, nrow = 1, ncol = n)
-  return(crps.mixnorm(y = y, m = m, s = s, w = w))
+  return(crps_mixnorm(y = y, m = m, s = s, w = w))
 }
 
 
