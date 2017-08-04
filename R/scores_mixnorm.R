@@ -20,8 +20,15 @@ crps_mixnorm = function(y, m, s, w, exact = TRUE, rel_tol = 1e-6){
            function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
   } else {
     sapply(seq_along(y),
-           function(i) crps.mixnorm.int(y[i], m[i, ], s[i, ], w[i, ], rel_tol))
+           function(i) crps_mixnorm_int(y[i], m[i, ], s[i, ], w[i, ], rel_tol))
   }
+}
+
+crps_mixnorm_int <- function(y, m, s, w, rel_tol){
+  Fmix <- function(z){
+    sapply(z, function(r) sum(w*pnorm((r-m)/s)))
+  }
+  crps_int(y, Fmix, -Inf, Inf, rel_tol)
 }
 
 #' @rdname scores_mixnorm
