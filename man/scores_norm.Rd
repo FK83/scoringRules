@@ -43,7 +43,7 @@ hesscrps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 
 \item{location}{vector of location parameters.}
 
-\item{scale}{vector of scale paramters.}
+\item{scale}{vector of scale parameters.}
 
 \item{lower, upper}{lower and upper truncation/censoring bounds.}
 
