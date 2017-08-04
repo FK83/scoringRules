@@ -9,10 +9,13 @@
 \arguments{
 \item{y}{Vector of realized values.}
 
-\item{family}{String which specifies the parametric family; currently
-implemented: "beta", "exponential", "gamma", "gev", "gpd", "laplace",
-"log-laplace", "log-logistic", "log-normal", "logistic", "mixture-normal",
-"negative-binomial", "normal", "poisson", "t", "two-piece-normal", "uniform".}
+\item{family}{String which specifies the parametric family; current options:
+\code{"2pexp", "2pnorm", "beta", "clogis", "cnorm", "ct", "exp", "expM",
+"exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "lapl",
+"laplace", "llapl", "llogis", "lnorm", "log-laplace", "log-logistic",
+"log-normal", "logis", "logistic", "mixnorm", "mixture-normal", "nbinom",
+"negative-binomial", "norm", "normal", "pois", "poisson", "t", "tlogis",
+"tnorm", "tt", "two-piece-exponential", "two-piece-normal", "unif", "uniform"}.}
 
 \item{...}{Vectors of parameter values; expected input depends on the chosen
 \code{family}. See details below.}
