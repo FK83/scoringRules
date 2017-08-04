@@ -140,8 +140,41 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   return(out)
 }
 
-################################################################################
-# input checks for sample functions
+#### helper functions ####
+
+# (weighted) empirical distribution
+crps.edf <- function(dat, y, w = NULL){
+  n <- length(dat)
+  # Set uniform weights unless specified otherwise
+  if (is.null(w)){
+    x <- sort(dat, decreasing = FALSE)
+    out <- sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
+  } else {
+    ord <- order(dat)
+    x <- dat[ord]
+    w <- w[ord]
+    p <- c(0, cumsum(w[-n]))
+    out <- sapply(y, function(s) 2 * sum(((s < x) - p - 0.5 * w) * w * (x - s)))
+  }
+  return(out)
+}
+
+# kernel density estimation
+crps.kdens = function(dat, y, bw = NULL){
+  n <- length(dat)
+  if (is.null(bw)) {
+    s <- matrix(bw.nrd(dat), nrow = 1, ncol = n)
+  }
+  else {
+    s <- matrix(bw, nrow = 1, ncol = n)
+  }
+  m <- matrix(dat, nrow = 1, ncol = n)
+  w <- matrix(1/n, nrow = 1, ncol = n)
+  return(crps.mixnorm(y = y, m = m, s = s, w = w))
+}
+
+
+#### input checks for sample functions ####
 check.sample <- function(input) {
   
   input_isnumeric <- sapply(input, is.numeric)
