@@ -37,67 +37,67 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{"laplace"} or \code{"lapl"}:
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter);
-       see \link{crps_lapl}
+       see \code{\link{crps_lapl}}
      \item
        \code{"logistic"} or \code{"logis"}:
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter);
-       see \link{crps_logis}
+       see \code{\link{crps_logis}}
      \item
        \code{"normal"} or \code{"norm"}:
        \code{mean}, \code{sd} (mean and standard deviation);
-       see \link{crps_norm}
+       see \code{\link{crps_norm}}
      \item
-       \code{"normal-mixture"} or \code{"mixnorm"}:
+       \code{"mixture-normal"} or \code{"mixnorm"}:
        \code{m} (mean parameters),
        \code{s} (standard deviations),
        \code{w} (weights);
-       see \link{crps_mixnorm};
+       see \code{\link{crps_mixnorm}};
        note: matrix-input for parameters
      \item
        \code{"t"}:
        \code{df} (degrees of freedom),
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter);
-       see \link{crps_t}
+       see \code{\link{crps_t}}
      \item
        \code{"two-piece-exponential"} or \code{"2pexp"}:
        \code{location} (real-valued location parameter),
        \code{scale1}, \code{scale2} (positive scale parameters);
-       see \link{crps_2pexp}
+       see \code{\link{crps_2pexp}}
      \item
        \code{"two-piece-normal"} or \code{"2pnorm"}:
        \code{location} (real-valued location parameter),
        \code{scale1}, \code{scale2} (positive scale parameters);
-       see \link{crps_2pnorm}
+       see \code{\link{crps_2pnorm}}
    }
  \item Distributions for non-negative random variables:
    \itemize{
      \item
        \code{"exponential"} or \code{"exp"}:
        \code{rate} (positive rate parameter);
-       see \link{crps_exp}
+       see \code{\link{crps_exp}}
      \item
        \code{"gamma"}:
        \code{shape} (positive shape parameter),
        \code{rate} (positive rate parameter),
        \code{scale} (alternative to \code{rate});
-       see \link{crps_gamma}
+       see \code{\link{crps_gamma}}
      \item
        \code{"log-laplace"} or \code{"llapl"}:
        \code{locationlog} (real-valued location parameter),
        \code{scalelog} (positive scale parameter);
-       see \link{crps_llapl}
+       see \code{\link{crps_llapl}}
      \item
        \code{"log-logistic"} or \code{"llogis"}:
        \code{locationlog} (real-valued location parameter),
        \code{scalelog} (positive scale parameter);
-       see \link{crps_llogis}
+       see \code{\link{crps_llogis}}
      \item
        \code{"log-normal"} or \code{"lnorm"}:
        \code{locationlog} (real-valued location parameter),
        \code{scalelog} (positive scale parameter);
-       see \link{crps_lnorm}
+       see \code{\link{crps_lnorm}}
    }
  \item Distributions with flexible support and/or point masses:
    \itemize{
@@ -105,83 +105,83 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{"beta"}:
        \code{shape1}, \code{shape2} (positive shape parameters),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_beta}
+       see \code{\link{crps_beta}}
      \item
        \code{"uniform"} or \code{"unif"}:
        \code{min}, \code{max} (lower and upper limits),
        \code{lmass}, \code{umass} (point mass in lower or upper limit);
-       see \link{crps_unif}
+       see \code{\link{crps_unif}}
      \item
        \code{"expM"}:
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter),
        \code{mass} (point mass in \code{location});
-       see \link{crps_expM}
+       see \code{\link{crps_expM}}
      \item
        \code{"gev"}:
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter),
        \code{shape} (real-valued shape parameter);
-       see \link{crps_gev}
+       see \code{\link{crps_gev}}
      \item
        \code{"gpd"}:
        \code{location} (real-valued location parameter),
        \code{scale} (positive scale parameter),
        \code{shape} (real-valued shape parameter),
        \code{mass} (point mass in \code{location});
-       see \link{crps_gpd}
+       see \code{\link{crps_gpd}}
      \item
        \code{"tlogis"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_tlogis}
+       see \code{\link{crps_tlogis}}
      \item
        \code{"clogis"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_clogis}
+       see \code{\link{crps_clogis}}
      \item
        \code{"gtclogis"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
        \code{lmass}, \code{umass} (point mass in lower or upper limit);
-       see \link{crps_gtclogis}
+       see \code{\link{crps_gtclogis}}
      \item
        \code{"tnorm"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_tnorm}
+       see \code{\link{crps_tnorm}}
      \item
        \code{"cnorm"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_cnorm}
+       see \code{\link{crps_cnorm}}
      \item
        \code{"gtcnorm"}:
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
        \code{lmass}, \code{umass} (point mass in lower or upper limit);
-       see \link{crps_gtcnorm}
+       see \code{\link{crps_gtcnorm}}
      \item
        \code{"tt"}:
        \code{df} (degrees of freedom),
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_tt}
+       see \code{\link{crps_tt}}
      \item
        \code{"ct"}:
        \code{df} (degrees of freedom),
        \code{location} (location parameter),
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
-       see \link{crps_ct}
+       see \code{\link{crps_ct}}
      \item
        \code{"gtct"}:
        \code{df} (degrees of freedom),
@@ -189,7 +189,7 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{scale} (scale parameter),
        \code{lower}, \code{upper} (lower and upper limits);
        \code{lmass}, \code{umass} (point mass in lower or upper limit);
-       see \link{crps_gtct}
+       see \code{\link{crps_gtct}}
    }
  \item Distributions discrete variables:
    \itemize{
@@ -198,11 +198,11 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{size} (positive dispersion parameter),
        \code{prob} (success probability),
        \code{mu} (mean, alternative to \code{prob});
-       see \link{crps_nbinom}
+       see \code{\link{crps_nbinom}}
      \item
        \code{"poisson"} or \code{"pois"}:
        \code{lambda} (positive mean);
-       see \link{crps_pois}
+       see \code{\link{crps_pois}}
    }
 }
 All numerical arguments should be of the same length.
@@ -285,7 +285,7 @@ ensemble model output statistics',
 Monthly Weather Review, in press.
 }
 \seealso{
-\link{logs.numeric}
+\code{\link{logs.numeric}}
 }
 \author{
 Alexander Jordan, Fabian Krueger, Sebastian Lerch

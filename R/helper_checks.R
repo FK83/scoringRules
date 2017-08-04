@@ -6,7 +6,7 @@ synonyms <- list(
   laplace = "lapl",
   logistic = "logis",
   normal = "norm",
-  'normal-mixture' = "mixnorm",
+  'mixture-normal' = "mixnorm",
   'two-piece-exponential' = "2pexp",
   'two-piece-normal' = "2pnorm",
   exponential = "exp",

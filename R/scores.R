@@ -5,7 +5,7 @@
 #' and the Logarithmic Score of R objects.
 #' 
 #' \code{scoringRules} provides default methods
-#' (\link{crps.numeric}, \link{logs.numeric}) to calculate scores of forecasts
+#' (\code{\link{crps.numeric}}, \code{\link{logs.numeric}}) to calculate scores of forecasts
 #' that are members of families of parametric distributions.
 #' 
 #' @param y an object for which the score is to be calculated
@@ -15,7 +15,7 @@
 #' 
 #' @details
 #' The mean logarithmic score corresponds to the negative of the
-#' log-likelihood [stats][logLik].
+#' log-likelihood \code{\link{logLik}}.
 #' 
 #' @references
 #' \emph{General background and further references on scoring rules:}
@@ -29,7 +29,7 @@
 #' Annual Review of Statistics and Its Application 1, 125-151.
 #' 
 #' @seealso
-#' \link{crps.numeric}, \link{logs.numeric}
+#' \code{\link{crps.numeric}}, \code{\link{logs.numeric}}
 #' 
 #' @name scores
 NULL
