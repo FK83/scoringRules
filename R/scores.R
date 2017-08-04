@@ -13,6 +13,21 @@
 #' 
 #' @return Returns a vector of scores. One for each forecast-observation pair.
 #' 
+#' @details
+#' The mean logarithmic score corresponds to the negative of the
+#' log-likelihood [stats][logLik].
+#' 
+#' @references
+#' \emph{General background and further references on scoring rules:}
+#' 
+#' Gneiting, T. and A. Raftery (2007):
+#' `Strictly proper scoring rules, prediction and estimation',
+#' Journal of the American Statistical Association 102, 359-378.
+#' 
+#' Gneiting, T. and M. Katzfuss (2014):
+#' `Probabilistic forecasting',
+#' Annual Review of Statistics and Its Application 1, 125-151.
+#' 
 #' @seealso
 #' \link{crps.numeric}, \link{logs.numeric}
 #' 
