@@ -729,3 +729,84 @@ hesscrps_tt <- function(y, df, location = 0, scale = 1,
     out
   }
 }
+
+################################## Checks ######################################
+check_crps_t <- function(input) {
+  required <- c("y", "df", "location", "scale")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = "df")
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$df <= 1)) {
+    stop(paste("Parameter 'df' contains values less than or equal to 1.",
+               "The CRPS does not exist."))
+  }
+}
+
+check_crps_ct <- function(input) {
+  required <- c("y", "location", "scale", "lower", "upper")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = c("lower", "upper"))
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$df <= 1)) {
+    stop(paste("Parameter 'df' contains values less than or equal to 1.",
+               "The CRPS does not exist."))
+  }
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains values greater than corresponding values in 'upper'.")
+}
+
+check_crps_tt <- check_crps_ct
+
+check_crps_gtclogis <- function(input) {
+  required <- c("y", "location", "scale", "lower", "upper", "lmass", "umass")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = c("lower", "upper"))
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$df <= 1)) {
+    stop(paste("Parameter 'df' contains values less than or equal to 1.",
+               "The CRPS does not exist."))
+  }
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains values greater than corresponding values in 'upper'.")
+  if (any(input$lmass < 0 | input$lmass > 1))
+    stop("Parameter 'lmass' contains values not in [0, 1].")
+  if (any(input$umass < 0 | input$umass > 1))
+    stop("Parameter 'umass' contains values not in [0, 1].")
+  if (any(input$umass + input$lmass > 1))
+    stop("Values in 'lmass' and 'umass' add up to more than 1.")
+}
+
+check_logs_t <- function(input) {
+  required <- c("y", "df", "location", "scale")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = "df")
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$df <= 0))
+    stop("Parameter 'df' contains non-positive values.")
+}
+
+check_logs_tt <- function(input) {
+  required <- c("y", "location", "scale", "lower", "upper")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = c("lower", "upper"))
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$df <= 0))
+    stop("Parameter 'df' contains non-positive values.")
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains values greater than corresponding values in 'upper'.")
+}

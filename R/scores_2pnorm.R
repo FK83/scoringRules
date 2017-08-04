@@ -22,5 +22,22 @@ crps_2pnorm <- function(y, scale1, scale2, location = 0) {
 
 #' @rdname scores_2pnorm
 #' @export
-logs_2pnorm <- function(y, scale1, scale2, location = 0)
+logs_2pnorm <- function(y, scale1, scale2, location = 0) {
   -log(f2pnorm(y, location, scale1, scale2))
+}
+  
+
+
+check_crps_2pnorm <- function(input) {
+  required <- c("y", "location", "scale1", "scale2")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale1 <= 0))
+    stop("Parameter 'scale1' contains non-positive values.")
+  if (any(input$scale2 <= 0))
+    stop("Parameter 'scale2' contains non-positive values.")
+}
+
+check_logs_2pnorm <- check_crps_2pnorm

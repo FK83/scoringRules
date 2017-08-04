@@ -8,6 +8,7 @@
 #' @name scores_unif
 NULL
 
+
 #' @rdname scores_unif
 #' @export
 crps_unif <- function(y, min = 0, max = 1, lmass = 0, umass = 0) {
@@ -37,5 +38,34 @@ crps_unif <- function(y, min = 0, max = 1, lmass = 0, umass = 0) {
 
 #' @rdname scores_unif
 #' @export
-logs_unif <- function(y, min, max)
-  -dunif(y, min, max, log=TRUE)
+logs_unif <- function(y, min = 0, max = 1) {
+  -dunif(y, min, max, log = TRUE)
+}
+  
+
+
+check_crps_unif <- function(input) {
+  required <- c("y", "min", "max", "lmass", "umass")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$min > input$max))
+    stop("Parameter 'min' contains greater values than parameter 'max'.")
+  if (any(input$lmass < 0 | input$lmass > 1))
+    stop("Parameter 'lmass' contains values not in [0, 1].")
+  if (any(input$umass < 0 | input$umass > 1))
+    stop("Parameter 'umass' contains values not in [0, 1].")
+  if (any(input$lmass + input$umass > 1))
+    stop("Values in 'lmass' and 'umass' add up to more than 1.")
+}
+
+check_logs_unif <- function(input) {
+  required <- c("y", "min", "max")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$min > input$max))
+    stop("Parameter 'min' contains greater values than parameter 'max'.")
+}

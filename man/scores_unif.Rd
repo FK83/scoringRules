@@ -8,7 +8,7 @@
 \usage{
 crps_unif(y, min = 0, max = 1, lmass = 0, umass = 0)
 
-logs_unif(y, min, max)
+logs_unif(y, min = 0, max = 1)
 }
 \arguments{
 \item{y}{vector of observations.}

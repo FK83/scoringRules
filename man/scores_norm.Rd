@@ -17,11 +17,11 @@
 \title{Calculating scores for the normal distribution}
 \usage{
 ## score functions
-crps_norm(y, location = 0, scale = 1)
+crps_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 crps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
-logs_norm(y, location = 0, scale = 1)
+logs_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 logs_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 
 ## gradient (location, scale) functions
@@ -36,6 +36,10 @@ hesscrps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 }
 \arguments{
 \item{y}{vector of observations.}
+
+\item{mean}{an alternative way to specify \code{location}.}
+
+\item{sd}{an alternative way to specify \code{scale}.}
 
 \item{location}{vector of location parameters.}
 

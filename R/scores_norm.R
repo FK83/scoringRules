@@ -8,11 +8,11 @@
 #' 
 #' @usage
 #' ## score functions
-#' crps_norm(y, location = 0, scale = 1)
+#' crps_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 #' crps_cnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
-#' logs_norm(y, location = 0, scale = 1)
+#' logs_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 #' logs_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #'
 #' ## gradient (location, scale) functions
@@ -26,8 +26,10 @@
 #' hesscrps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 #' 
 #' @param y vector of observations.
+#' @param mean an alternative way to specify \code{location}.
+#' @param sd an alternative way to specify \code{scale}.
 #' @param location vector of location parameters.
-#' @param scale vector of scale paramters.
+#' @param scale vector of scale parameters.
 #' @param lower,upper lower and upper truncation/censoring bounds.
 #' @param lmass,umass vectors of point masses in \code{lower} and \code{upper}
 #'  respectively. 
@@ -46,7 +48,11 @@ NULL
 #' @rdname scores_norm
 #' @usage NULL
 #' @export
-crps_norm <- function(y, location = 0, scale = 1) {
+crps_norm <- function(y, mean = 0, sd = 1, location = mean, scale = sd) {
+  if (!missing(mean) && !missing(location))
+    stop("specify 'mean' or 'location' but not both")
+  if (!missing(sd) && !missing(scale))
+    stop("specify 'sd' or 'scale' but not both")
   if (!identical(location, 0)) y <- y - location
   if (identical(scale, 1)) {
     y * (2 * pnorm(y) - 1) + (sqrt(2) * exp(-0.5 * y^2) - 1) / sqrt(pi)
@@ -276,7 +282,11 @@ crps_gtcnorm <- function(y, location = 0, scale = 1,
 #' @rdname scores_norm
 #' @usage NULL
 #' @export
-logs_norm <- function(y, location = 0, scale = 1) {
+logs_norm <- function(y, mean = 0, sd = 1, location = mean, scale = sd) {
+  if (!missing(mean) && !missing(location))
+    stop("specify 'mean' or 'location' but not both")
+  if (!missing(sd) && !missing(scale))
+    stop("specify 'sd' or 'scale' but not both")
   -dnorm(y, location, scale, log = TRUE)
 }
 
@@ -622,3 +632,57 @@ hesscrps_tnorm <- function(y, location = 0, scale = 1,
     out
   }
 }
+
+################################## Checks ######################################
+check_crps_norm <- function(input) {
+  required <- list(c("y", "location", "scale"),
+                   c("y", "mean", "sd"))
+  checkNames2(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if ("scale" %in% names(input)) {
+    if (any(input$scale <= 0))
+      stop("Parameter 'scale' contains non-positive values.")
+  }
+  if ("sd" %in% names(input)) {
+    if (any(input$sd <= 0))
+      stop("Parameter 'sd' contains non-positive values.")
+  }
+}
+
+check_crps_cnorm <- function(input) {
+  required <- c("y", "location", "scale", "lower", "upper")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = c("lower", "upper"))
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains values greater than corresponding values in 'upper'.")
+}
+
+check_crps_tnorm <- check_crps_cnorm
+
+check_crps_gtcnorm <- function(input) {
+  required <- c("y", "location", "scale", "lower", "upper", "lmass", "umass")
+  checkNames1(required, names(input))
+  checkNumeric(input, infinite_exception = c("lower", "upper"))
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains values greater than corresponding values in 'upper'.")
+  if (any(input$lmass < 0 | input$lmass > 1))
+    stop("Parameter 'lmass' contains values not in [0, 1].")
+  if (any(input$umass < 0 | input$umass > 1))
+    stop("Parameter 'umass' contains values not in [0, 1].")
+  if (any(input$umass + input$lmass > 1))
+    stop("Values in 'lmass' and 'umass' add up to more than 1.")
+}
+
+check_logs_norm <- check_crps_norm
+
+check_logs_tnorm <- check_crps_tnorm

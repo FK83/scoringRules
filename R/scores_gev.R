@@ -47,5 +47,20 @@ crps_gev <- function(y, shape, location = 0, scale = 1) {
 
 #' @rdname scores_gev
 #' @export
-logs_gev <- function(y, shape, location = 0, scale = 1)
+logs_gev <- function(y, shape, location = 0, scale = 1) {
   -log(fgev(y, location, scale, shape))
+}
+  
+
+
+check_crps_gev <- function(input) {
+  required <- c("y", "location", "scale", "shape")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+}
+
+check_logs_gev <- check_crps_gev

@@ -30,3 +30,19 @@ logs_mixnorm <- function(y, m, s, w) {
   sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 }
   
+
+check_crps_mixnorm <- function(input) {
+  required <- c("y", "m", "s", "w")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkMatrix(input)
+  
+  if (any(input$s <= 0))
+    stop("Parameter 's' contains non-positive values.")
+  if (any(input$w < 0 | input$w > 1))
+    stop("Parameter 'w' contains values not in [0, 1].")
+  if (!isTRUE(all.equal(apply(input$w, 1, sum), rep(1, dim(input$w)[1]))))
+    stop("Parameter 'w' contains weighting schemes which do not sum up to 1.")
+}
+
+check_logs_mixnorm <- check_crps_mixnorm

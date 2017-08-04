@@ -129,3 +129,26 @@ vs_sample <- function(y, dat, w = NULL,  p = 0.5) {
   
   return(out)
 }
+
+################################################################################
+### input checks for multivariate scoring rules
+
+check.multivsample <- function(input) {
+  input_isnumeric <- sapply(input, is.numeric)
+  if (!all(input_isnumeric)) {
+    stop(paste("Non-numeric input:", 
+               paste(names(input)[!input_isnumeric], collapse=", ")))
+  }
+  
+  if (!is.vector(input$y)) {
+    stop("'y' is not a vector")
+  } 
+  
+  if (!is.matrix(input$dat)) {
+    stop("'dat' is not a matrix ")
+  }
+  
+  if (length(input$y) != dim(input$dat)[1]) {
+    stop("Dimensions of 'y' and 'dat' do not fit")
+  }
+}

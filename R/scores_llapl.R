@@ -26,5 +26,32 @@ crps_llapl <- function(y, locationlog, scalelog) {
 
 #' @rdname scores_llapl
 #' @export
-logs_llapl <- function(y, locationlog, scalelog)
+logs_llapl <- function(y, locationlog, scalelog) {
   -log(fllapl(y, locationlog, scalelog))
+}
+  
+
+
+check_crps_llapl <- function(input) {
+  required <- c("y", "locationlog", "scalelog")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scalelog <= 0))
+    stop("Parameter 'scalelog' contains non-positive values.")
+  if (any(input$scalelog >= 1)) {
+    stop(paste("Parameter 'scalelog' contains values greater or equal to 1.",
+               "The CRPS does not exist."))
+  }
+}
+
+check_logs_llapl <- function(input) {
+  required <- c("y", "locationlog", "scalelog")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scalelog <= 0))
+    stop("Parameter 'scalelog' contains non-positive values.")
+}

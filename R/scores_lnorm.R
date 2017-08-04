@@ -14,19 +14,14 @@ NULL
 #' @export
 crps_lnorm <- function(y, meanlog = 0, sdlog = 1,
                        locationlog = meanlog, scalelog = sdlog) {
-  if (!missing(meanlog) && !missing(locationlog)) {
-    if (all(abs(meanlog - locationlog) < 1e-15))
-      warning("specify 'meanlog' or 'locationlog' but not both")
-    else stop("specify 'meanlog' or 'locationlog' but not both")
-  }
-  if (!missing(sdlog) && !missing(scalelog)) {
-    if (all(abs(sdlog - scalelog) < 1e-15))
-      warning("specify 'sdlog' or 'scalelog' but not both")
-    else stop("specify 'sdlog' or 'scalelog' but not both")
-  }
-  c1 <- y * (2 * plnorm(y, meanlog, sdlog) - 1)
-  c2 <- 2 * exp(meanlog + 0.5 * sdlog^2)
-  c3 <- plnorm(y, meanlog + sdlog^2, sdlog) + pnorm(sdlog / sqrt(2)) - 1
+  if (!missing(meanlog) && !missing(locationlog))
+    stop("specify 'meanlog' or 'locationlog' but not both")
+  if (!missing(sdlog) && !missing(scalelog))
+    stop("specify 'sdlog' or 'scalelog' but not both")
+  c1 <- y * (2 * plnorm(y, locationlog, scalelog) - 1)
+  c2 <- 2 * exp(locationlog + 0.5 * scalelog^2)
+  c3 <- plnorm(y, locationlog + scalelog^2, scalelog) +
+    pnorm(scalelog / sqrt(2)) - 1
   c1 - c2 * c3
 }
 
@@ -35,17 +30,29 @@ crps_lnorm <- function(y, meanlog = 0, sdlog = 1,
 #' @export
 logs_lnorm <- function(y, meanlog = 0, sdlog = 1,
                        locationlog = meanlog, scalelog = sdlog) {
-  if (!missing(meanlog) && !missing(locationlog)) {
-    if (all(abs(meanlog - locationlog) < 1e-15))
-      warning("specify 'meanlog' or 'locationlog' but not both")
-    else stop("specify 'meanlog' or 'locationlog' but not both")
-  }
-  if (!missing(sdlog) && !missing(scalelog)) {
-    if (all(abs(sdlog - scalelog) < 1e-15))
-      warning("specify 'sdlog' or 'scalelog' but not both")
-    else stop("specify 'sdlog' or 'scalelog' but not both")
-  }
+  if (!missing(meanlog) && !missing(locationlog))
+    stop("specify 'meanlog' or 'locationlog' but not both")
+  if (!missing(sdlog) && !missing(scalelog))
+    stop("specify 'sdlog' or 'scalelog' but not both")
   -dlnorm(y, locationlog, scalelog, log = TRUE)
 }
   
 
+check_crps_lnorm <- function(input) {
+  required <- list(c("y", "meanlog", "sdlog"),
+                   c("y", "locationlog", "scalelog"))
+  checkNames2(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if ("sdlog" %in% names(input)) {
+    if (any(input$sdlog <= 0))
+      stop("Parameter 'sdlog' contains non-positive values.")
+  }
+  if ("scalelog" %in% names(input)) {
+    if (any(input$scalelog <= 0))
+      stop("Parameter 'scalelog' contains non-positive values.")
+  }
+}
+
+check_logs_lnorm <- check_crps_lnorm

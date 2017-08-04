@@ -139,3 +139,49 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   out <- lsmixnC(w = w, m = dat, s = s, y = y)
   return(out)
 }
+
+################################################################################
+# input checks for sample functions
+check.sample <- function(input) {
+  
+  input_isnumeric <- sapply(input, is.numeric)
+  if (!all(input_isnumeric)) {
+    stop(paste("Non-numeric input:", paste(names(input)[!input_isnumeric], collapse=", ")))
+  }
+  
+  input_isvector <- sapply(input, is.vector)
+  if (!all(input_isvector)) {
+    stop(paste("Non-scalar or non-vectorial input:", paste(names(input)[!input_isvector], collapse=", ")))
+  }
+  
+  input_lengths <- sapply(input, length)
+  max_length <- max(input_lengths)
+  ref_length <- do.call(c, list(y = 1, dat = max_length, w = max_length, bw = 1))
+  ref_length2 <- do.call(c, list(y = "1", dat = "n", w = "n", bw = "1"))
+  length_diffs <- input_lengths - ref_length[names(input)]
+  if (any(length_diffs != 0)) {
+    stop(paste("Incompatible input vector lengths.",
+               sprintf("Lengths of (%s) should be (%s).",
+                       paste(names(input), collapse = ", "),
+                       paste(ref_length2[names(input)], collapse = ", ")
+               ),
+               sprintf("Given lengths: %s", paste(input_lengths, collapse = ", ")),
+               sep = "\n")
+    )
+  }
+  
+  if (!is.null(input$w)) {
+    w <- input$w
+    if (any(w < 0 | w > 1)) {
+      stop("Weight parameter 'w' contains values not in [0, 1].")
+    }
+    if (!isTRUE(all.equal(sum(w), 1))) {
+      stop("Weight parameter 'w' does not sum up to 1.")
+    }
+  }
+  if (!is.null(input$bw)) {
+    if (input$bw < 0) {
+      stop("Bandwidth parameter 'bw' is negative.")
+    }
+  }
+}

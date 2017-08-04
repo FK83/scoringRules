@@ -1,67 +1,40 @@
 ################################################################################
-# input checks for sample functions
-check.sample <- function(input) {
-  
-  input_isnumeric <- sapply(input, is.numeric)
-  if (!all(input_isnumeric)) {
-    stop(paste("Non-numeric input:", paste(names(input)[!input_isnumeric], collapse=", ")))
-  }
-  
-  input_isvector <- sapply(input, is.vector)
-  if (!all(input_isvector)) {
-    stop(paste("Non-scalar or non-vectorial input:", paste(names(input)[!input_isvector], collapse=", ")))
-  }
-  
-  input_lengths <- sapply(input, length)
-  max_length <- max(input_lengths)
-  ref_length <- do.call(c, list(y = 1, dat = max_length, w = max_length, bw = 1))
-  ref_length2 <- do.call(c, list(y = "1", dat = "n", w = "n", bw = "1"))
-  length_diffs <- input_lengths - ref_length[names(input)]
-  if (any(length_diffs != 0)) {
-    stop(paste("Incompatible input vector lengths.",
-               sprintf("Lengths of (%s) should be (%s).",
-                       paste(names(input), collapse = ", "),
-                       paste(ref_length2[names(input)], collapse = ", ")
-               ),
-               sprintf("Given lengths: %s", paste(input_lengths, collapse = ", ")),
-               sep = "\n")
-    )
-  }
-  
-  if (!is.null(input$w)) {
-    w <- input$w
-    if (any(w < 0 | w > 1)) {
-      stop("Weight parameter 'w' contains values not in [0, 1].")
-    }
-    if (!isTRUE(all.equal(sum(w), 1))) {
-      stop("Weight parameter 'w' does not sum up to 1.")
-    }
-  }
-  if (!is.null(input$bw)) {
-    if (input$bw < 0) {
-      stop("Bandwidth parameter 'bw' is negative.")
-    }
-  }
-}
+synonyms <- list(
+  poisson = "pois",
+  'negative-binomial' = "nbinom",
+  uniform = "unif",
+  laplace = "lapl",
+  logistic = "logis",
+  normal = "norm",
+  'normal-mixture' = "mixnorm",
+  'two-piece-exponential' = "2pexp",
+  'two-piece-normal' = "2pnorm",
+  exponential = "exp",
+  'log-laplace' = "llapl",
+  'log-logistic' = "llogis",
+  'log-normal' = "lnorm"
+)
 
 # check existence of distribution family
-checkFamily <- function(family, score) {
+#' @importFrom methods existsFunction
+getFamily <- function(family, score) {
   family <- unique(family)
-  ind <- match(family, names(synonyms), nomatch = 0)
-  family[ind > 0] <- synonyms[ind]
+  ind <- match(family, names(synonyms), nomatch = 0L)
+  family[ind > 0L] <- synonyms[ind]
   family <- unique(family)
   n <- length(family)
   
   if (n > 1) {
     stop(sprintf("Ambiguous choice of parametric family - see details section of ?%s for a list of available choices.",
-                 score))
+                 paste0(score, ".numeric")))
   } else if (n == 0) {
     stop(sprintf("Could not find parametric family - see details section of ?%s for a list of available choices.",
-                 score))
+                 paste0(score, ".numeric")))
   }
-  if (!existsFunction(paste0(score, ".", family)) | !existsFunction(paste0("check.", family))) {
+  if (!existsFunction(paste0(score, "_", family)) ||
+      !existsFunction(paste0("check_", score, "_", family))) {
     stop(sprintf("Could not find parametric family - see details section of ?%s for a list of available choices.",
-                 score))
+                 paste0(score, ".numeric")))
   }
   
   return(family)
@@ -73,8 +46,7 @@ checkFamily <- function(family, score) {
 
 # for only one choice of parameterization
 checkNames1 <- function(required, given) {
-  ind <- match(required, given, nomatch = 0)
-  if (any(ind == 0)) {
+  if (!all(required %in% given)) {
     stop(paste("Missing parameter.",
                paste("Given input:", paste(given, collapse=", ")),
                paste("Required input:", paste(required, collapse=", ")),
@@ -85,22 +57,24 @@ checkNames1 <- function(required, given) {
 
 # for multiple parameterizations
 checkNames2 <- function(required, given) {
-  ind <- lapply(required, match, given, nomatch = 0)
-  param.choice <- which(sapply(ind, function(x) all(x != 0)))
+  ind <- lapply(required, `%in%`, given)
+  param.choice <- which(sapply(ind, all))
   if (length(param.choice) > 1) {
     stop(paste("Multiple parameterizations given. Please choose one.",
-               paste("Given input:", paste(given, collapse=", ")),
-               paste("Required input:", paste(lapply(required, paste, collapse = ", "), collapse = "  OR  ")),
+               paste("Given input:", paste(given, collapse = ", ")),
+               paste("Required input:",
+                     paste(lapply(required, paste, collapse = ", "),
+                           collapse = "  OR  ")),
                sep="\n")
     ) 
   } else if (length(param.choice) == 0) {
     stop(paste("Missing parameter.",
-               paste("Given input:", paste(given, collapse=", ")),
-               paste("Required input:", paste(lapply(required, paste, collapse = ", "), collapse = "  OR  ")),
+               paste("Given input:", paste(given, collapse = ", ")),
+               paste("Required input:",
+                     paste(lapply(required, paste, collapse = ", "),
+                           collapse = "  OR  ")),
                sep="\n")
     )
-  } else {
-    return(param.choice)
   }
 }
 
@@ -125,10 +99,22 @@ checkNames3 <- function(optional, given) {
   }
 }
 
-checkNumeric <- function(input) {
+checkNumeric <- function(input, infinite_exception = NULL) {
   input_numeric <- sapply(input, is.numeric)
   if (any(!input_numeric)) {
-    stop(paste("Non-numeric input:", paste(names(input)[!input_numeric], collapse=", ")))
+    stop(paste("Non-numeric input:",
+               paste(names(input)[!input_numeric], collapse = ", ")))
+  }
+  input_NA <- sapply(input, anyNA)
+  if (any(input_NA)) {
+    stop(paste("Input with missing values:",
+               paste(names(input)[input_NA], collapse = ", ")))
+  }
+  input <- input[!names(input) %in% infinite_exception]
+  input_infinite <- sapply(input, function(x) any(is.infinite(x)))
+  if (any(input_infinite)) {
+    stop(paste("Input with infinite values:",
+               paste(names(input)[input_infinite], collapse = ", ")))
   }
 }
 

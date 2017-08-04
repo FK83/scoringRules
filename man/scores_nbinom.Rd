@@ -6,9 +6,9 @@
 \alias{logs_nbinom}
 \title{Calculating scores for the negative binomial distribution}
 \usage{
-crps_nbinom(y, size, prob)
+crps_nbinom(y, size, prob, mu)
 
-logs_nbinom(y, size, prob)
+logs_nbinom(y, size, prob, mu)
 }
 \arguments{
 \item{y}{vector of observations.}
@@ -18,6 +18,8 @@ logs_nbinom(y, size, prob)
     Must be strictly positive, need not be integer.}
 
 \item{prob}{probability of success in each trial. \code{0 < prob <= 1}.}
+
+\item{mu}{alternative parametrization via mean: see \sQuote{Details}.}
 }
 \value{
 A vector of score values.

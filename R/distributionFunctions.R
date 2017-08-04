@@ -1,22 +1,3 @@
-################################################################################
-synonyms <- list(
-  poisson = "pois",
-  'negative-binomial' = "nbinom",
-  uniform = "unif",
-  laplace = "lapl",
-  logistic = "logis",
-  normal = "norm",
-  'normal-mixture' = "mixnorm",
-  'two-piece-exponential' = "2pexp",
-  'two-piece-normal' = "2pnorm",
-  exponential = "exp",
-  'log-laplace' = "llapl",
-  'log-logistic' = "llogis",
-  'log-normal' = "lnorm"
-)
-
-################################################################################
-
 flapl <- function(x, location, scale) {
   dexp(abs(x - location), 1/scale) / 2
 }

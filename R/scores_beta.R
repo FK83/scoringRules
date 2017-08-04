@@ -52,3 +52,20 @@ logs_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
     -dbeta((y - lower) / scale, shape1, shape2) + log(scale)
   }
 }
+
+
+check_crps_beta <- function(input) {
+  required <- c("y", "shape1", "shape2", "lower", "upper")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$shape1 <= 0))
+    stop("Parameter 'shape1' contains non-positive values.")
+  if (any(input$shape1 <= 0))
+    stop("Parameter 'shape1' contains non-positive values.")
+  if (any(input$lower > input$upper))
+    stop("Parameter 'lower' contains greater values than parameter 'upper'.")
+}
+
+check_logs_beta <- check_crps_beta

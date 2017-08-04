@@ -18,5 +18,20 @@ crps_pois <- function(y, lambda) {
 
 #' @rdname scores_pois
 #' @export
-logs_pois <- function(y, lambda) 
+logs_pois <- function(y, lambda) {
   -dpois(y, lambda, log = TRUE)
+}
+  
+
+
+check_crps_pois <- function(input) {
+  required <- c("y", "lambda")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$lambda <= 0))
+    stop("Parameter 'lambda' contains non-positive values.")
+}
+
+check_logs_pois <- check_crps_pois

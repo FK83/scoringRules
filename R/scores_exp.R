@@ -37,6 +37,41 @@ logs_exp <- function(y, rate = 1) {
 
 #' @rdname scores_exp
 #' @export
-logs_expM <- function(y, location = 0, scale = 1) {
-  -fexp(y, location, scale, 0, log = TRUE)
+logs_exp2 <- function(y, location = 0, scale = 1) {
+  -dexp(y - location, 1 / scale, log = TRUE)
+}
+
+
+check_crps_exp <- function(input) {
+  required <- c("y", "rate")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$rate <= 0))
+    stop("Parameter 'rate' contains non-positive values.")
+}
+
+check_crps_expM <- function(input) {
+  required <- c("y", "location", "scale", "mass")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$rate <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$mass < 0 | input$mass > 1))
+    stop("Parameter 'mass' contains values not in [0, 1].")
+}
+
+check_logs_exp <- check_crps_exp
+  
+check_logs_exp2 <- function(input) {
+  required <- c("y", "location", "scale")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
 }

@@ -22,5 +22,32 @@ crps_llogis <- function(y, locationlog, scalelog) {
 
 #' @rdname scores_llogis
 #' @export
-logs_llogis <- function(y, locationlog, scalelog)
+logs_llogis <- function(y, locationlog, scalelog) {
   -log(fllogis(y, locationlog, scalelog))
+}
+
+
+
+check_crps_llogis <- function(input) {
+  required <- c("y", "locationlog", "scalelog")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scalelog <= 0))
+    stop("Parameter 'scalelog' contains non-positive values.")
+  if (any(input$scalelog >= 1)) {
+    stop(paste("Parameter 'scalelog' contains values greater or equal to 1.",
+               "The CRPS does not exist."))
+  }
+}
+
+check_logs_llogis <- function(input) {
+  required <- c("y", "locationlog", "scalelog")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scalelog <= 0))
+    stop("Parameter 'scalelog' contains non-positive values.")
+}

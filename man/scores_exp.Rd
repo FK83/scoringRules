@@ -5,7 +5,7 @@
 \alias{crps_exp}
 \alias{crps_expM}
 \alias{logs_exp}
-\alias{logs_expM}
+\alias{logs_exp2}
 \title{Calculating scores for the exponential distribution}
 \usage{
 crps_exp(y, rate = 1)
@@ -14,7 +14,7 @@ crps_expM(y, location = 0, scale = 1, mass = 0)
 
 logs_exp(y, rate = 1)
 
-logs_expM(y, location = 0, scale = 1)
+logs_exp2(y, location = 0, scale = 1)
 }
 \arguments{
 \item{y}{vector of observations.}

@@ -29,5 +29,19 @@ crps_lapl <- function(y, location = 0, scale = 1) {
 
 #' @rdname scores_lapl
 #' @export
-logs_lapl <- function(y, location = 0, scale = 1)
+logs_lapl <- function(y, location = 0, scale = 1) {
   -log(flapl(y, location, scale))
+}
+
+
+check_crps_lapl <- function(input) {
+  required <- c("y", "location", "scale")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+}
+
+check_logs_lapl <- check_crps_lapl

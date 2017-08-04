@@ -42,3 +42,26 @@ crps_gpd <- function(y, shape, location = 0, scale = 1, mass = 0) {
 logs_gpd <- function(y, shape, location = 0, scale = 1) {
   -fgpd(y, location, scale, shape, 0, log = TRUE)
 }
+
+
+check_crps_gpd <- function(input) {
+  required <- c("y", "location", "scale", "shape", "mass")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+  if (any(input$mass < 0 | input$mass > 1))
+    stop("Parameter 'mass' contains values not in [0, 1].")
+}
+
+check_logs_gpd <- function(input) {
+  required <- c("y", "location", "scale", "shape")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$scale <= 0))
+    stop("Parameter 'scale' contains non-positive values.")
+}
