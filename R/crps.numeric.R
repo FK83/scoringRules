@@ -86,142 +86,172 @@
 #'        \code{"laplace"} or \code{"lapl"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale} (positive scale parameter);
-#'        see \link{flapl}
+#'        see \link{crps_lapl}
 #'      \item
 #'        \code{"logistic"} or \code{"logis"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale} (positive scale parameter);
-#'        see \link{Logistic}
+#'        see \link{crps_logis}
 #'      \item
 #'        \code{"normal"} or \code{"norm"}:
 #'        \code{mean}, \code{sd} (mean and standard deviation);
-#'        see \link{Normal}
-#'      \item
-#'        \code{"t"}:
-#'        \code{location} (real-valued location parameter),
-#'        \code{scale} (positive scale parameter),
-#'        \code{df} (degrees of freedom);
-#'        see \link{ft}
+#'        see \link{crps_norm}
 #'      \item
 #'        \code{"normal-mixture"} or \code{"mixnorm"}:
 #'        \code{m} (mean parameters),
 #'        \code{s} (standard deviations),
 #'        \code{w} (weights);
-#'        see \link{fmixnorm};
+#'        see \link{crps_mixnorm};
 #'        note: matrix-input for parameters
+#'      \item
+#'        \code{"t"}:
+#'        \code{df} (degrees of freedom),
+#'        \code{location} (real-valued location parameter),
+#'        \code{scale} (positive scale parameter);
+#'        see \link{crps_t}
 #'      \item
 #'        \code{"two-piece-exponential"} or \code{"2pexp"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale1}, \code{scale2} (positive scale parameters);
-#'        see \link{f2pexp}
+#'        see \link{crps_2pexp}
 #'      \item
 #'        \code{"two-piece-normal"} or \code{"2pnorm"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale1}, \code{scale2} (positive scale parameters);
-#'        see \link{f2pnorm}
+#'        see \link{crps_2pnorm}
 #'    }
 #'  \item Distributions for non-negative random variables:
 #'    \itemize{
 #'      \item
 #'        \code{"exponential"} or \code{"exp"}:
 #'        \code{rate} (positive rate parameter);
-#'        see \link{Exponential}
+#'        see \link{crps_exp}
 #'      \item
 #'        \code{"gamma"}:
 #'        \code{shape} (positive shape parameter),
 #'        \code{rate} (positive rate parameter),
 #'        \code{scale} (alternative to \code{rate});
-#'        see \link{GammaDist}
+#'        see \link{crps_gamma}
 #'      \item
 #'        \code{"log-laplace"} or \code{"llapl"}:
 #'        \code{locationlog} (real-valued location parameter),
 #'        \code{scalelog} (positive scale parameter);
-#'        see \link{fllapl}
+#'        see \link{crps_llapl}
 #'      \item
 #'        \code{"log-logistic"} or \code{"llogis"}:
 #'        \code{locationlog} (real-valued location parameter),
 #'        \code{scalelog} (positive scale parameter);
-#'        see \link{fllogis}
+#'        see \link{crps_llogis}
 #'      \item
 #'        \code{"log-normal"} or \code{"lnorm"}:
 #'        \code{locationlog} (real-valued location parameter),
 #'        \code{scalelog} (positive scale parameter);
-#'        see \link{Lognormal}
+#'        see \link{crps_lnorm}
 #'    }
-#'  \item Distributions  for random variables with variable support:
+#'  \item Distributions with flexible support and/or point masses:
 #'    \itemize{
 #'      \item
-#'        \code{"normal"} or \code{"norm"}:
-#'        \code{location} (location parameter),
-#'        \code{scale} (scale parameter),
-#'        \code{lower} (real-valued truncation parameter, lower bound),
-#'        \code{upper} (real-valued truncation parameter, upper bound),
-#'        \code{lmass} (point mass in lower bound, string "cens" or "trunc"),
-#'        \code{umass} (point mass in upper bound, string "cens" or "trunc");
-#'        see \link{fnorm}
+#'        \code{"beta"}:
+#'        \code{shape1}, \code{shape2} (positive shape parameters),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_beta}
 #'      \item
-#'        \code{"t"}:
-#'        \code{location} (location parameter),
-#'        \code{scale} (scale parameter),
-#'        \code{df} (degrees of freedom),
-#'        \code{lower} (real-valued truncation parameter, lower bound),
-#'        \code{upper} (real-valued truncation parameter, upper bound),
-#'        \code{lmass} (point mass in lower bound, string "cens" or "trunc"),
-#'        \code{umass} (point mass in upper bound, string "cens" or "trunc");
-#'        see \link{ft}
+#'        \code{"uniform"} or \code{"unif"}:
+#'        \code{min}, \code{max} (lower and upper limits),
+#'        \code{lmass}, \code{umass} (point mass in lower or upper limit);
+#'        see \link{crps_unif}
 #'      \item
-#'        \code{"logistic"} or \code{"logis"}:
-#'        \code{location} (location parameter),
-#'        \code{scale} (scale parameter),
-#'        \code{lower} (real-valued truncation parameter, lower bound),
-#'        \code{upper} (real-valued truncation parameter, upper bound),
-#'        \code{lmass} (point mass in lower bound, string "cens" or "trunc"),
-#'        \code{umass} (point mass in upper bound, string "cens" or "trunc");
-#'        see \link{flogis} 
-#'      \item
-#'        \code{"exponential"} or \code{"exp"}:
+#'        \code{"expM"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale} (positive scale parameter),
 #'        \code{mass} (point mass in \code{location});
-#'        see \link{fexp}
+#'        see \link{crps_expM}
+#'      \item
+#'        \code{"gev"}:
+#'        \code{location} (real-valued location parameter),
+#'        \code{scale} (positive scale parameter),
+#'        \code{shape} (real-valued shape parameter);
+#'        see \link{crps_gev}
 #'      \item
 #'        \code{"gpd"}:
 #'        \code{location} (real-valued location parameter),
 #'        \code{scale} (positive scale parameter),
 #'        \code{shape} (real-valued shape parameter),
 #'        \code{mass} (point mass in \code{location});
-#'        see \link{fgpd}
+#'        see \link{crps_gpd}
 #'      \item
-#'        \code{"gev"}:
-#'        \code{location} (real-valued location parameter),
-#'        \code{scale} (positive scale parameter),
-#'        \code{shape} (real-valued shape parameter);
-#'        see \link{fgev}
+#'        \code{"tlogis"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_tlogis}
+#'      \item
+#'        \code{"clogis"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_clogis}
+#'      \item
+#'        \code{"gtclogis"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        \code{lmass}, \code{umass} (point mass in lower or upper limit);
+#'        see \link{crps_gtclogis}
+#'      \item
+#'        \code{"tnorm"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_tnorm}
+#'      \item
+#'        \code{"cnorm"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_cnorm}
+#'      \item
+#'        \code{"gtcnorm"}:
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        \code{lmass}, \code{umass} (point mass in lower or upper limit);
+#'        see \link{crps_gtcnorm}
+#'      \item
+#'        \code{"tt"}:
+#'        \code{df} (degrees of freedom),
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_tt}
+#'      \item
+#'        \code{"ct"}:
+#'        \code{df} (degrees of freedom),
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        see \link{crps_ct}
+#'      \item
+#'        \code{"gtct"}:
+#'        \code{df} (degrees of freedom),
+#'        \code{location} (location parameter),
+#'        \code{scale} (scale parameter),
+#'        \code{lower}, \code{upper} (lower and upper limits);
+#'        \code{lmass}, \code{umass} (point mass in lower or upper limit);
+#'        see \link{crps_gtct}
 #'    }
-#'  \item Distribution for random variables defined on bounded intervals:
+#'  \item Distributions discrete variables:
 #'    \itemize{
-#'      \item
-#'        \code{"uniform"} or \code{"unif"}:
-#'        \code{min}, \code{max} (lower and upper boundaries),
-#'        \code{lmass}, \code{umass} (point mass in lower or upper boundary);
-#'        see \link{Uniform}
-#'      \item
-#'        \code{"beta"}:
-#'        \code{shape1}, \code{shape2} (positive parameters);
-#'        see \link{Beta}
-#'    }
-#'  \item Distributions for random variables with discrete / infinite support:
-#'    \itemize{
-#'      \item
-#'        \code{"poisson"} or \code{"pois"}:
-#'        \code{lambda} (positive mean);
-#'        see \link{Poisson}
 #'      \item
 #'        \code{"negative-binomial"} or \code{"nbinom"}:
 #'        \code{size} (positive dispersion parameter),
 #'        \code{prob} (success probability),
 #'        \code{mu} (mean, alternative to \code{prob});
-#'        see \link{NegBinomial}
+#'        see \link{crps_nbinom}
+#'      \item
+#'        \code{"poisson"} or \code{"pois"}:
+#'        \code{lambda} (positive mean);
+#'        see \link{crps_pois}
 #'    }
 #' }
 #' All numerical arguments should be of the same length.
