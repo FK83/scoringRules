@@ -49,7 +49,7 @@ logs_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
     upper[!is.finite(upper)] <- NaN
     scale <- upper - lower
     scale[scale <= 0] <- NaN
-    -dbeta((y - lower) / scale, shape1, shape2) + log(scale)
+    -dbeta((y - lower) / scale, shape1, shape2, log = TRUE) + log(scale)
   }
 }
 
