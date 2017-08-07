@@ -7,9 +7,9 @@
 \method{crps}{numeric}(y, family, ...)
 }
 \arguments{
-\item{y}{Vector of realized values.}
+\item{y}{vector of realized values.}
 
-\item{family}{String which specifies the parametric family; current options:
+\item{family}{string which specifies the parametric family; current options:
 \code{"2pexp", "2pnorm", "beta", "clogis", "cnorm", "ct", "exp", "expM",
 "exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "lapl",
 "laplace", "llapl", "llogis", "lnorm", "log-laplace", "log-logistic",
@@ -17,7 +17,7 @@
 "negative-binomial", "norm", "normal", "pois", "poisson", "t", "tlogis",
 "tnorm", "tt", "two-piece-exponential", "two-piece-normal", "unif", "uniform"}.}
 
-\item{...}{Vectors of parameter values; expected input depends on the chosen
+\item{...}{vectors of parameter values; expected input depends on the chosen
 \code{family}. See details below.}
 }
 \value{
@@ -48,7 +48,7 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{mean}, \code{sd} (mean and standard deviation);
        see \code{\link{crps_norm}}
      \item
-       \code{"mixture-normal"} or \code{"mixnorm"}:
+       \code{"normal-mixture"} or \code{"mixture-normal"} or \code{"mixnorm"}:
        \code{m} (mean parameters),
        \code{s} (standard deviations),
        \code{w} (weights);
@@ -191,7 +191,7 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{lmass}, \code{umass} (point mass in lower or upper limit);
        see \code{\link{crps_gtct}}
    }
- \item Distributions discrete variables:
+ \item Distributions of discrete variables:
    \itemize{
      \item
        \code{"negative-binomial"} or \code{"nbinom"}:
@@ -230,7 +230,7 @@ Baran, S. and S. Lerch (2015):
 `Log-normal distribution based Ensemble Model Output Statistics models for
 probabilistic wind-speed forecasting',
 Quarterly Journal of the Royal Meteorological Society 141, 2289-2299.
-\emph{(Lognormal)}
+\emph{(Log-normal)}
 
 Friederichs, P. and T.L. Thorarinsdottir (2012):
 `Forecast verification for extreme value distributions with an application
@@ -282,7 +282,7 @@ TEST 23, 787-205.
 Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016):
 `Calibrated ensemble forecasts using quantile regression forests and
 ensemble model output statistics',
-Monthly Weather Review, in press.
+Monthly Weather Review 144, 2375-2393.
 }
 \seealso{
 \code{\link{logs.numeric}}
