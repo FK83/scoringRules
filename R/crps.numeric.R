@@ -100,7 +100,7 @@
 #'        \code{mean}, \code{sd} (mean and standard deviation);
 #'        see \code{\link{crps_norm}}
 #'      \item
-#'        \code{"mixture-normal"} or \code{"mixnorm"}:
+#'        \code{"normal-mixture"} or \code{"mixture-normal"} or \code{"mixnorm"}:
 #'        \code{m} (mean parameters),
 #'        \code{s} (standard deviations),
 #'        \code{w} (weights);
@@ -243,7 +243,7 @@
 #'        \code{lmass}, \code{umass} (point mass in lower or upper limit);
 #'        see \code{\link{crps_gtct}}
 #'    }
-#'  \item Distributions discrete variables:
+#'  \item Distributions of discrete variables:
 #'    \itemize{
 #'      \item
 #'        \code{"negative-binomial"} or \code{"nbinom"}:
