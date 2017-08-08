@@ -4,10 +4,7 @@
 #' @param m matrix of mean parameters (rows represent observations, columns represent mixture components).
 #' @param s matrix of scale parameters (same structure as for \code{m}).
 #' @param w matrix of weights (same structure as for \code{m}; row sums must equal one).
-#' @param exact if \code{TRUE} calculates the analytical solution; otherwise
-#'  numerical integration is used.
-#' @param rel_tol only used if \code{exact} is \code{FALSE}; relative tolerance
-#'  for numerical integration.
+#' @param rel_tol relative accuracy for numerical integration.
 #' @return A vector of score values.
 #' @name scores_mixnorm
 #' @examples
@@ -18,7 +15,7 @@
 #' weights <- matrix(rep(1/15, 100*15), nrow = 100)
 #' y <- rnorm(100)
 #' crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights)
-#' crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE)
+#' crps2 <- crps_mixnorm_int(y = y, m = mval, s = sdval, w = weights)
 #' 
 #' # Example 2: 2 observations, 10000 mixture components
 #' mval <- matrix(rnorm(2*10000), nrow = 2)
@@ -27,7 +24,7 @@
 #' y <- rnorm(2)
 #' # With many mixture components, non-exact evaluation is much faster
 #' system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
-#' system.time(crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE))
+#' system.time(crps2 <- crps_mixnorm_int(y = y, m = mval, s = sdval, w = weights))
 NULL
 
 #' @rdname scores_mixnorm
@@ -42,7 +39,7 @@ crps_mixnorm = function(y, m, s, w) {
 crps_mixnorm_int <- function(y, m, s, w, rel_tol = 1e-6) {
   constructF <- function(i) {
     function(x) {
-      sapply(x, function(z) sum(w[i,] * pnorm(z, m[i,], s[i,])))
+      sapply(x, function(z) sum(w[i, ] * pnorm(z, m[i, ], s[i, ])))
     }
   }
   sapply(seq_along(y),
@@ -52,6 +49,7 @@ crps_mixnorm_int <- function(y, m, s, w, rel_tol = 1e-6) {
 #' @rdname scores_mixnorm
 #' @export
 logs_mixnorm <- function(y, m, s, w) {
+  s[s < 0] <- NaN
   sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 }
   

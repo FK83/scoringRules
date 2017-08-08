@@ -3,10 +3,13 @@
 \name{scores_mixnorm}
 \alias{scores_mixnorm}
 \alias{crps_mixnorm}
+\alias{crps_mixnorm_int}
 \alias{logs_mixnorm}
 \title{Calculating scores for a mixture of normal distributions.}
 \usage{
-crps_mixnorm(y, m, s, w, exact = TRUE, rel_tol = 1e-06)
+crps_mixnorm(y, m, s, w)
+
+crps_mixnorm_int(y, m, s, w, rel_tol = 1e-06)
 
 logs_mixnorm(y, m, s, w)
 }
@@ -19,11 +22,7 @@ logs_mixnorm(y, m, s, w)
 
 \item{w}{matrix of weights (same structure as for \code{m}; row sums must equal one).}
 
-\item{exact}{if \code{TRUE} calculates the analytical solution; otherwise
-numerical integration is used.}
-
-\item{rel_tol}{only used if \code{exact} is \code{FALSE}; relative tolerance
-for numerical integration.}
+\item{rel_tol}{relative accuracy for numerical integration.}
 }
 \value{
 A vector of score values.
@@ -39,7 +38,7 @@ sdval <- matrix(rgamma(100*15, shape = 2), nrow = 100)
 weights <- matrix(rep(1/15, 100*15), nrow = 100)
 y <- rnorm(100)
 crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights)
-crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE)
+crps2 <- crps_mixnorm_int(y = y, m = mval, s = sdval, w = weights)
 
 # Example 2: 2 observations, 10000 mixture components
 mval <- matrix(rnorm(2*10000), nrow = 2)
@@ -48,5 +47,5 @@ weights <- matrix(rep(1/10000, 2*10000), nrow = 2)
 y <- rnorm(2)
 # With many mixture components, non-exact evaluation is much faster
 system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
-system.time(crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE))
+system.time(crps2 <- crps_mixnorm_int(y = y, m = mval, s = sdval, w = weights))
 }
