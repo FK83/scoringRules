@@ -13,11 +13,11 @@ logs_mixnorm(y, m, s, w)
 \arguments{
 \item{y}{vector of observations.}
 
-\item{m}{matrix of mean parameters.}
+\item{m}{matrix of mean parameters (rows represent observations, columns represent mixture components).}
 
-\item{s}{matrix of scale parameters.}
+\item{s}{matrix of scale parameters (same structure as for \code{m}).}
 
-\item{w}{matrix of weights.}
+\item{w}{matrix of weights (same structure as for \code{m}; row sums must equal one).}
 
 \item{exact}{if \code{TRUE} calculates the analytical solution; otherwise
 numerical integration is used.}
@@ -30,4 +30,23 @@ A vector of score values.
 }
 \description{
 Calculating scores for a mixture of normal distributions.
+}
+\examples{
+
+# Example 1: 100 observations, 15 mixture components
+mval <- matrix(rnorm(100*15), nrow = 100)
+sdval <- matrix(rgamma(100*15, shape = 2), nrow = 100)
+weights <- matrix(rep(1/15, 100*15), nrow = 100)
+y <- rnorm(100)
+crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights)
+crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE)
+
+# Example 2: 2 observations, 10000 mixture components
+mval <- matrix(rnorm(2*10000), nrow = 2)
+sdval <- matrix(rgamma(2*10000, shape = 2), nrow = 2)
+weights <- matrix(rep(1/10000, 2*10000), nrow = 2)
+y <- rnorm(2)
+# With many mixture components, non-exact evaluation is much faster
+system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
+system.time(crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE))
 }

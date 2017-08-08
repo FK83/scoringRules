@@ -14,21 +14,21 @@ logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 \arguments{
 \item{y}{realized value (numeric vector of length one).}
 
-\item{dat}{Numeric vector of data
+\item{dat}{numeric vector of data
 (simulation draws from forecast distribution).}
 
-\item{method}{String, approximation method used in \link{crps_sample}.
+\item{method}{string, approximation method used in \link{crps_sample}.
 Currently implemented: "edf" (empirical distribution function) and
 "kde" (kernel density estimation).}
 
-\item{w}{Numeric vector of weights for \code{dat} (if \code{method = "edf"}).}
+\item{w}{numeric vector of weights for \code{dat} (if \code{method = "edf"}).}
 
-\item{bw}{Numeric scalar for bandwidth (if \code{method = "kde"}).}
+\item{bw}{numeric scalar for bandwidth (if \code{method = "kde"}).}
 
-\item{num_int}{Logical; if TRUE numerical integration is used
+\item{num_int}{logical; if TRUE numerical integration is used
 (if \code{method = "kde"}).}
 
-\item{show_messages}{Logical; on/off switch for messages (does not affect
+\item{show_messages}{logical; on/off switch for messages (does not affect
 warnings and error, which are always printed).}
 }
 \value{
@@ -64,7 +64,7 @@ logs(y = obs, family = "normal", mean = 0, sd = 1)
 \references{
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2017),
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016):
 `Probabilistic forecasting and comparative model assessment based on
 Markov Chain Monte Carlo output', working paper,
 Heidelberg Institute for Theoretical Studies,

@@ -33,7 +33,7 @@ log-likelihood \code{\link{logLik}}.
 \references{
 \emph{General background and further references on scoring rules:}
 
-Gneiting, T. and A. Raftery (2007):
+Gneiting, T. and A.E. Raftery (2007):
 `Strictly proper scoring rules, prediction and estimation',
 Journal of the American Statistical Association 102, 359-378.
 

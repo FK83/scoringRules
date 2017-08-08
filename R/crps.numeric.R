@@ -3,28 +3,29 @@
 #' Calculate the Continuous Ranked Probability Score (CRPS) given observations
 #' and parameters of a family of distributions.
 #' 
-#' @param y Vector of realized values.
-#' @param family String which specifies the parametric family; current options:
+#' @param y vector of realized values.
+#' @param family string which specifies the parametric family; current options:
 #' \code{"2pexp", "2pnorm", "beta", "clogis", "cnorm", "ct", "exp", "expM",
 #' "exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "lapl",
 #' "laplace", "llapl", "llogis", "lnorm", "log-laplace", "log-logistic",
 #' "log-normal", "logis", "logistic", "mixnorm", "mixture-normal", "nbinom",
 #' "negative-binomial", "norm", "normal", "pois", "poisson", "t", "tlogis",
 #' "tnorm", "tt", "two-piece-exponential", "two-piece-normal", "unif", "uniform"}.
-#' @param ... Vectors of parameter values; expected input depends on the chosen
+#' @param ... vectors of parameter values; expected input depends on the chosen
 #' \code{family}. See details below.
 #' 
 #' @return Vector of score values.
 #' \emph{A lower score indicates a better forecast.}
 #' 
 #' @references
+#' 
 #' \emph{Closed form expressions of the CRPS for specific distributions:}
 #' 
 #' Baran, S. and S. Lerch (2015):
 #' `Log-normal distribution based Ensemble Model Output Statistics models for
 #' probabilistic wind-speed forecasting',
 #' Quarterly Journal of the Royal Meteorological Society 141, 2289-2299.
-#' \emph{(Lognormal)}
+#' \emph{(Log-normal)}
 #' 
 #' Friederichs, P. and T.L. Thorarinsdottir (2012):
 #' `Forecast verification for extreme value distributions with an application
@@ -76,7 +77,10 @@
 #' Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016):
 #' `Calibrated ensemble forecasts using quantile regression forests and
 #' ensemble model output statistics',
-#' Monthly Weather Review, in press. 
+#' Monthly Weather Review 144, 2375-2393. 
+#' 
+#' Mathematical details and derivations are available in the \emph{closedforms} vignette
+#' to the \emph{scoringRules} package.
 #' 
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #' 

@@ -5,16 +5,16 @@
 #' sample of data.
 #' 
 #' @param y realized value (numeric vector of length one).
-#' @param dat Numeric vector of data
+#' @param dat numeric vector of data
 #'  (simulation draws from forecast distribution).
-#' @param method String, approximation method used in \link{crps_sample}.
+#' @param method string, approximation method used in \link{crps_sample}.
 #'  Currently implemented: "edf" (empirical distribution function) and
 #'  "kde" (kernel density estimation).
-#' @param w Numeric vector of weights for \code{dat} (if \code{method = "edf"}).
-#' @param bw Numeric scalar for bandwidth (if \code{method = "kde"}).
-#' @param num_int Logical; if TRUE numerical integration is used
+#' @param w numeric vector of weights for \code{dat} (if \code{method = "edf"}).
+#' @param bw numeric scalar for bandwidth (if \code{method = "kde"}).
+#' @param num_int logical; if TRUE numerical integration is used
 #'  (if \code{method = "kde"}).
-#' @param show_messages Logical; on/off switch for messages (does not affect
+#' @param show_messages logical; on/off switch for messages (does not affect
 #'  warnings and error, which are always printed).
 #'  
 #' @return
@@ -23,7 +23,7 @@
 #' @references
 #' \emph{Evaluating simulation based forecast distributions:}
 #' 
-#' Krueger, F., S. Lerch, T.L. Thorarinsdottir and T. Gneiting (2017),
+#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016):
 #' `Probabilistic forecasting and comparative model assessment based on
 #' Markov Chain Monte Carlo output', working paper,
 #' Heidelberg Institute for Theoretical Studies,

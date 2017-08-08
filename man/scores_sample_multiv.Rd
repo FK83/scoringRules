@@ -11,16 +11,16 @@ es_sample(y, dat)
 vs_sample(y, dat, w = NULL, p = 0.5)
 }
 \arguments{
-\item{y}{Realized values (numeric vector of length d).}
+\item{y}{realized values (numeric vector of length d).}
 
-\item{dat}{Numeric matrix of data
+\item{dat}{numeric matrix of data
 (columns are simulation draws from multivariate forecast distribution).}
 
-\item{w}{Numeric matrix of weights for \code{dat} used in the variogram
+\item{w}{numeric matrix of weights for \code{dat} used in the variogram
 score. If no weights are specified, constant weights with \eqn{w = 1}
 are used.}
 
-\item{p}{Order of variogram score. Standard choices include \eqn{p = 1} and
+\item{p}{order of variogram score. Standard choices include \eqn{p = 1} and
 \eqn{p = 0.5}.}
 }
 \value{
@@ -75,15 +75,15 @@ vs_sample(y = obs, dat = fc_sample, w = w_vs, p = 1)
 \references{
 \emph{Energy score}
 
-Gneiting, T., Stanberry, L. I., Grimit, E. P., Held, L. and
-Johnson, N. A. (2008),
+Gneiting, T., Stanberry, L.I., Grimit, E.P., Held, L. and
+N.A. Johnson (2008):
 `Assessing probabilistic forecasts of multivariate quantities, with an
 application to ensemble predictions of surface winds',
 TEST, 17, 211-235.
 
 \emph{Variogram-based	proper scoring rules}
 
-Scheuerer, M. and Hamill, T. M. (2015),
+Scheuerer, M. and T.M. Hamill (2015):
 `Variogram-based proper scoring rules for probabilistic forecasts of
 multivariate quantities',
 Monthly Weather Review, 143, 1321-1334.

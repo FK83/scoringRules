@@ -3,6 +3,7 @@
 #' @param y vector of observations.
 #' @inheritParams stats::pnbinom
 #' @return A vector of score values.
+#' @details The mean of the negative binomial distribution is given by \code{mu} = \code{size}*(1-\code{prob})/\code{prob}.
 #' @name scores_nbinom
 #' @importFrom stats pnbinom dnbinom
 NULL

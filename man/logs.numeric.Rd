@@ -48,7 +48,7 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{mean}, \code{sd} (mean and standard deviation);
        see \code{\link{logs_norm}}
      \item
-       \code{"mixture-normal"} or \code{"mixnorm"}:
+       \code{"normal-mixture"} or \code{"mixture-normal"} or \code{"mixnorm"}:
        \code{m} (mean parameters),
        \code{s} (standard deviations),
        \code{w} (weights);
@@ -147,7 +147,7 @@ The parameters supplied to each of the functions are numeric vectors:
        \code{lower}, \code{upper} (lower and upper limits);
        see \code{\link{logs_tt}}
    }
- \item Distributions discrete variables:
+ \item Distributions of discrete variables:
    \itemize{
      \item
        \code{"negative-binomial"} or \code{"nbinom"}:
