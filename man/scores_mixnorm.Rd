@@ -41,12 +41,12 @@ y <- rnorm(100)
 crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights)
 crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE)
 
-#' Example 2: 2 observations, 10000 mixture components
+# Example 2: 2 observations, 10000 mixture components
 mval <- matrix(rnorm(2*10000), nrow = 2)
 sdval <- matrix(rgamma(2*10000, shape = 2), nrow = 2)
 weights <- matrix(rep(1/10000, 2*10000), nrow = 2)
 y <- rnorm(2)
-# Note that non-exact evaluation is much faster here
+# With many mixture components, non-exact evaluation is much faster
 system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
 system.time(crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE))
 }
