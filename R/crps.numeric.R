@@ -18,6 +18,7 @@
 #' \emph{A lower score indicates a better forecast.}
 #' 
 #' @references
+#' 
 #' \emph{Closed form expressions of the CRPS for specific distributions:}
 #' 
 #' Baran, S. and S. Lerch (2015):
@@ -77,6 +78,9 @@
 #' `Calibrated ensemble forecasts using quantile regression forests and
 #' ensemble model output statistics',
 #' Monthly Weather Review 144, 2375-2393. 
+#' 
+#' Mathematical details and derivations are available in the \emph{closedforms} vignette
+#' to the \emph{scoringRules} package.
 #' 
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #' 
@@ -275,7 +279,6 @@
 #' crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 #' 
 #' @seealso \code{\link{logs.numeric}}
-#' @references The \emph{closedforms} vignette (available via CRAN) details the CRPS formulas for various parametric families.
 #' 
 #' @export crps.numeric
 #' @export

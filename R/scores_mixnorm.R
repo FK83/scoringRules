@@ -1,15 +1,33 @@
 #' Calculating scores for a mixture of normal distributions.
 #'
 #' @param y vector of observations.
-#' @param m matrix of mean parameters.
-#' @param s matrix of scale parameters.
-#' @param w matrix of weights.
+#' @param m matrix of mean parameters (rows represent observations, columns represent mixture components).
+#' @param s matrix of scale parameters (same structure as for \code{m}).
+#' @param w matrix of weights (same structure as for \code{m}; row sums must equal one).
 #' @param exact if \code{TRUE} calculates the analytical solution; otherwise
 #'  numerical integration is used.
 #' @param rel_tol only used if \code{exact} is \code{FALSE}; relative tolerance
 #'  for numerical integration.
 #' @return A vector of score values.
 #' @name scores_mixnorm
+#' @examples
+#' 
+#' # Example 1: 100 observations, 15 mixture components
+#' mval <- matrix(rnorm(100*15), nrow = 100)
+#' sdval <- matrix(rgamma(100*15, shape = 2), nrow = 100)
+#' weights <- matrix(rep(1/15, 100*15), nrow = 100)
+#' y <- rnorm(100)
+#' crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights)
+#' crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE)
+#' 
+#' #' Example 2: 2 observations, 10000 mixture components
+#' mval <- matrix(rnorm(2*10000), nrow = 2)
+#' sdval <- matrix(rgamma(2*10000, shape = 2), nrow = 2)
+#' weights <- matrix(rep(1/10000, 2*10000), nrow = 2)
+#' y <- rnorm(2)
+#' # Note that non-exact evaluation is much faster here
+#' system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
+#' system.time(crps2 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights, exact = FALSE))
 NULL
 
 #' @rdname scores_mixnorm

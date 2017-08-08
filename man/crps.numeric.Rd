@@ -282,9 +282,10 @@ TEST 23, 787-205.
 Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016):
 `Calibrated ensemble forecasts using quantile regression forests and
 ensemble model output statistics',
-Monthly Weather Review 144, 2375-2393.
+Monthly Weather Review 144, 2375-2393. 
 
-The \emph{closedforms} vignette (available via CRAN) details the CRPS formulas for various parametric families.
+Mathematical details and derivations are available in the \emph{closedforms} vignette
+to the \emph{scoringRules} package.
 }
 \seealso{
 \code{\link{logs.numeric}}
