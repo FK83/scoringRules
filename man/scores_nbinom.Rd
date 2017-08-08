@@ -27,3 +27,6 @@ A vector of score values.
 \description{
 Calculating scores for the negative binomial distribution
 }
+\details{
+The mean of the negative binomial distribution is given by \code{mu} = \code{size}*(1-\code{prob})/\code{prob}.
+}

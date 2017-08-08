@@ -275,6 +275,7 @@
 #' crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 #' 
 #' @seealso \code{\link{logs.numeric}}
+#' @references The \emph{closedforms} vignette (available via CRAN) details the CRPS formulas for various parametric families.
 #' 
 #' @export crps.numeric
 #' @export
