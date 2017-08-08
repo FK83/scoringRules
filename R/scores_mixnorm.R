@@ -14,21 +14,21 @@ NULL
 
 #' @rdname scores_mixnorm
 #' @export
-crps_mixnorm = function(y, m, s, w, exact = TRUE, rel_tol = 1e-6){
-  if (exact == TRUE){
-    sapply(seq_along(y),
-           function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
-  } else {
-    sapply(seq_along(y),
-           function(i) crps_mixnorm_int(y[i], m[i, ], s[i, ], w[i, ], rel_tol))
-  }
+crps_mixnorm = function(y, m, s, w) {
+  s[s < 0] <- NaN
+  sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
 }
 
-crps_mixnorm_int <- function(y, m, s, w, rel_tol){
-  Fmix <- function(z){
-    sapply(z, function(r) sum(w*pnorm((r-m)/s)))
+#' @rdname scores_mixnorm
+#' @export
+crps_mixnorm_int <- function(y, m, s, w, rel_tol = 1e-6) {
+  constructF <- function(i) {
+    function(x) {
+      sapply(x, function(z) sum(w[i,] * pnorm(z, m[i,], s[i,])))
+    }
   }
-  crps_int(y, Fmix, -Inf, Inf, rel_tol)
+  sapply(seq_along(y),
+         function(i) crps_int(y[i], constructF(i), -Inf, Inf, rel_tol))
 }
 
 #' @rdname scores_mixnorm
