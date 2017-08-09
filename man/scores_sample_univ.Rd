@@ -12,53 +12,70 @@ crps_sample(y, dat, method = "edf", w = NULL, bw = NULL,
 logs_sample(y, dat, bw = NULL, show_messages = TRUE)
 }
 \arguments{
-\item{y}{realized value (numeric vector of length one).}
+\item{y}{vector of realized values.}
 
-\item{dat}{numeric vector of data
-(simulation draws from forecast distribution).}
+\item{dat}{vector or matrix (depending on \code{y}; see details)
+of simulation draws from forecast distribution.}
 
-\item{method}{string, approximation method used in \link{crps_sample}.
-Currently implemented: "edf" (empirical distribution function) and
+\item{method}{string; approximation method. Options:
+"edf" (empirical distribution function) and
 "kde" (kernel density estimation).}
 
-\item{w}{numeric vector of weights for \code{dat} (if \code{method = "edf"}).}
+\item{w}{vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.}
 
-\item{bw}{numeric scalar for bandwidth (if \code{method = "kde"}).}
+\item{bw}{vector (matching \code{y}) of bandwidths for kernel density
+estimation; see details.}
 
-\item{num_int}{logical; if TRUE numerical integration is used
-(if \code{method = "kde"}).}
+\item{num_int}{logical; if TRUE numerical integration is used for method \code{"kde"}.}
 
-\item{show_messages}{logical; on/off switch for messages (does not affect
-warnings and error, which are always printed).}
+\item{show_messages}{logical; display of messages (does not affect
+warnings and errors).}
 }
 \value{
 Value of the score. \emph{A lower score indicates a better forecast.}
 }
 \description{
-Compute scores of the form \eqn{S(y, dat)}, where \eqn{S} is a proper
-scoring rule, \eqn{y} is a scalar realization and \eqn{dat} is a simulated
-sample of data.
+Calculate scores (CRPS, LogS) given observations and draws from the predictive distributions.
 }
 \details{
-When using \code{method = "edf"}, \link{crps_sample} employs an empirical
-version of the quantile decomposition of the CRPS (Laio and Tamea, 2007).
-When using \code{method = "kde"}, the function does kernel density
-estimation using a Gaussian kernel. The bandwidth (\code{bw}) can be
+For a vector \code{y} of length n, \code{dat} should be given as a matrix
+with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
+
+\code{\link{crps_sample}} employs an empirical version of the quantile
+decomposition of the CRPS (Laio and Tamea, 2007) when using
+\code{method = "edf"}. For \code{method = "kde"}, it uses kernel density
+estimation using a Gaussian kernel. The logarithmic score always uses kernel density estimation.
+
+The bandwidth (\code{bw}) for kernel density estimation can be
 specified manually, in which case it must be a positive number. If
-\code{bandwidth == NULL}, the bandwidth is selected using the core function
-\link{bw.nrd}. Numerical integration may speed up computation for
-\link{crps_sample} in case of large samples \code{dat} if
-\code{method = "kde"}.
+\code{bw == NULL}, the bandwidth is selected using the core function
+\code{\link{bw.nrd}}. Numerical integration may speed up computation for
+\code{\link{crps_sample}} in case of large samples \code{dat}.
 }
 \examples{
-sample <- rnorm(1e4)
-obs <- 1
-crps_sample(y = obs, dat = sample)  
-logs_sample(y = obs, dat = sample)
+\dontrun{
 
-## exact solutions using analytical closed form expression:
-crps(y = obs, family = "normal", mean = 0, sd = 1)
-logs(y = obs, family = "normal", mean = 0, sd = 1)
+# y has length greater than 1
+y <- 1:2
+sample <- matrix(rnorm(20), nrow = 2)
+crps_sample(y = y, dat = sample)
+logs_sample(y = y, dat = sample)
+
+y <- 1:2
+sample <- rnorm(10)
+crps_sample(y = y, dat = sample) # error
+
+# y has length 1
+y <- 1
+sample <- rnorm(10)
+crps_sample(y = y, dat = sample)
+
+sample <- matrix(rnorm(10), nrow = 1)
+crps_sample(y = y, dat = sample)
+
+sample <- matrix(rnorm(20), nrow = 2)
+crps_sample(y = y, dat = sample) # error
+}
 
 }
 \references{
@@ -72,11 +89,11 @@ available at \url{http://arxiv.org/abs/1608.06802}.
  
 \emph{Empirical quantile decomposition of the CRPS:}
  
-Laio, F. and S. Tamea (2007),
+Laio, F. and S. Tamea (2007):
 `Verification tools for probabilistic forecasts of continuous
 hydrological variables',
 Hydrology and Earth System Sciences, 11, 1267-1277.
 }
 \author{
-Alexander Jordan, Fabian Krueger
+Alexander Jordan, Fabian Krueger, Sebastian Lerch
 }
