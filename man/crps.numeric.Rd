@@ -29,6 +29,9 @@ Calculate the Continuous Ranked Probability Score (CRPS) given observations
 and parameters of a family of distributions.
 }
 \details{
+Mathematical details are available in the \emph{CRPS formulas} vignette
+to the \emph{scoringRules} package.
+
 The parameters supplied to each of the functions are numeric vectors:
 \enumerate{
  \item Distributions defined on the real line:
@@ -222,6 +225,9 @@ sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
 weights <- matrix(rep(1/50, 20*50), nrow = 20)
 crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 
+## Mathematical details
+vignette("crpsformulas", "scoringRules")
+
 }
 \references{
 \emph{Closed form expressions of the CRPS for specific distributions:}
@@ -282,10 +288,7 @@ TEST 23, 787-205.
 Taillardat, M., Mestre, O., Zamo, M. and P. Naveau (2016):
 `Calibrated ensemble forecasts using quantile regression forests and
 ensemble model output statistics',
-Monthly Weather Review 144, 2375-2393. 
-
-Mathematical details and derivations are available in the \emph{closedforms} vignette
-to the \emph{scoringRules} package.
+Monthly Weather Review 144, 2375-2393.
 }
 \seealso{
 \code{\link{logs.numeric}}

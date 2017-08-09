@@ -79,12 +79,13 @@
 #' ensemble model output statistics',
 #' Monthly Weather Review 144, 2375-2393. 
 #' 
-#' Mathematical details and derivations are available in the \emph{closedforms} vignette
-#' to the \emph{scoringRules} package.
 #' 
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #' 
 #' @details
+#' Mathematical details are available in the \emph{CRPS formulas} vignette
+#' to the \emph{scoringRules} package.
+#' 
 #' The parameters supplied to each of the functions are numeric vectors:
 #' \enumerate{
 #'  \item Distributions defined on the real line:
@@ -264,7 +265,7 @@
 #' All numerical arguments should be of the same length.
 #' An exception are scalars of length 1, which will be recycled.
 #' 
-#' @examples
+#' @examples 
 #' crps(y = 1, family = "normal", mean = 0, sd = 2)
 #' crps(y = rnorm(20), family = "normal", mean = 1:20, sd = sqrt(1:20))
 #' 
@@ -277,6 +278,9 @@
 #' sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
 #' weights <- matrix(rep(1/50, 20*50), nrow = 20)
 #' crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
+#' 
+#' ## Mathematical details
+#' vignette("crpsformulas", "scoringRules")
 #' 
 #' @seealso \code{\link{logs.numeric}}
 #' 
