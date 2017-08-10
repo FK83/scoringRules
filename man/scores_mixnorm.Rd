@@ -30,6 +30,9 @@ A vector of score values.
 \description{
 Calculating scores for a mixture of normal distributions.
 }
+\details{
+\code{logs_mixnorm} and \code{crps_mixnorm} calculate scores via analytical formulas. \code{crps_mixnorm_int} uses numerical integration for the CRPS; this can be faster if there are many mixture components (i.e., if \code{m}, \code{s} and \code{w} have many columns). See examples below.
+}
 \examples{
 
 # Example 1: 100 observations, 15 mixture components
@@ -46,7 +49,7 @@ mval <- matrix(rnorm(2*10000), nrow = 2)
 sdval <- matrix(rgamma(2*10000, shape = 2), nrow = 2)
 weights <- matrix(rep(1/10000, 2*10000), nrow = 2)
 y <- rnorm(2)
-# With many mixture components, non-exact evaluation is much faster
+# With many mixture components, numerical integration is much faster
 system.time(crps1 <- crps_mixnorm(y = y, m = mval, s = sdval, w = weights))
 system.time(crps2 <- crps_mixnorm_int(y = y, m = mval, s = sdval, w = weights))
 }
