@@ -18,7 +18,7 @@ Historical data and forecast distributions for the growth rate of US gross domes
 \item \code{val} - value of the GDP growth rate
 }
 
-\code{gdp_mcmc} is a list, whereby each element is a data frame. \code{gdp_mcmc$forecasts} contains the simulated forecast distributions. There are 20 columns (corresponding to quarters 2008:Q1 to 2012:Q4) and 10.000 rows (corresponding to simulation draws). \code{gdp_mcmc$actuals} contains the actual observations. There are 20 columns (again corresponding to quarterly dates) and a single row. 
+\code{gdp_mcmc} is a list, whereby each element is a data frame. \code{gdp_mcmc$forecasts} contains the simulated forecast distributions. There are 20 columns (corresponding to quarters 2008:Q1 to 2012:Q4) and 5.000 rows (corresponding to simulation draws). \code{gdp_mcmc$actuals} contains the actual observations. There are 20 columns (again corresponding to quarterly dates) and a single row. 
 }
 
 \source{
@@ -38,10 +38,15 @@ The realizations in \code{gdp_mcmc$actuals} are also contained in \code{gdp}, ba
 data(gdp_mcmc)
 
 # Histogram of forecast draws for 2012Q4
-hist(gdp_mcmc$forecasts[, "X2012Q4"], main = "Forecast draws for 2012:Q4", xlab = "Value")
+fc_draws <- gdp_mcmc$forecasts[, "X2012Q4"]
+hist(fc_draws, main = "Forecast draws for 2012:Q4", xlab = "Value")
 
 # Add vertical line at realizing value
-abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 3)
+rlz <- gdp_mcmc$actuals[, "X2012Q4"]
+abline(v = rlz, lwd = 3)
+
+# Compute CRPS for this forecast case
+crps_sample(y = rlz, dat = fc_draws)
 
 }
 }
