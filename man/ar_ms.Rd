@@ -34,7 +34,7 @@ List containing parameter estimates and forecasts, with the following elements:
 \itemize{
 \item \code{pars}, matrix of posterior draws for parameters (rows are MCMC iterations, columns are parameters)
 \item \code{fcMeans} and \code{fcSds}, matrices of forecast means and standard deviations (rows are MCMC iterations, columns are forecast horizons)
-\item \code{filprobs}, matrix of filtered probabilities for first latent state (rows are MCMC iterations, columns are time periods, excluding the first \code{nlag} values for initialization). 
+\item \code{probs}, matrix of filtered probabilities for first latent state (rows are MCMC iterations, columns are time periods, excluding the first \code{nlag} values for initialization). 
 \item \code{count}, integer, counter for the number of states that were relabeled based on \code{identification_constraint}.
 }
 }
