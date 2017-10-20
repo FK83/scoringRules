@@ -4,11 +4,14 @@
 \alias{scores_lapl}
 \alias{crps_lapl}
 \alias{logs_lapl}
+\alias{dss_lapl}
 \title{Calculating scores for the Laplace distribution}
 \usage{
 crps_lapl(y, location = 0, scale = 1)
 
 logs_lapl(y, location = 0, scale = 1)
+
+dss_lapl(y, location = 0, scale = 1)
 }
 \arguments{
 \item{y}{vector of observations.}
