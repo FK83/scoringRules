@@ -120,7 +120,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
 
 #' @rdname scores_sample_univ
 #' @export
-logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
+logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
   input <- list(y = y, dat = dat)
   input$bw <- bw
   

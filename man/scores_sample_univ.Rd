@@ -9,7 +9,7 @@
 crps_sample(y, dat, method = "edf", w = NULL, bw = NULL,
   num_int = FALSE, show_messages = TRUE)
 
-logs_sample(y, dat, bw = NULL, show_messages = TRUE)
+logs_sample(y, dat, bw = NULL, show_messages = FALSE)
 }
 \arguments{
 \item{y}{vector of realized values.}
