@@ -21,6 +21,15 @@ crps_pois <- function(y, lambda) {
 logs_pois <- function(y, lambda) {
   -dpois(y, lambda, log = TRUE)
 }
+
+#' @rdname scores_pois
+#' @export
+dss_pois <- function(y, lambda) {
+  s <- sqrt(lambda)
+  (y / s - s)^2 + log(s)
+}
+# mean = lambda
+# sd = sqrt(lambda)
   
 
 
