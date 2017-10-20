@@ -4,11 +4,14 @@
 \alias{scores_nbinom}
 \alias{crps_nbinom}
 \alias{logs_nbinom}
+\alias{dss_nbinom}
 \title{Calculating scores for the negative binomial distribution}
 \usage{
 crps_nbinom(y, size, prob, mu)
 
 logs_nbinom(y, size, prob, mu)
+
+dss_nbinom(y, size, prob, mu)
 }
 \arguments{
 \item{y}{vector of observations.}

@@ -25,7 +25,8 @@ crps_nbinom <- function(y, size, prob, mu) {
   }
   c1 <- y * (2 * pnbinom(y, size, prob) - 1)
   c2 <- (1 - prob) / prob ^ 2
-  c3 <- prob * (2 * pnbinom(y - 1, size + 1, prob) - 1) + Re(hypergeo::hypergeo(size + 1, 0.5, 2,-4 * c2))
+  c3 <- (prob * (2 * pnbinom(y - 1, size + 1, prob) - 1)
+         + Re(hypergeo::hypergeo(size + 1, 0.5, 2, -4 * c2)))
   return(c1 - size * c2 * c3)
 }
 
@@ -39,6 +40,24 @@ logs_nbinom <- function(y, size, prob, mu) {
   } else {
     -dnbinom(y, size, mu = mu, log = TRUE)
   }
+}
+
+#' @rdname scores_nbinom
+#' @export
+dss_nbinom <- function(y, size, prob, mu) {
+  size[size <= 0] <- NaN
+  if (!missing(prob)) {
+    if (!missing(mu))
+      stop("specify 'prob' or 'mu' but not both")
+    prob[prob <= 0] <- NaN
+    prob[prob >= 1] <- NaN
+    mu <- size * (1 - prob) / prob
+    s <- sqrt(mu / prob)
+  } else {
+    mu[mu < 0] <- NaN
+    s <- sqrt(mu * (1 + mu / size))
+  }
+  ((y - mu) / s)^2 + log(s)
 }
 
 
