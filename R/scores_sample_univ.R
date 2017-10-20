@@ -1,6 +1,6 @@
 #' Scoring Rules for Simulated Forecast Distributions
 #' 
-#' Calculate scores (CRPS, LogS) given observations and draws from the predictive distributions.
+#' Calculate scores (CRPS, LogS, DSS) given observations and draws from the predictive distributions.
 #' 
 #' @param y vector of realized values.
 #' @param dat vector or matrix (depending on \code{y}; see details)

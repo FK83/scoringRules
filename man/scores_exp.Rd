@@ -34,7 +34,7 @@ dss_exp(y, rate = 1)
 A vector of score values.
 }
 \description{
-Calculating scores (CRPS, logarithmic score) for the exponential distribution, and the exponential
-distribution with location-scale transformation and point mass in
-\code{location}.
+Calculating scores (CRPS, LogS, DSS) for the exponential distribution,
+and the exponential distribution with location-scale transformation and
+point mass in \code{location}.
 }

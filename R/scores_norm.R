@@ -1,6 +1,7 @@
 #' Calculating scores for the normal distribution
 #' 
-#' These functions calculate scores (CRPS, logarithmic score) and their gradient and Hessian with respect
+#' These functions calculate scores (CRPS, LogS, DSS) and
+#' their gradient and Hessian with respect
 #' to the parameters of a location-scale transformed normal
 #' distribution. Furthermore, the censoring transformation and
 #' the truncation transformation may be introduced on top of the
