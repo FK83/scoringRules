@@ -41,6 +41,15 @@ crps_unif <- function(y, min = 0, max = 1, lmass = 0, umass = 0) {
 logs_unif <- function(y, min = 0, max = 1) {
   -dunif(y, min, max, log = TRUE)
 }
+
+#' @rdname scores_unif
+#' @export
+dss_unif <- function(y, min = 0, max = 1) {
+  min[min > max] <- NaN
+  m <- 0.5 * (min + max)
+  s <- (max - min) / sqrt(12)
+  ((y - m) / s)^2 + log(s)
+}
   
 
 
