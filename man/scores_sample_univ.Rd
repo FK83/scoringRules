@@ -4,12 +4,15 @@
 \alias{scores_sample_univ}
 \alias{crps_sample}
 \alias{logs_sample}
+\alias{dss_sample}
 \title{Scoring Rules for Simulated Forecast Distributions}
 \usage{
 crps_sample(y, dat, method = "edf", w = NULL, bw = NULL,
   num_int = FALSE, show_messages = TRUE)
 
 logs_sample(y, dat, bw = NULL, show_messages = FALSE)
+
+dss_sample(y, dat, w = NULL)
 }
 \arguments{
 \item{y}{vector of realized values.}
