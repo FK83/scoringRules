@@ -4,11 +4,14 @@
 \alias{scores_gamma}
 \alias{crps_gamma}
 \alias{logs_gamma}
+\alias{dss_gamma}
 \title{Calculating scores for the gamma distribution}
 \usage{
 crps_gamma(y, shape, rate = 1, scale = 1/rate)
 
 logs_gamma(y, shape, rate = 1, scale = 1/rate)
+
+dss_gamma(y, shape, rate = 1, scale = 1/rate)
 }
 \arguments{
 \item{y}{vector of observations.}
