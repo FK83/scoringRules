@@ -21,7 +21,8 @@ Suggests:
     hypergeo(>= 1.0),
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    crch
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

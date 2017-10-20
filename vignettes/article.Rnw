@@ -1,0 +1,659 @@
+\documentclass[article,shortnames,nojss]{jss}
+
+%% -- LaTeX packages and custom commands ---------------------------------------
+
+%% packages
+\usepackage{thumbpdf,lmodern}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage{bbm,booktabs,setspace}
+
+%% custom commands
+\newcommand{\class}[1]{`\code{#1}'}
+\newcommand{\fct}[1]{\code{#1()}}
+
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\ind}{\mathbbm{1}} 
+\newcommand{\dd}{{\textnormal d}}
+
+\newcommand{\crpssample}{\fct{crps\char`_sample}}
+\newcommand{\logssample}{\fct{logs\char`_sample}}
+\newcommand{\vssample}{\fct{vs\char`_sample}}
+\newcommand{\arms}{\fct{ar\char`_ms}}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Evaluating Probabilistic Forecasts with scoringRules}
+%\VignetteDepends{scoringRules,crch}
+%\VignetteKeywords{comparative evaluation, ensemble forecasts, out-of-sample evaluation, predictive distributions, proper scoring rules, score calculation, R}
+%\VignettePackage{scoringRules}
+%% need no \usepackage{Sweave}
+<<include=FALSE>>=
+library(knitr)
+render_sweave()
+opts_chunk$set(engine='R', tidy=FALSE)
+options(scipen = 1, digits = 3)
+@
+<<preliminaries, echo=FALSE, results='hide'>>=
+options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
+library(scoringRules)
+library(crch)
+@
+
+
+%% -- Article metainformation (author, title, ...) -----------------------------
+
+\author{Alexander Jordan\\Heidelberg Institute for\\Theoretical Studies
+	\And Fabian Kr\"uger\\Heidelberg University
+	\And Sebastian Lerch\\Heidelberg Institute for\\Theoretical Studies\\Karlsruhe Institute of\\Technology}
+\Plainauthor{Alexander Jordan, Fabian Kr\"uger, Sebastian Lerch}
+
+\title{Evaluating Probabilistic Forecasts with \pkg{scoringRules}}
+\Plaintitle{Evaluating Probabilistic Forecasts with scoringRules}
+\Shorttitle{Evaluating Probabilistic Forecasts}
+
+\Abstract{
+  Probabilistic forecasts in the form of probability distributions over future events have become popular in several fields including meteorology, hydrology, economics, and demography. In typical applications, many alternative statistical models and data sources can be used to produce probabilistic forecasts. Hence, evaluating and selecting among competing methods is an important task. The \pkg{scoringRules} package for \proglang{R} provides functionality for comparative evaluation of probabilistic models based on proper scoring rules, covering a wide range of situations in applied work. This paper discusses implementation and usage details, presents case studies from meteorology and economics, and points to the relevant background literature.
+}
+
+\Keywords{comparative evaluation, ensemble forecasts, out-of-sample evaluation, predictive distributions, proper scoring rules, score calculation, \proglang{R}}
+\Plainkeywords{comparative evaluation, ensemble forecasts, out-of-sample evaluation, predictive distributions, proper scoring rules, score calculation, R}
+
+\Address{
+  Alexander Jordan\\
+  Heidelberg Institute for Theoretical Studies\\
+  HITS gGmbH\\
+  Schloss-Wolfsbrunnenweg 35\\
+  69118 Heidelberg, Germany\\
+  E-Mail: \email{alexander.jordan@h-its.org}\\
+  
+  Fabian Kr\"uger\\
+  Alfred-Weber-Institute for Economics\\
+  Heidelberg University\\
+  Bergheimer Str. 58\\
+  69115 Heidelberg, Germany\\
+  E-Mail: \email{fabian.krueger@awi.uni-heidelberg.de}\\
+  URL: \url{https://sites.google.com/site/fk83research/home}\\
+  
+  Sebastian Lerch\\
+  Heidelberg Institute for Theoretical Studies\\
+  HITS gGmbH\\
+  Schloss-Wolfsbrunnenweg 35\\
+  69118 Heidelberg, Germany\\
+  E-Mail: \email{sebastian.lerch@h-its.org}\\
+  URL: \url{https://sites.google.com/site/sebastianlerch/}\\
+  \emph{and}\\
+  Institute for Stochastics\\
+  Karlsruhe Institute of Technology\\
+}
+
+
+\begin{document}
+
+
+\section{Introduction: Forecast evaluation} \label{sec:intro}
+
+Forecasts are generally surrounded by uncertainty, and being able to quantify this uncertainty is key to good decision making. Accordingly, probabilistic forecasts in the form of predictive probability distributions over future quantities or events have become popular over the last decades in various fields including meteorology, climate science, hydrology, seismology, economics, finance, demography and political science. Important examples include the United Nation's probabilistic population forecasts \citep{RafteryEtAl2014}, inflation projections issued by the Bank of England \citep[see, e.g.,][]{Clements2004}, or the now widespread use of probabilistic ensemble methods in meteorology \citep{GneitingRaftery2005, LeutbecherPalmer2008}. For recent reviews see \citet{GneitingKatzfuss2014} and \citet{Raftery2017}. 
+
+With the proliferation of probabilistic models arises the need for tools to evaluate the appropriateness of models and forecasts in a principled way. Various measures of forecast performance have been developed over the past decades to address this demand. Scoring rules are functions $S(F, y)$ that evaluate the accuracy of a forecast distribution $F$, given that an outcome $y$ was observed. As such, they allow to compare alternative models, a crucial ability given the variety of theories, data sources and statistical specifications available in many situations. Conceptually, scoring rules can be thought of as error measures for distribution functions: While the squared error $\text{SE}(x, y) = (y-x)^2$ measures the performance of a point forecast $x$, a scoring rule $S(F, y)$ measures the performance of a distribution forecast $F$. 
+
+This paper introduces the \proglang{R} \citep{R} software package \pkg{scoringRules} \citep{JordanEtAl2016scoringRules}, which provides functions to compute scoring rules for a variety of distributions $F$ that come up in applied work, and popular choices of $S$. Two main classes of probabilistic forecasts are parametric distributions and distributions that are not known analytically, but are indirectly described through a sample of simulation draws. For example, Bayesian forecasts produced via Markov chain Monte Carlo methods (MCMC) take the latter form. Hence, the \pkg{scoringRules} package provides a general framework for model evaluation that covers both classical (frequentist)  and Bayesian forecasting methods. 
+
+The \pkg{scoringRules} package aims to be a comprehensive library for computing scoring rules. We offer implementations of several known (but not routinely applied) formulas, and implement some closed-form expressions that were previously unavailable. Whenever more than one implementation variant exists, we offer statistically principled default choices. The package contains the continuous ranked probability score (CRPS) and the logarithmic score, as well as the multivariate energy score and variogram score. All these scoring rules are proper, which means that forecasters have an incentive to state their true belief, see Section~\ref{sec:background}.
+
+It is worth emphasizing that scoring rules are designed for \textit{comparative} forecast evaluation. That is, one wants to know whether model A or model B provides better forecasts, in terms of a proper scoring rule. Comparative forecast evaluation is of interest either for choosing a specification for future use, or for comparing various scientific approaches. A distinct, complementary issue is to check the suitability of a given model via tools for \textit{absolute} forecast evaluation \citep[such as probability integral transforms, see,  e.g.,][]{GneitingKatzfuss2014}. To retain focus, the \pkg{scoringRules} package does not cover absolute forecast evaluation.
+
+Proper scoring rules are useful for model comparisons. In that sense, scoringRules is broadly related to all software packages which help users determine an appropriate model for the data at hand. Perhaps most fundamentally, the \pkg{stats} \citep{R} package provides the traditional Akaike and Bayes information criteria in order to select among linear models. Numerous add-on packages provide more recent or more specialized methods. The packages \pkg{caret} \citep{caret} and \pkg{forecast} \citep{HyndmanKhandakar2008} provide cross-validation tools suitable for cross-sectional and time series data, respectively. The \pkg{loo} \citep{loo} package implements recent proposals to select among Bayesian models. In comparison to existing software for model comparisons, a key novelty of the \pkg{scoringRules} package is its extensive coverage of the CRPS.
+
+To the best of our knowledge, \pkg{scoringRules} is the first \proglang{R} package designed as a library for computing proper scoring rules. However, a number of existing \proglang{R} packages include scoring rule computations for more specific empirical situations: The \pkg{ensembleBMA} \citep{ensembleBMA} and \pkg{ensembleMOS} \citep{ensembleMOS} packages contain formulas for the CRPS of a small subset of the distributions listed in Table \ref{tab:parametric-families} which are relevant for post-processing ensemble weather forecasts \citep{FraleyEtAl2011}, and can only be applied to specific data structures utilized in the packages. The \pkg{surveillance} \citep{MeyerEtAl2017} package provides functions to compute the logarithmic score and other scoring rules for count data models in epidemiology. By contrast, the distributions contained in \pkg{scoringRules} are relevant in applications across disciplines and the score functions are generally applicable. Furthermore, the \pkg{verification} \citep{verificationRpackage} and \pkg{SpecsVerification} \citep{SpecsVerificationR} packages contain implementations of the CRPS for simulated forecast distributions. Our contribution in that domain is twofold: First, we offer efficient implementations, which is especially relevant when the forecast distribution is a large MCMC sample. MCMC methods are popular across the disciplines, and many sophisticated \proglang{R} implementations are available \citep[see, e.g.,][for recent examples]{Kastner2016,CarpenterEtAl2017}. Second, we include various implementation options, and propose principled default settings based on our recent research \citep{KruegerEtAl2016}. 
+
+For programming languages other than \proglang{R}, implementations of proper scoring rules are sparse, and generally only offer a much narrower functionality than the \pkg{scoringRules} package. For \proglang{Python}, the \pkg{properscoring} package \citep{properscoringPython} provides implementations of the CRPS for Gaussian distributions and for forecast distributions given by a discrete sample. Several institutionally supported software packages include tools to compute scoring rules, but typically require input in specific data formats and are tailored towards operational use at meteorological institutions. The \proglang{Model Evaluation Tools}\footnote{available at \url{http://www.dtcenter.org/met/users/index.php}} software \citep{MET} developed by the National Center for Atmospheric Research provides code to compute the CRPS based on a sample from the forecast distribution. However, note that a Gaussian approximation is applied which can be problematic if the underlying distribution is not Gaussian, see \citet{KruegerEtAl2016}. The \proglang{Ensemble Verification System}\footnote{available at \url{https://amazon.nws.noaa.gov/ohd/evs/evs.html}} program \citep{EVS} developed by the Hydrological Ensemble Prediction group of the US~National Weather Service also provides an implementation of the CRPS for discrete samples. For a general overview of software for forecast evaluation, see \citet{Pocernich2012}.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:background} provides some theoretical background on scoring rules, and introduces the logarithmic score and the continuous ranked probability score. Section \ref{sec:usage} gives an overview of the score calculation functionality in the \pkg{scoringRules} package and presents the implementation of univariate proper scoring rules. In Section~\ref{sec:examples}, we give usage examples by application in case studies. In a meteorological example of accumulated precipitation forecasts, we cover the comparative evaluation of ensemble system output from numerical weather prediction models with parametric forecast distributions from statistical post-processing models. A second case study shows how using analytical information of a Bayesian time series model for the growth rate of the US economy's gross domestic product (GDP) can help in the score evaluation of its Markov chain Monte Carlo  sample output. Definitions and details on the use of multivariate scoring rules are provided in Section \ref{sec:multiv}. The paper closes with a discussion in Section~\ref{sec:discussion}.
+
+
+\section{Theoretical background}\label{sec:background}
+
+Probabilistic forecasts can be given in various forms. The most important cases are parametric distributions in the form of analytical cumulative distribution functions (CDFs) or probability density functions (PDFs), and forecasts that take the form of a simulated sample. The latter form is often used if the predictive distribution is not available analytically. Here, we give a brief overview of the theoretical background.
+
+\subsection{Proper scoring rules}
+
+Let $\Omega$ denote the set of possible values of the quantity of interest, $Y$, and let $\cF$ denote a convex class of probability distributions on $\Omega$. A \textit{scoring rule} is a function
+\[
+S: \cF \times \Omega \longrightarrow \R \cup \{ \infty \} 
+\]
+that assigns numerical values to pairs of forecasts $F \in \cF$ and observations $y \in \Omega$. For now, we restrict our attention to univariate observations and set $\Omega = \R$ or subsets thereof, and identify probabilistic forecasts $F$ with the associated CDF $F$ or PDF $f$. In Section~\ref{sec:multiv}, we will consider multivariate scoring rules for which $\Omega = \R^d$.
+
+We consider scoring rules to be negatively oriented, such that a lower score indicates a better forecast. For a \textit{proper} scoring rule, the expected score is optimized if the true distribution of the observation is issued as a forecast, i.e., if
+\[
+\E_{Y \sim G} \, S(G,Y) \leq \E_{Y \sim G} \, S(F,Y) 
+\]
+for all $F,G\in\cF$. A scoring rule is further called \textit{strictly proper} if equality holds only if $F = G$. Being proper is critically important for comparative evaluation and ranking of forecasts in that a proper scoring rule compels the forecaster to truthfully report what she thinks is the true distribution. See \citet{GneitingRaftery2007} for a detailed review of the mathematical properties of proper scoring rules.
+
+Popular examples of proper scoring rules for $\Omega = \R$ include the logarithmic score and the continuous ranked probability score. The \textit{logarithmic score} \citep[LogS;][]{Good1952} is defined as 
+\[
+\textnormal{LogS}(F,y) = - \log(f(y)), 
+\]
+where $F$ admits a PDF $f$, and is a strictly proper scoring rule relative to the class of probability distributions with densities. The \textit{continuous ranked probability score} \citep{MathesonWinkler1976} is defined in terms of the predictive CDF $F$ and is given by
+\begin{equation}\label{eq:crps}
+\textnormal{CRPS}(F,y) = \int_\R (F(z) - \ind\{y \leq z\})^2 \dd z,
+\end{equation}
+where $\ind\{y \leq z\}$ denotes the indicator function which is 1 if $y \leq z$ and 0 otherwise. If the first moment of $F$ is finite, the CRPS can be written as 
+\[
+\textnormal{CRPS}(F,y) = \E_{F} | X - y | - \frac{1}{2} \E_{F,F} | X - X^\prime |,
+\]
+where $X$ and $X^\prime$ are independent random variables with distribution $F$, see \citet{GneitingRaftery2007}. The CRPS is a strictly proper scoring rule for the class of probability distributions with finite first moment. Closed-form expressions of the integral in equation \eqref{eq:crps} can be obtained for many parametric distributions and allow for exact and efficient computation of the CRPS. They are implemented in the \pkg{scoringRules} package for a range of parametric families, see Table~\ref{tab:parametric-families} for an overview, and are provided in the \href{https://cran.r-project.org/package=scoringRules}{``CRPS formulas''} vignette.
+
+\begin{table}[p]
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{@{}llccl@{}}
+			\toprule
+			\textbf{Distribution} & \textbf{Family arg.}       & CRPS       & LogS       & \textbf{Additional information} \\
+			\midrule
+			\multicolumn{5}{@{}l@{}}{\textbf{Distributions for variables on the real line}} \\
+			Laplace               & \code{"lapl"}    & \checkmark & \checkmark & \\
+			logistic              & \code{"logis"}   & \checkmark & \checkmark & \\
+			normal                & \code{"norm"}    & \checkmark & \checkmark & \\
+			mixture of normals    & \code{"mixnorm"} & \checkmark & \checkmark & \\
+			Student's $t$         & \code{"t"}       & \checkmark & \checkmark & flex.~location, scale \\
+			two-piece exponential & \code{"2pexp"}   & \checkmark & \checkmark & \\
+			two-piece normal      & \code{"2pnorm"}  & \checkmark & \checkmark & \\
+			\multicolumn{5}{@{}l@{}}{\textbf{Distributions for non-negative variables}} \\
+			exponential           & \code{"exp"}     & \checkmark & \checkmark & \\
+			gamma                 & \code{"gamma"}   & \checkmark & \checkmark & \\
+			log-Laplace           & \code{"llapl"}   & \checkmark & \checkmark & \\
+			log-logistic          & \code{"llogis"}  & \checkmark & \checkmark & \\
+			log-normal            & \code{"lnorm"}   & \checkmark & \checkmark & \\
+			\multicolumn{5}{@{}l@{}}{\textbf{Distributions with flexible support and/or point masses}} \\
+			beta                  & \code{"beta"}    & \checkmark & \checkmark & flex.~limits \\
+			uniform               & \code{"unif"}    & \checkmark & \checkmark & flex.~limits \\
+			exponential           & \code{"exp2"}    &            & \checkmark & flex.~location, scale \\
+			                      & \code{"expM"}    & \checkmark &            & flex.~location, scale, point mass \\			                      
+			gen. extreme value    & \code{"gev"}     & \checkmark & \checkmark & \\
+			gen. Pareto           & \code{"gpd"}     & \checkmark & \checkmark & flex.~point mass {\footnotesize(CRPS only)} \\
+			logistic              & \code{"tlogis"}  & \checkmark & \checkmark & truncated\\
+			                      & \code{"clogis"}  & \checkmark &            & censored \\
+			                      & \code{"gtclogis"} & \checkmark &           & flex.~point masses \\
+			normal                & \code{"tnorm"}   & \checkmark & \checkmark & truncated \\
+			                      & \code{"cnorm"}   & \checkmark &            & censored \\
+			                      & \code{"gtcnorm"} & \checkmark &            & flex.~point masses \\
+			Student's $t$         & \code{"tt"}      & \checkmark & \checkmark & truncated \\
+			                      & \code{"ct"}      & \checkmark &            & censored \\
+			                      & \code{"gtct"}    & \checkmark &            & flex.~point masses \\
+			\multicolumn{5}{@{}l@{}}{\textbf{Distributions for discrete variables}} \\
+			negative binomial     & \code{"nbinom"}  & \checkmark & \checkmark & \\
+			Poisson               & \code{"pois"}    & \checkmark & \checkmark & \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+\caption{List of implemented parametric families for which CRPS and LogS can be computed via \fct{crps} and \fct{logs}. The character string is the corresponding value for the \code{family} argument. \label{tab:parametric-families}}	
+\end{table}
+
+\subsection{Model assessment based on simulated forecast distributions}
+\label{sec:simd}
+
+In various key applications, the forecast distribution of interest $F$ is not available in an analytic form, but only through a simulated sample $X_1, \dots, X_m \sim F$. Examples include Bayesian forecasting applications where the sample is generated by a MCMC algorithm, or ensemble weather forecasting applications where the different sample values are generated by numerical weather prediction models with different model physics and/or initial conditions. In order to compute the value of a proper scoring rule, the simulated sample needs to be converted into a distribution with a closed-form expression. The implementation choices and default settings in the \pkg{scoringRules} package follow the findings of \citet{KruegerEtAl2016} who provide a systematic analysis of probabilistic forecasting based on MCMC output.
+
+For the CRPS, the empirical CDF 
+\[
+\hat{F}_m(z) = \frac{1}{m} \sum_{i=1}^m \ind\{X_i \leq z\}
+\]
+is a natural approximation of the predictive CDF. In this case, the CRPS reduces to
+\begin{equation}\label{eq:crps-kernel-repr}
+\textnormal{CRPS}(\hat F_m,y) = \frac{1}{m} \sum_{i=1}^m |X_i - y| - \frac{1}{2 m^2} \sum_{i=1}^m \sum_{j=1}^m |X_i - X_j|
+\end{equation}
+which allows to compute the CRPS directly from the simulated sample, see \citet{GrimitEtAl2006}. Implementations of equation \eqref{eq:crps-kernel-repr} are rather inefficient with computational complexity $\mathcal{O}(m^2)$, and can be improved upon with representations using the order statistics $X_{(1)}, \ldots, X_{(m)}$, i.e., the sorted simulated sample, thus achieving an average $\mathcal{O}(m\log m)$ performance. In the \pkg{scoringRules} package, we use an algebraically equivalent representation of the CRPS based on the generalized quantile function \citep{LaioTamea2007}, leading to
+\begin{equation}\label{eq:crps-computation}
+\mathrm{CRPS}(\hat F_m, y) = \frac{2}{m^2} \sum_{i = 1}^m (X_{(i)} - y)\left(m \ind\{y < X_{(i)}\} - i + \frac{1}{2}\right),
+\end{equation}
+which \citet{Murphy1970} reported in the context of the precursory, discrete version of the CRPS. We refer to \citet{Jordan2016} for details.
+
+In contrast to the CRPS, the computation of the LogS requires a predictive density. An estimator can be obtained with classical nonparametric kernel density estimation \citep[KDE, e.g.][]{Silverman1986}. However, this estimator requires stringent theoretical assumptions, and can be fragile in practice. In an MCMC context, a \textit{mixture-of-parameters} estimator which utilizes a simulated sample of parameter draws rather than draws from the posterior predictive distribution is a better and often much more efficient choice, see \citet{KruegerEtAl2016}. This mixture-of-parameters estimator is specific to the model being used, but can often be implemented using functionality for parametric forecast distributions. We provide an example in Section \ref{sec:example-econ}.
+
+
+\section{Score calculation functionality}\label{sec:usage}
+
+\begin{table}
+	\begin{center}
+		\definecolor{mygray}{gray}{.9}
+		\colorbox{mygray}{\onehalfspacing\hspace{1mm}
+			\begin{minipage}[t]{.25\linewidth}
+				\vspace*{1mm}\textbf{S3 generics \& }\\
+				\begin{minipage}[t]{\columnwidth}
+					\textbf{methods} \\[2ex]			
+					\code{crps}\\
+					\code{logs}\\
+					\code{crps.numeric}\\
+					\code{logs.numeric}	
+				\end{minipage}				
+				\vspace{1mm}	
+		\end{minipage}}
+		\colorbox{mygray}{\onehalfspacing\hspace{1mm}
+			\begin{minipage}[t]{.5\linewidth}
+				\vspace*{1mm}\textbf{Score functions}\\
+				\begin{minipage}[t]{.64\columnwidth}
+					Parametric (see Table~\ref{tab:parametric-families})\\[2ex]			
+					\code{crps\_norm}\\
+					\ldots\\
+					\code{logs\_norm}\\
+					\ldots
+				\end{minipage}
+				\begin{minipage}[t]{.34\columnwidth}
+					Empirical\\[2ex]	
+					\code{crps\_sample}\\
+					\code{logs\_sample}\\
+					\code{es\_sample}\\
+					\code{vs\_sample}
+				\end{minipage}	
+				\vspace{1mm}
+		\end{minipage}}
+	\end{center}
+	\caption{Overview of the score calculation functionality. The S3 methods for the class \class{numeric} are wrappers around the score functions for parametric forecasts, with stricter input checks. For the full list of implemented parametric distributions we refer to Table~\ref{tab:parametric-families}.\label{tab:overview}}
+\end{table}
+
+Table~\ref{tab:overview} gives an overview of the functions that are available for score calculations in the \pkg{scoringRules} package. We provide S3 generic functions for the CRPS and LogS,
+\begin{Code}
+crps(y, ...)
+logs(y, ...)
+\end{Code}
+and include S3 methods for the class \class{numeric}:
+\begin{Code}
+crps.numeric(y, family, ...)
+logs.numeric(y, family, ...)
+\end{Code}
+For these methods, the input for the argument \code{y} is a numeric vector of realized values and the input for the argument \code{family} is a string which specifies the parametric family. We refer to Table \ref{tab:parametric-families} for an overview of implemented parametric families. Depending on the chosen parametric family, the score functions expect further input in form of numeric parameter vectors. All numerical arguments should be of the same length, with the exception that vectors of length one will be recycled. The functions return a vector of score values. For example, the CRPS and LogS of a normal distribution can be computed as follows:
+%
+<<echo=FALSE>>=
+rm(list=ls())
+library(scoringRules)
+set.seed(42)
+@
+%
+<<>>=
+obs <- rnorm(10)
+crps(obs, family = "normal", mean = c(1:10), sd = c(1:10))
+logs(obs, family = "normal", mean = c(1:10), sd = c(1:10))
+@
+%
+Or we could define functions that only depend on the argument \code{y} with fixed scalar parameters:
+%
+<<>>=
+crps_y <- function(y) crps(y, family = "gamma", shape = 2, scale = 1.5)
+logs_y <- function(y) logs(y, family = "gamma", shape = 2, scale = 1.5)
+@
+%
+In Figure \ref{fig:score-illustration} we use these functions to illustrate the dependence between the score value and the observation in an example of a gamma distribution as forecast. The logarithmic score rapidly increases at the right-sided limit of 0, and the minimum score value is attained if the observation equals the predictive distribution's mode. By contrast, the CRPS is more symmetric around the minimum that is attained at the median value of the forecast distribution, particularly, it increases more slowly as the observation approaches 0.
+%
+\begin{figure}	
+	<<score-illustration, echo=FALSE, dev='pdf', fig.width=10.4, fig.height=4.1, fig.align="center", out.width = "\\linewidth">>=
+	par(mai = c(0.9, 3.5, 0.3, 3.4), cex = 1.1)
+	plot(NULL, type = "n", xlim = c(0, 9), ylim = c(0, 5), bty = "n", 
+	     xlab = "Observation y", ylab = "Score value",
+	     xaxt = "n", yaxt = "n")
+	axis(1, at = c(0, 4, 8))
+	axis(2, at = c(0, 2.5, 5))
+	z <- seq(0, 9, .01)
+	bg <- 15 * dgamma(z, shape = 2, scale = 1.5)
+	polygon(c(z, rev(z)), c(rep(0, length(bg)), rev(bg)), 
+	        col="gray80", border="gray80")
+	legend("top", bty = "n", legend = c("LogS", "CRPS"), 
+	       col = c("purple", "darkorange"), lty = c(1,1), 
+	       lwd = c(2,2))
+	plot(crps_y, from = 0, to = 9, col = "darkorange", lwd = 2, add = TRUE)
+	plot(logs_y, from = 0, to = 9, col = "purple", lwd = 2, add = TRUE)
+	@
+	\caption{Values of LogS and CRPS as functions of the observation. The forecast distribution is given by a gamma distribution with a shape parameter of 2 and a scale parameter of 1.5. A scaled version of the forecast density is shown in gray.\label{fig:score-illustration}}
+\end{figure}
+%
+The methods \fct{crps.numeric} and \fct{logs.numeric} are wrappers for underlying worker functions, for example:
+\begin{Code}
+crps_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
+logs_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
+\end{Code}
+Note that these functions mainly rely on the input checks of basic operators and functions of \proglang{R}. They are aimed towards expert users and package developers, e.g., for use in numerical optimization algorithms. The main differences to \fct{crps.numeric} and \fct{logs.numeric} lie in the handling of non-admissible input parameter values, i.e., the avoidance of error messages, and in using the base \proglang{R} recycling behavior for input arguments of different lengths.
+
+Often forecast distributions can only be given as simulated samples, e.g., ensemble systems in weather prediction (Section~\ref{sec:example-pp}) or MCMC output in econometrics (Section~\ref{sec:example-econ}). We provide functions for both univariate and multivariate samples. The latter are discussed in Section~\ref{sec:multiv}, whereas the former are presented here:
+\begin{Code}
+crps_sample(y, dat, method = "edf", w = NULL, bw = NULL, 
+  num_int = FALSE, show_messages = TRUE)
+logs_sample(y, dat, bw = NULL, show_messages = FALSE)
+\end{Code}
+The input for \code{y} is a vector of observations, and the input for \code{dat} is a matrix with the number of rows matching the length of \code{y} and each row comprising one simulated sample, e.g., as in the following evaluation of a probabilistic forecast given by a random sample from a normal distribution with mean 2 and standard deviation 3:
+%
+<<message=FALSE>>=
+obs_n <- c(0, 1, 2)
+sample_nm <- matrix(rnorm(3e4, mean = 2, sd = 3), nrow = 3)
+crps_sample(obs_n, dat = sample_nm)
+logs_sample(obs_n, dat = sample_nm)
+@
+When \code{y} has length 1 then \code{dat} may also be a vector. Random sampling from the forecast distribution can be seen as an option to approximate the values of the proper scoring rules. To empirically assess the quality of this approximation and to illustrate the use of the score functions, consider the following Gaussian toy example:
+<<message=FALSE>>=
+obs_1 <- obs_n[1]
+sample_m <- sample_nm[1, ]
+mgrid <- seq(from = 50, to = length(sample_m), by = 50)
+crps_approx <- logs_approx <- numeric(length(mgrid))
+for (i in seq_along(mgrid)) {
+  size <- mgrid[i]
+  crps_approx[i] <- crps_sample(obs_1, dat = sample_m[1:size])
+  logs_approx[i] <- logs_sample(obs_1, dat = sample_m[1:size])
+}
+@
+\begin{figure}
+	<<plot1, echo=FALSE, dev='pdf', fig.width=10.4, fig.height=4.2, fig.align ="center", out.width = "\\linewidth">>=
+	crps_true <- crps(obs_1, family = "normal", mean = 2, sd = 3)
+	logs_true <- logs(obs_1, family = "normal", mean = 2, sd = 3)
+	
+	par(mai = c(.9, .9, .3, .3), pty = "s", cex = 1.1, omi = c(0, .7, 0, 1.3))
+	layout(matrix(1:2, nrow = 1))
+	plot(NULL, type = "n", bty = "n",
+	main = "CRPS", xlab = "Sample size", ylab = "Score value",
+	xlim = c(0, 1e4), ylim = crps_true * c(0.9, 1.1),
+	xaxt = "n", yaxt = "n")
+	axis(1, at = c(2000, 6000, 10000))
+	axis(2, at = c(1.1, 1.2, 1.3))
+	abline(h = crps_true, lty = 2)
+	lines(mgrid, crps_approx, col = "darkorange", lwd = 2)
+	
+	plot(NULL, type = "n", bty = "n",
+	main = "LogS", xlab = "Sample size", ylab = "",
+	xlim = c(0, 1e4), ylim = logs_true * c(0.9, 1.1),
+	xaxt = "n", yaxt = "n")
+	axis(1, at = c(2000, 6000, 10000))
+	axis(2, at = c(2.0, 2.2, 2.4))
+	abline(h = logs_true, lty = 2)
+	lines(mgrid, logs_approx, col = "purple", lwd = 2)
+	@
+	\caption{\label{fig:score_approx} The scores of a Gaussian forecast distribution with mean 2 and standard deviation 3 when a value of 0 is observed, estimated from an independent sample from the predictive distribution, and shown as a function of the size of the (expanding) sample. The horizontal line represents the analytically calculated score.}
+\end{figure}
+The true CRPS and LogS values can be calculated using the \fct{crps} and \fct{logs} functions. Figure \ref{fig:score_approx} graphically illustrates how the scores based on sampling approximations become more accurate as the sample size increases.
+
+The \code{method} argument controls which approximation method is used in \crpssample{}, with possible choices given by \code{"edf"} (empirical distribution function) and \code{"kde"} (kernel density estimation). The default choice \code{"edf"} corresponds to computing the approximation from equation \eqref{eq:crps-kernel-repr}, implemented as in equation \eqref{eq:crps-computation}. A vector or matrix of weights, matching the input for \code{dat}, can be passed to the argument \code{w} to calculate the CRPS for any distribution with a finite number of outcomes.
+
+For kernel density estimation, i.e., the default in \logssample{} and the corresponding \code{method} in \crpssample{}, we use a Gaussian kernel to estimate the predictive distribution. Kernel density estimation is an unusual choice in the case of the CRPS, but it is the only implemented option for evaluating the LogS of a simulated sample; this is because an estimated \textit{density} is required for the LogS. The \code{bw} argument allows to manually select a bandwidth parameter for kernel density estimation; by default, the \fct{bw.nrd} function from the \pkg{stats} \citep{R} package is employed.
+
+
+\section{Usage examples}\label{sec:examples}
+
+\subsection{Probabilistic weather forecasting via ensemble post-processing}\label{sec:example-pp}
+In numerical weather prediction (NWP), physical processes in the atmosphere are modeled through systems of partial differential equations that are solved numerically on three-dimensional grids. To account for major sources of uncertainty, weather forecasts are typically obtained from multiple runs of NWP models with varying initial conditions and model physics resulting in a set of deterministic predictions, called the `forecast ensemble'. While ensemble predictions are an important step from deterministic to probabilistic forecasts, they tend to be biased and underdispersive (such that, empirically, the actual observation falls outside the range of the ensemble too frequently). Hence, ensembles require some form of statistical post-processing. Over the past decade, a variety of approaches to statistical post-processing has been proposed, including non-homogeneous regression \citep{GneitingEtAl2005} and Bayesian model averaging \citep{RafteryEtAl2005}. 
+
+Here we illustrate how to evaluate post-processed ensemble forecasts of precipitation, based on data and methods from the \pkg{crch} package \citep{MessnerEtAl2016}. We model the conditional distribution of precipitation accumulation, $Y \geq 0$, given the ensemble forecasts $X_1,\dots,X_m$ using censored non-homogeneous regression models of the form
+\begin{eqnarray}
+\Prob(Y = 0|X_1,\dots,X_m) &=& F_{\theta}(0) \label{eq:pproc1}, \\
+\Prob(Y \le y|X_1,\dots,X_m) &=& F_{\theta}(y),~\text{for}~y >0, \label{eq:pproc2}
+\end{eqnarray}
+where $F_\theta$ is the CDF of a continuous parametric distribution with parameters $\theta$. Equations \eqref{eq:pproc1} and \eqref{eq:pproc2} specify a mixed discrete-continuous forecast distribution for precipitation: There is a positive probability of observing no precipitation at all ($Y = 0$), however, if $Y > 0$, it can take many possible values $y$. In order to incorporate information from the raw forecast ensemble, we let $\theta$ be a function of $X_1,\dots,X_m$, i.e., we use features of the raw ensemble to determine the parameters of the forecast distribution. Specifically, we consider different location-scale families $F_\theta$ and model the location parameter $\mu$ as a linear function of the ensemble mean $\bar X = \frac{1}{m} \sum_{i = 1}^{m} X_i$,
+\[
+\mu = a_0 + a_1 \bar X,
+\]  
+and the scale parameter $\sigma$ as linear function of the logarithm of the standard deviation $s$ of the ensemble,
+\[
+\log(\sigma) = b_0 + b_1\log\left( s \right).
+\]
+A logarithmic link function is used to ensure positivity of the scale parameter. The coefficients $a_0, a_1, b_0, b_1$ can be estimated using maximum likelihood approaches implemented in the \pkg{crch} package. The choice of a suitable parametric family $F_\theta$ is not obvious. Following \citet{MessnerEtAl2016}, we thus consider three alternative choices: the logistic, Gaussian, and Student's $t$ distributions. For details and further alternatives, see, e.g., \citet{MessnerEtAl2014, Scheuerer2014} and \citet{ScheuererHamill2015}.
+
+The \pkg{crch} package contains a data set of ensemble forecasts and observations of precipitation for Innsbruck (Austria). The precipitation amounts are accumulated over 3 days, and the corresponding 11 member ensemble forecasts are forecasts of accumulated precipitation amount between 5 and 8 days ahead. Following \citet{MessnerEtAl2016} we model the square root of precipitation amounts, and omit forecast cases where the ensemble has a standard deviation of zero. From \citet{MessnerEtAl2016}:
+%
+<<>>=
+library(crch)
+data(RainIbk)
+RainIbk <- sqrt(RainIbk)
+RainIbk$ensmean <- apply(RainIbk[,grep('^rainfc',names(RainIbk))], 1, mean)
+RainIbk$enssd <- apply(RainIbk[,grep('^rainfc',names(RainIbk))], 1, sd)
+RainIbk <- subset(RainIbk, enssd > 0)
+@
+%
+We split the data into a training set from April 2001 until November 2004, and an out-of-sample (or test sample) evaluation period using the remainder of the available data set from January 2005 to September 2013.
+%
+<<>>=
+data_train <- subset(RainIbk, as.Date(rownames(RainIbk)) <= "2004-11-30")
+data_eval <- subset(RainIbk, as.Date(rownames(RainIbk)) >= "2005-01-01")
+@
+%
+Then, we estimate the censored regression models that are based on the logistic, Student's $t$, and Gaussian distributions, and produce the parameters of the forecast distributions for the evaluation period using built-in functionality of the \pkg{crch} package. We only show the code for the Gaussian model since it can be adapted straightforwardly for the logistic and Student's $t$ models.
+%
+<<>>=
+CRCHgauss <- crch(rain ~ ensmean | log(enssd), data_train,
+  dist = "gaussian", left = 0)
+gauss_mu <- predict(CRCHgauss, data_eval, type = "location")
+gauss_sc <- predict(CRCHgauss, data_eval, type = "scale")
+@
+<<echo=FALSE>>=
+CRCHlogis <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+left = 0, dist = "logistic")
+CRCHstud <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+left = 0, dist = "student")
+logis_mu <- predict(CRCHlogis, data_eval, type = "location")
+logis_sc <- predict(CRCHlogis, data_eval, type = "scale")
+stud_mu <- predict(CRCHstud, data_eval, type = "location")
+stud_sc <- predict(CRCHstud, data_eval, type = "scale")
+stud_df <- CRCHstud$df
+@
+%
+The raw ensemble of forecasts is a natural benchmark for comparison since interest commonly lies in quantifying the gains in forecast accuracy that result from post-processing:
+%
+<<>>=
+ens_fc <- data_eval[, grep('^rainfc', names(RainIbk))]
+@
+%
+\begin{figure}
+	<<postprocplot, echo=FALSE, dev='pdf', fig.width=10.4, fig.height = 3.7, fig.align="center", out.width="\\linewidth">>=
+	ID.list <- c(206,953,2564)
+	
+	m <- matrix(c(1, 2, 3), nrow = 1)
+	layout(mat = m, widths = c(3.55, 2.95, 3.90))
+	par(pty = "s", cex = 1.1)
+	
+	for(ID in ID.list){
+	  col.logis <- "blue"
+	  col.gauss <- "green3"
+	  col.stud <- "darkorange"
+	  
+	  z <- seq(0,10,0.01)
+	  flogis.plot <- suppressWarnings(flogis(z, logis_mu[ID], logis_sc[ID], lower = 0, lmass = "cens"))
+	  flogis.p0 <- plogis(0, logis_mu[ID], logis_sc[ID])
+	  fnorm.plot <- suppressWarnings(fnorm(z, gauss_mu[ID], gauss_sc[ID], lower = 0, lmass = "cens"))
+	  fnorm.p0 <- pnorm(0, gauss_mu[ID], gauss_sc[ID])
+	  fstud.plot <- suppressWarnings(ft(z, stud_df, stud_mu[ID], stud_sc[ID], lower = 0, lmass = "cens"))
+	  fstud.p0 <- pt(-stud_mu[ID] / stud_sc[ID], stud_df)
+	  
+	  if (ID == ID.list[1]) par(mai = c(0.9, 0.9, 0.3, 0.15))
+	  if (ID == ID.list[2]) par(mai = c(0.9, 0.3, 0.3, 0.15))
+	  if (ID == ID.list[3]) par(mai = c(0.9, 0.3, 0.3, 1.1))
+	  
+	  plot(NULL, type = "n", bty = "n", xaxt = "n", yaxt = "n",
+	       ylim = c(-0.025, 0.5), xlim = c(-0.4,10),
+	       ylab = ifelse(ID == ID.list[1], "Density", ""), xlab = "Precipitation amount in mm",
+	       main = rownames(data_eval)[ID])
+	  axis(1, at = c(0, 5, 10))
+	  if (ID == ID.list[1]) axis(2, at = c(0, 0.25, 0.5))
+	  
+	  lines(z, flogis.plot, col = col.logis)
+	  lines(z, fnorm.plot, col = col.gauss)
+	  lines(z, fstud.plot, col = col.stud)	  
+	  
+	  p0.offset <- 0.2
+	  segments(0, 0, 0, flogis.p0, col = col.logis, lwd = 3)	  
+	  segments(-p0.offset, 0, -p0.offset, fnorm.p0, col = col.gauss, lwd = 3)	  
+	  segments(-2*p0.offset, 0, -2*p0.offset, fstud.p0, col = col.stud, lwd = 3)
+	  
+	  segments(data_eval$rain[ID], 0, data_eval$rain[ID], 0.5, lty = 2)
+	  
+	  ens.fc <- as.numeric(data_eval[, grep('^rainfc',names(RainIbk))][ID,])
+	  for (j in 1:length(ens.fc)) {
+	    segments(ens.fc[j], -0.025, ens.fc[j], -0.005)
+	  }
+	}
+	
+	par(xpd = TRUE)
+	legend(6.5, .45, legend = c("cens. logistic", "cens. Gaussian", "cens. Student's t"),
+	       lty = rep(1,3), col = c("blue", "green3", "darkorange"), ncol = 1, bty ="n")
+	@
+	\caption{Illustration of the forecast distributions of the censored regression models for three illustrative 3-day accumulation periods (plot title indicates end of period). The predicted probabilities of zero precipitation are shown as solid thick vertical lines at 0, and the colored thin lines indicate the upper tail on the positive half axis of the forecast densities $f_\theta$, c.f.~equations \eqref{eq:pproc1} and \eqref{eq:pproc2}. The raw ensemble forecasts are shown as short line segments at the bottom, and the realizing observation is indicated by the long dashed line. \label{fig:postprocplot}}
+\end{figure}
+%
+Figure \ref{fig:postprocplot} shows the models' forecast distributions in three illustrative cases. To evaluate forecast performance in the entire out of sample period, we use the function \fct{crps} for the model outputs and the function \crpssample{} to compute the CRPS of the raw ensemble. Note that we have to turn \code{ens_fc} into an object of class \class{matrix} manually.
+%
+<<>>=
+obs <- data_eval$rain
+gauss_crps <- crps(obs, family = "cnorm", location = gauss_mu, 
+  scale = gauss_sc, lower = 0, upper = Inf)
+ens_crps <- crps_sample(obs, dat = as.matrix(ens_fc))
+@
+<<echo=FALSE>>=
+logis_crps <- crps(obs, family = "clogis", location = logis_mu, 
+scale = logis_sc, lower = 0, upper = Inf)
+stud_crps <- crps(obs, family = "ct", df = stud_df, location = stud_mu, 
+scale = stud_sc, lower = 0, upper = Inf)
+@
+%
+The mean CRPS values indicate that all post-processing models substantially improve upon the raw ensemble forecasts. There are only small differences between the censored regression models, with the models based on the logistic and Student's $t$ distributions slightly outperforming the model based on a normal distribution.
+<<echo=FALSE>>=
+df <- data.frame(mean(logis_crps), mean(gauss_crps), mean(stud_crps), mean(ens_crps))
+names(df) <- c("CRCHlogis", "CRCHgauss", "CRCHstud", "Ensemble")
+print(df, row.names = FALSE)
+@
+
+\subsection[Bayesian forecasts of US GDP growth rate]{Bayesian forecasts of {US~GDP} growth rate}\label{sec:example-econ}
+
+We next present a data example based on a Markov Switching autoregressive model for US GDP growth, which was first proposed by \cite{Hamilton1989}. We consider a variant of the model that incorporates time-varying heteroscedasticity, which is a salient feature of US GDP growth: For example, the series was much more volatile in the 1970s than in the 1990s. The model is estimated using Bayesian Markov chain Monte Carlo methods \citep{Fruhwirth2006}. Our implementation closely follows \citet[Section 5]{KruegerEtAl2016}, and uses the \arms{} function, and the dataset \code{gdp}, included in the \pkg{scoringRules} package.
+
+As a first step, we split the data into a training sample of observations containing the data before 2014's first quarter, and an evaluation period containing only the four quarters of 2014:
+<<echo=TRUE>>=
+data(gdp, package = "scoringRules")
+data_train <- subset(gdp, vint == "2014Q1")
+data_eval <- subset(gdp, vint == "2015Q1" & grepl("2014", dt))
+@
+As is typical for MCMC-based analysis, the model's forecast distribution $F_0$ is not available as an analytical formula, but must be approximated in some way. Following \citet{KruegerEtAl2016}, a generic MCMC algorithm to generate samples of the parameter vector $\theta$ and sample from the posterior predictive distribution proceeds as follows:
+\begin{itemize}
+	\item fix $\theta_0\in\Theta$
+	\item for $i = 1,\dots,m$, 
+	\begin{itemize}
+		\item draw $\theta_i \sim \mathcal{K}(\cdot|\theta_{i-1})$, where $\mathcal{K}$ is a transition kernel that is specific to the model under use
+		\item draw $X_i\sim F_c(\cdot|\theta_i)$, where $F_c$ denotes the conditional distribution given the parameter values.
+	\end{itemize}
+\end{itemize}
+We use the function \arms{} to fit the model and produce forecasts for the four quarters of 2014 based on the information available at the end of year 2013, i.e., a single prediction case where the forecast horizon extends from one to four quarters ahead. Here, the conditional distribution $F_c$ is Gaussian, and we run the chain for 20\,000 iterations.
+<<>>=
+h <- 4; m <- 20000
+fc_params <- ar_ms(data_train$val, forecast_periods = h, n_rep = m)
+@
+This yields a simulated sample corresponding to $\{\theta_1, \ldots, \theta_m\}$, where we obtain matrices of parameters for the mean and standard deviation. We transpose these matrices to have the rows correspond to the observations, and columns represent the position in the Markov chain:
+<<>>=
+mu <- t(fc_params$fcMeans)
+Sd <- t(fc_params$fcSds)
+@
+Next, we draw the sample of possible observations corresponding to $\{X_1, \ldots, X_m\}$ conditional on the Gaussian assumption and the available parameter information:
+<<>>=
+X <- matrix(rnorm(h * m, mean = mu, sd = Sd), nrow = h, ncol = m)
+@
+This gives rise to two competing estimators of the posterior predictive distribution $F_0$. The mixture-of-parameters estimator (MPE)
+\begin{equation}
+\hat{F}_m^{\text{MP}}(z) = \frac{1}{m} \sum_{i=1}^{m} F_c(z|\theta_i),\label{eqn:mix}
+\end{equation}
+builds on the simulated parameter values by mixing a series of Gaussian distributions uniformly, whereas the empirical CDF based approximation
+\[
+\hat{F}_m^{\text{ECDF}}(z) = \frac{1}{m} \sum_{i=1}^m \ind\{X_i \leq z\}
+\]
+utilizes the simulated sample from the conditional distribution given the parameter values, instead of building on the simulated parameter values directly. The standard choice for a smoother approximation is to replace the indicator function with a Gaussian kernel, as in the \logssample{} function.
+
+The two alternative estimators are illustrated in Figure \ref{fig:mcmcplot}: For each date, the histogram represents a simulated sample from the model's forecast distribution, and the black line indicates the mixture-of-parameters estimator.\footnote{The algorithm and approximation methods just sketched are not idiosyncratic to our example, but arise whenever a Bayesian model is used for forecasting. For illustrative \proglang{R} implementations of other Bayesian models, see, e.g., the packages \pkg{bayesgarch} \citep{ArdiaHoogerheide2010} and \pkg{stochvol} \citep{Kastner2016}.} We can observe a distinct decrease in the forecast's certainty as the forecast horizon increases from one to four quarters ahead.
+
+\begin{figure}
+	<<mcmcplot, echo=FALSE, dev='pdf', fig.width=10.4, fig.height = 3.2, fig.align = "center", out.width="\\linewidth">>=
+	fmix <- function(m, s) {
+	function(x) {
+	40000 * sapply(x, function(z) mean(dnorm(z, mean = m, sd = s)))
+	}
+	}
+		
+	# Plot histograms
+    layout(mat = matrix(1:4, nrow = 1), widths = c(3.05, 2.45, 2.45, 2.45))
+    par(mai = c(0.9, 0.9, 0.3, 0.15), pty = "s", cex = 1.1)
+	for (jj in seq_along(data_eval$dt)) {
+	  act <- data_eval$val[jj]
+	  x <- X[jj, ]
+	  
+	  hist(x, main = data_eval$dt[jj],
+	       xlim = c(-20, 20), ylim = c(0, 8000),
+	       xlab = "Growth rate in %", ylab = ifelse(jj == 1, "Frequency", ""),
+	       xaxt = "n", yaxt = "n")
+	  axis(1, at = c(-20, 0, 20))
+	  if (jj == 1) axis(2, at = c(0, 4000, 8000))
+	  segments(act, 0, act, 8000, lty = 2)
+	  plot(fmix(mu[jj, ], Sd[jj, ]), from = min(x), to = max(x), lwd = 2, add = TRUE)
+
+      if (jj == 1) par(mai = c(0.9, 0.3, 0.3, 0.15))
+	}
+	@
+	\caption{Forecast distributions for the growth rate of US GDP. The forecasts stem from a Bayesian time series model, as detailed in \citet[Section 5]{KruegerEtAl2016}. Histograms summarize simulated forecast draws at each date. Mixture-of-normals approximation to distribution shown in black; realizing observations shown by dashed line.	\label{fig:mcmcplot}}	
+\end{figure}
+
+Finally, we evaluate the CRPS and LogS for the approximated forecast distributions described above. The mixture-of-parameters estimator $\hat{F}_m^{\text{MP}}$ can be evaluated with the functions \fct{crps} and \fct{logs}, and $\hat{F}_m^{\text{ECDF}}$ can be evaluated with the functions \crpssample{} and \logssample{}:
+<<message=FALSE>>=
+obs <- data_eval$val
+names(obs) <- data_eval$dt
+w <- matrix(1/m, nrow = h, ncol = m)
+crps_mpe <- crps(obs, "normal-mixture", m = mu, s = Sd, w = w)
+logs_mpe <- logs(obs, "normal-mixture", m = mu, s = Sd, w = w)
+crps_ecdf <- crps_sample(obs, X)
+logs_kde <- logs_sample(obs, X)
+print(cbind(crps_mpe, crps_ecdf, logs_mpe, logs_kde))
+@
+The score values are quite similar for both estimators, which seems natural given the large number of $20\,000$ MCMC draws. For the logarithmic score in particular, the MPE should be preferred over the KDE based estimator on theoretical grounds, see \citet{KruegerEtAl2016}.
+
+
+\section{Multivariate scoring rules}\label{sec:multiv}
+
+The basic concept of proper scoring rules can be extended to multivariate forecast distributions for which the support $\Omega$ is given by $\R^d, d \in \{2, 3, \ldots \}$. A variety of multivariate proper scoring rules has been proposed in the literature. Most of these scoring rules are defined for probabilistic forecasts given as samples from the forecast distributions. 
+
+Let $\by = (y^{(1)},\dots,y^{(d)}) \in\Omega=\R^d$, and let $F$ denote a forecast distribution on $\R^d$ given through $m$ discrete samples $\bX_1,\dots,\bX_m$ from $F$ with $\bX_i = (X_i^{(1)},\dots,X_i^{(d)}) \in \R^d, i=1,\dots,m$. The \pkg{scoringRules} package provides implementations of the \textit{energy score} \citep[ES;][]{GneitingEtAl2008},
+\[
+\textnormal{ES}(F,y) = \frac{1}{m}\sum_{i=1}^m \| \bX_i - \by \| - \frac{1}{2m^2} \sum_{i = 1}^m\sum_{j = 1}^m \| \bX_i - \bX_j \|,
+\]
+where $\|\cdot\|$ denotes the Euclidean norm on $\R^d$, and the \textit{variogram score of order $p$} \citep[VS$^p$;][]{ScheuererHamill2015VS},
+\[
+\textnormal{VS}^p(F,y) = \sum_{i=1}^d\sum_{j=1}^d w_{i,j} \left( \left|y^{(i)} - y^{(j)} \right|^p - \frac{1}{m}\sum_{k=1}^m \left|X_k^{(i)} - X_k^{(j)} \right|^p \right)^2.
+\]
+In the definition of VS$^p$, $w_{i,j}$ is a non-negative weight that allows to emphasize or down-weight pairs of component combinations based on subjective expert decisions, and $p$ is the order of the variogram score. Typical choices of $p$ include 0.5 and 1.
+
+ES and VS$^p$ are implemented for multivariate forecast distributions given through simulated samples as functions
+\begin{Code}
+es_sample(y, dat)
+vs_sample(y, dat, w = NULL, p = 0.5)
+\end{Code}
+\noindent In both cases, the vector of observations, \code{y}, is required to be a vector of length $d$, and the corresponding forecasts, \code{dat}, have to be given as a $d\times m$ matrix, the columns of which are the simulated samples $\bX_1,\dots,\bX_m$ from the multivariate forecast distribution.\footnote{In \vssample{} it is possible to specify a $d\times d$ matrix \code{w} of non-negative weights that allow to emphasize or down-weight pairs of component combinations based on subjective expert decisions. The entry in the $i$-th row and $j$-th column of \code{w} corresponds to the weight assigned to the combination of the $i$-th and $j$-th component. If no weights are specified, constant weights with $w_{i,j} = 1$ for all $i,j \in\{ 1,\dots,d\}$ are used. For details and examples on choosing appropriate weights, see \citet{ScheuererHamill2015VS}.} Note that these functions are not vectorized, i.e., they can only evaluate a single multivariate forecast case and always return a single number.
+
+In the following, we give a usage example of the multivariate scoring rules using the results from the economic case study in Section \ref{sec:example-econ}. Instead of evaluating the forecasts separately for each horizon (as we did before), we now jointly evaluate the forecast performance over the four forecast horizons based on the four-variate simulated sample.
+<<echo=FALSE>>=
+names(obs) <- NULL
+@
+<<results='hold'>>=
+es_sample(obs, dat = X)
+vs_sample(obs, dat = X)
+@
+While this simple example refers to a single forecast case and a single model, a typical empirical analysis would consider the average scores (across several forecast cases) of two or more models. 
+
+
+\section{Summary and discussion}\label{sec:discussion}
+
+The \pkg{scoringRules} package enables computing of proper scoring rules for parametric and simulated forecast distributions. The package covers a wide range of situations prevalent in work on modeling and forecasting, and provides generally applicable and numerically efficient implementations based on recent theoretical considerations. 
+
+The main functions of the package -- \fct{crps} and \fct{logs} -- are S3 generics, for which we provide methods \fct{crps.numeric} and \fct{logs.numeric}. This allows for natural extensions by defining S3 methods for classes other than \class{numeric}. For example, consider a fitted model object of class \class{crch}, obtained by the \proglang{R} package of the same name \citep[][]{MessnerEtAl2016}. An object of this class contains a detailed specification of the fitted model's forecast distribution (such as the parametric family of distributions and the values of the fitted parameters). This could be utilized to write a specific method that computes the CRPS of a fitted model object. 
+
+Apart from comparative evaluation, proper scoring rules also provide valuable tools for parameter estimation. In the general optimum score estimation framework of \citet{GneitingRaftery2007}, the parameters of a model's forecast distribution are determined by optimizing the average value of a proper scoring rule as a function of the parameters within a training set. Optimum score estimation based on the LogS corresponds to classical maximum likelihood estimation. The score functions to compute CRPS and LogS for parametric forecast distributions included in \pkg{scoringRules} (see Table \ref{tab:parametric-families}), specifically the underlying worker functions, thus offer tools for the straightforward implementation of such optimum score estimation approaches. Functions to compute gradients and Hessian matrices of the CRPS can be leveraged by numerical optimization procedures such as \fct{optim}, and have been implemented for a subset of the parametric families covered by the package. 
+
+The choice of an appropriate proper scoring rule for model evaluation or parameter estimation is a non-trivial task. We have implemented the widely used LogS and CRPS along with the multivariate ES and VS. Possible future extension of the \pkg{scoringRules} package include the addition of novel proper scoring rules in case promising alternatives are proposed. Further, given the availability of appropriate analytical expressions, the list of covered parametric families can be extended as demand arises and time allows.
+
+
+\section*{Acknowledgments}
+The work of Alexander Jordan and Fabian Kr\"uger has been funded by the European Union Seventh Framework Programme under grant agreement 290976. Sebastian Lerch gratefully acknowledges support by Deutsche Forschungsgemeinschaft (DFG) through project C7 (``Statistical postprocessing and stochastic physics for ensemble predictions'') within SFB/TRR 165 ``Waves to Weather''. The authors thank the Klaus Tschira Foundation for infrastructural support at the Heidelberg Institute for Theoretical Studies. Helpful comments by Tilmann Gneiting, Stephan Hemri, Jakob Messner and Achim Zeileis are gratefully acknowledged. We further thank Maximiliane Graeter for contributions to the implementation of the multivariate scoring rules.
+
+
+%% Bibliography
+\bibliography{bibliography}
+
+\end{document}
