@@ -182,13 +182,13 @@ dss_edf <- function(y, dat, w = NULL) {
   if (is.null(w)) {
     sapply(y, function(s) {
       s <- sd(dat)
-      ((y - mean(dat)) / s)^2 + log(s)
+      ((y - mean(dat)) / s)^2 + 2*log(s)
     })
   } else {
     sapply(y, function(s) {
       m <- w %*% dat
       s <- sqrt(w %*% (dat - m)^2)
-      ((y - m) / s)^2 + log(s)
+      ((y - m) / s)^2 + 2*log(s)
     })
   }
 }

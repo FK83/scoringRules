@@ -26,7 +26,7 @@ logs_pois <- function(y, lambda) {
 #' @export
 dss_pois <- function(y, lambda) {
   s <- sqrt(lambda)
-  (y / s - s)^2 + log(s)
+  (y / s - s)^2 + 2*log(s)
 }
 # mean = lambda
 # sd = sqrt(lambda)

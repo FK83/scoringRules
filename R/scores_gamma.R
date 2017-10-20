@@ -35,7 +35,7 @@ dss_gamma <- function(y, shape, rate = 1, scale = 1/rate) {
   ms <- sqrt(shape)
   scale[scale <= 0] <- NaN
   s <- ms * scale
-  (y / s - ms)^2 + log(s)
+  (y / s - ms)^2 + 2*log(s)
 }
 # mean = shape * scale
 # sd = sqrt(shape) * scale

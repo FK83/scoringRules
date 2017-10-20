@@ -48,7 +48,7 @@ dss_unif <- function(y, min = 0, max = 1) {
   min[min > max] <- NaN
   m <- 0.5 * (min + max)
   s <- (max - min) / sqrt(12)
-  ((y - m) / s)^2 + log(s)
+  ((y - m) / s)^2 + 2*log(s)
 }
   
 

@@ -315,7 +315,7 @@ dss_norm <- function(y, mean = 0, sd = 1, location = mean, scale = sd) {
     y^2
   } else {
     scale[scale <= 0] <- NaN
-    (y / scale)^2 + log(scale)
+    (y / scale)^2 + 2*log(scale)
   }
 }
 

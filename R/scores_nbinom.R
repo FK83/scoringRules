@@ -57,7 +57,7 @@ dss_nbinom <- function(y, size, prob, mu) {
     mu[mu < 0] <- NaN
     s <- sqrt(mu * (1 + mu / size))
   }
-  ((y - mu) / s)^2 + log(s)
+  ((y - mu) / s)^2 + 2*log(s)
 }
 
 

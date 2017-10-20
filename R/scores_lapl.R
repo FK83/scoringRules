@@ -42,7 +42,7 @@ dss_lapl <- function(y, location = 0, scale = 1) {
   } else {
     scale[scale <= 0] <- NaN
     s <- sqrt(2) * scale
-    (y / s)^2 + log(s)
+    (y / s)^2 + 2*log(s)
   }
 }
 

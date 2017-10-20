@@ -45,7 +45,7 @@ logs_exp2 <- function(y, location = 0, scale = 1) {
 #' @export
 dss_exp <- function(y, rate = 1) {
   rate[rate <= 0] <- NaN
-  (y * rate - 1)^2 - log(rate)
+  (y * rate - 1)^2 - 2*log(rate)
 }
 
 
