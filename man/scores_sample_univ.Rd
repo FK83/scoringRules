@@ -4,12 +4,15 @@
 \alias{scores_sample_univ}
 \alias{crps_sample}
 \alias{logs_sample}
+\alias{dss_sample}
 \title{Scoring Rules for Simulated Forecast Distributions}
 \usage{
 crps_sample(y, dat, method = "edf", w = NULL, bw = NULL,
   num_int = FALSE, show_messages = TRUE)
 
-logs_sample(y, dat, bw = NULL, show_messages = TRUE)
+logs_sample(y, dat, bw = NULL, show_messages = FALSE)
+
+dss_sample(y, dat, w = NULL)
 }
 \arguments{
 \item{y}{vector of realized values.}
@@ -35,7 +38,7 @@ warnings and errors).}
 Value of the score. \emph{A lower score indicates a better forecast.}
 }
 \description{
-Calculate scores (CRPS, LogS) given observations and draws from the predictive distributions.
+Calculate scores (CRPS, LogS, DSS) given observations and draws from the predictive distributions.
 }
 \details{
 For a vector \code{y} of length n, \code{dat} should be given as a matrix

@@ -6,6 +6,7 @@
 \alias{crps_expM}
 \alias{logs_exp}
 \alias{logs_exp2}
+\alias{dss_exp}
 \title{Calculating scores for the exponential distribution}
 \usage{
 crps_exp(y, rate = 1)
@@ -15,6 +16,8 @@ crps_expM(y, location = 0, scale = 1, mass = 0)
 logs_exp(y, rate = 1)
 
 logs_exp2(y, location = 0, scale = 1)
+
+dss_exp(y, rate = 1)
 }
 \arguments{
 \item{y}{vector of observations.}
@@ -31,7 +34,7 @@ logs_exp2(y, location = 0, scale = 1)
 A vector of score values.
 }
 \description{
-Calculating scores (CRPS, logarithmic score) for the exponential distribution, and the exponential
-distribution with location-scale transformation and point mass in
-\code{location}.
+Calculating scores (CRPS, LogS, DSS) for the exponential distribution,
+and the exponential distribution with location-scale transformation and
+point mass in \code{location}.
 }

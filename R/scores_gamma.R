@@ -27,6 +27,19 @@ logs_gamma <- function(y, shape, rate = 1, scale = 1/rate) {
   -dgamma(y, shape, scale = scale, log = TRUE)
 }
 
+#' @rdname scores_gamma
+#' @export
+dss_gamma <- function(y, shape, rate = 1, scale = 1/rate) {
+  if (!missing(rate) && !missing(scale))
+    stop("specify 'rate' or 'scale' but not both")
+  ms <- sqrt(shape)
+  scale[scale <= 0] <- NaN
+  s <- ms * scale
+  (y / s - ms)^2 + log(s)
+}
+# mean = shape * scale
+# sd = sqrt(shape) * scale
+
 
 check_crps_gamma <- function(input) {
   required <- list(c("y", "shape", "rate"),

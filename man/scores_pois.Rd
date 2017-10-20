@@ -4,11 +4,14 @@
 \alias{scores_pois}
 \alias{crps_pois}
 \alias{logs_pois}
+\alias{dss_pois}
 \title{Calculating scores for the Poisson distribution}
 \usage{
 crps_pois(y, lambda)
 
 logs_pois(y, lambda)
+
+dss_pois(y, lambda)
 }
 \arguments{
 \item{y}{vector of observations.}

@@ -33,6 +33,19 @@ logs_lapl <- function(y, location = 0, scale = 1) {
   -log(flapl(y, location, scale))
 }
 
+#' @rdname scores_lapl
+#' @export
+dss_lapl <- function(y, location = 0, scale = 1) {
+  if (!identical(location, 0)) y <- y - location
+  if (identical(scale, 1)) {
+    y^2
+  } else {
+    scale[scale <= 0] <- NaN
+    s <- sqrt(2) * scale
+    (y / s)^2 + log(s)
+  }
+}
+
 
 check_crps_lapl <- function(input) {
   required <- c("y", "location", "scale")

@@ -8,6 +8,7 @@
 \alias{crps_gtcnorm}
 \alias{logs_norm}
 \alias{logs_tnorm}
+\alias{dss_norm}
 \alias{gradcrps_norm}
 \alias{gradcrps_cnorm}
 \alias{gradcrps_tnorm}
@@ -23,6 +24,7 @@ crps_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 logs_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 logs_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+dss_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 
 ## gradient (location, scale) functions
 gradcrps_norm(y, location = 0, scale = 1)
@@ -57,7 +59,8 @@ For the gradient and Hessian functions: a matrix with column names
 corresponding to the respective partial derivatives.
 }
 \description{
-These functions calculate scores (CRPS, logarithmic score) and their gradient and Hessian with respect
+These functions calculate scores (CRPS, LogS, DSS) and
+their gradient and Hessian with respect
 to the parameters of a location-scale transformed normal
 distribution. Furthermore, the censoring transformation and
 the truncation transformation may be introduced on top of the

@@ -4,11 +4,14 @@
 \alias{scores_unif}
 \alias{crps_unif}
 \alias{logs_unif}
+\alias{dss_unif}
 \title{Calculating scores for the uniform distribution}
 \usage{
 crps_unif(y, min = 0, max = 1, lmass = 0, umass = 0)
 
 logs_unif(y, min = 0, max = 1)
+
+dss_unif(y, min = 0, max = 1)
 }
 \arguments{
 \item{y}{vector of observations.}

@@ -1,6 +1,6 @@
 #' Scoring Rules for Simulated Forecast Distributions
 #' 
-#' Calculate scores (CRPS, LogS) given observations and draws from the predictive distributions.
+#' Calculate scores (CRPS, LogS, DSS) given observations and draws from the predictive distributions.
 #' 
 #' @param y vector of realized values.
 #' @param dat vector or matrix (depending on \code{y}; see details)
@@ -120,7 +120,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
 
 #' @rdname scores_sample_univ
 #' @export
-logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
+logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
   input <- list(y = y, dat = dat)
   input$bw <- bw
   
@@ -144,6 +144,22 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = TRUE) {
   }
 }
 
+
+#' @rdname scores_sample_univ
+#' @export
+dss_sample <- function(y, dat, w = NULL) {
+  input <- list(y = y, dat = dat)
+  if (!is.null(w)) input$w <- w
+  if (identical(length(y), 1L) && is.vector(dat)) {
+    check_sample(input)
+    dss_edf(y, dat, w)
+  } else {
+    check_sample2(input)
+    sapply(seq_along(y),
+           function(i) dss_edf(y[i], dat[i, ], w[i, ]))
+  }
+}
+
 #### helper functions ####
 
 # (weighted) empirical distribution
@@ -159,6 +175,21 @@ crps_edf <- function(y, dat, w = NULL) {
     w <- w[ord]
     p <- c(0, cumsum(w[-n]))
     sapply(y, function(s) 2 * sum(((s < x) - p - 0.5 * w) * w * (x - s)))
+  }
+}
+
+dss_edf <- function(y, dat, w = NULL) {
+  if (is.null(w)) {
+    sapply(y, function(s) {
+      s <- sd(dat)
+      ((y - mean(dat)) / s)^2 + log(s)
+    })
+  } else {
+    sapply(y, function(s) {
+      m <- w %*% dat
+      s <- sqrt(w %*% (dat - m)^2)
+      ((y - m) / s)^2 + log(s)
+    })
   }
 }
 

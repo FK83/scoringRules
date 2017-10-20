@@ -1,8 +1,8 @@
 #' Calculating scores for the exponential distribution
 #'
-#' Calculating scores (CRPS, logarithmic score) for the exponential distribution, and the exponential
-#' distribution with location-scale transformation and point mass in
-#' \code{location}.
+#' Calculating scores (CRPS, LogS, DSS) for the exponential distribution,
+#' and the exponential distribution with location-scale transformation and
+#' point mass in \code{location}.
 #'
 #' @param y vector of observations.
 #' @param rate vector of rates.
@@ -39,6 +39,13 @@ logs_exp <- function(y, rate = 1) {
 #' @export
 logs_exp2 <- function(y, location = 0, scale = 1) {
   -dexp(y - location, 1 / scale, log = TRUE)
+}
+
+#' @rdname scores_exp
+#' @export
+dss_exp <- function(y, rate = 1) {
+  rate[rate <= 0] <- NaN
+  (y * rate - 1)^2 - log(rate)
 }
 
 
