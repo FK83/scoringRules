@@ -14,6 +14,7 @@
 #' crps_gtcnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 #' logs_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 #' logs_tnorm(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' dss_norm(y, mean = 0, sd = 1, location = mean, scale = sd)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_norm(y, location = 0, scale = 1)
@@ -297,6 +298,26 @@ logs_tnorm <- function(y, location = 0, scale = 1,
                     lower = -Inf, upper = Inf) {
   -fnorm(y, location, scale, lower, upper, log = TRUE)
 }
+
+### dawid-sebastian score ###
+
+#' @rdname scores_norm
+#' @usage NULL
+#' @export
+dss_norm <- function(y, mean = 0, sd = 1, location = mean, scale = sd) {
+  if (!missing(mean) && !missing(location))
+    stop("specify 'mean' or 'location' but not both")
+  if (!missing(sd) && !missing(scale))
+    stop("specify 'sd' or 'scale' but not both")
+  if (!identical(location, 1)) y <- y - location
+  if (identical(scale, 1)) {
+    y^2
+  } else {
+    scale[scale <= 0] <- NaN
+    (y / scale)^2 + log(scale)
+  }
+}
+
 
 
 ### gradient (location, scale) ###
