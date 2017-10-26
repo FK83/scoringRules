@@ -4,12 +4,16 @@
 \alias{scores_lnorm}
 \alias{crps_lnorm}
 \alias{logs_lnorm}
+\alias{dss_lnorm}
 \title{Calculating scores for the log-normal distribution}
 \usage{
 crps_lnorm(y, meanlog = 0, sdlog = 1, locationlog = meanlog,
   scalelog = sdlog)
 
 logs_lnorm(y, meanlog = 0, sdlog = 1, locationlog = meanlog,
+  scalelog = sdlog)
+
+dss_lnorm(y, meanlog = 0, sdlog = 1, locationlog = meanlog,
   scalelog = sdlog)
 }
 \arguments{

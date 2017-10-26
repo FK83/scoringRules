@@ -36,6 +36,21 @@ logs_lnorm <- function(y, meanlog = 0, sdlog = 1,
     stop("specify 'sdlog' or 'scalelog' but not both")
   -dlnorm(y, locationlog, scalelog, log = TRUE)
 }
+
+#' @rdname scores_lnorm
+#' @export
+dss_lnorm <- function(y, meanlog = 0, sdlog = 1,
+                      locationlog = meanlog, scalelog = sdlog) {
+  if (!missing(meanlog) && !missing(locationlog))
+    stop("specify 'meanlog' or 'scalelog' but not both")
+  if (!missing(sdlog) && !missing(scalelog))
+    stop("specify 'sdlog' or 'scalelog' but not both")
+  scalelog[scalelog <= 0] <- NaN
+  sl2 <- scalelog^2
+  m <- exp(meanlog + sl2 / 2)
+  v <- m^2 * expm1(sl2)
+  (y - m)^2 / v + log(v)
+}
   
 
 check_crps_lnorm <- function(input) {
