@@ -8,8 +8,8 @@
 #' @param method string; approximation method. Options:
 #'  "edf" (empirical distribution function) and
 #'  "kde" (kernel density estimation).
-#' @param w vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.
-#' @param bw vector (matching \code{y}) of bandwidths for kernel density
+#' @param w optional; vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.
+#' @param bw optional; vector (matching \code{y}) of bandwidths for kernel density
 #' estimation; see details.
 #' @param num_int logical; if TRUE numerical integration is used for method \code{"kde"}.
 #' @param show_messages logical; display of messages (does not affect
@@ -132,15 +132,13 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
     n <- length(dat)
     w <- rep(1 / n, n)
     s <- rep(bw, n)
-    lsmixnC(w = w, m = dat, s = s, y = y)
+    lsmixnC(w, dat, s, y)
   } else {
     check_sample2(input)
     if (is.null(bw)) bw <- apply(dat, 1, bw.nrd)
-    n1 <- dim(dat)[1L]
-    n2 <- dim(dat)[2L]
-    w <- matrix(1 / n2, n1, n2)
-    s <- matrix(bw    , n1, n2)
-    sapply(seq_along(y), function(i) lsmixnC(w[i, ], dat[i, ], s[i, ], y[i]))
+    w <- rep(1, ncol(dat))
+    s <- matrix(bw, nrow(dat), ncol(dat))
+    sapply(seq_along(y), function(i) lsmixnC(w, dat[i, ], s[i, ], y[i]))
   }
 }
 
@@ -164,33 +162,39 @@ dss_sample <- function(y, dat, w = NULL) {
 
 # (weighted) empirical distribution
 crps_edf <- function(y, dat, w = NULL) {
-  n <- length(dat)
-  # Set uniform weights unless specified otherwise
   if (is.null(w)) {
+    c_1n <- 1 / length(dat)
     x <- sort(dat)
-    sapply(y, function(s) 2 / n^2 * sum((n * (s < x) - 1:n + 0.5) * (x - s)))
+    a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, c_1n)
+    f <- function(s) 2 * c_1n * sum(((s < x) - a) * (x - s))
   } else {
+    if (!identical(length(dat), length(w)) || any(w < 0, na.rm = TRUE)) {
+      return(rep(NaN, length(y)))
+    }
     ord <- order(dat)
     x <- dat[ord]
     w <- w[ord]
-    p <- c(0, cumsum(w[-n]))
-    sapply(y, function(s) 2 * sum(((s < x) - p - 0.5 * w) * w * (x - s)))
+    p <- cumsum(w)
+    P <- p[length(p)]
+    a <- (p - 0.5 * w) / P
+    f <- function(s) 2 / P * sum(w * ((s < x) - a) * (x - s))
   }
+  sapply(y, f)
 }
 
 dss_edf <- function(y, dat, w = NULL) {
   if (is.null(w)) {
-    sapply(y, function(s) {
-      s <- sd(dat)
-      ((y - mean(dat)) / s)^2 + 2*log(s)
-    })
+    m <- mean(dat)
+    v <- mean(dat^2) - m^2
   } else {
-    sapply(y, function(s) {
-      m <- w %*% dat
-      s <- sqrt(w %*% (dat - m)^2)
-      ((y - m) / s)^2 + 2*log(s)
-    })
+    if (!identical(length(dat), length(w)) || any(w < 0, na.rm = TRUE)) {
+      return(rep(NaN, length(y)))
+    }
+    W <- sum(W)
+    m <- sum(w * dat) / W
+    v <- sum(w * dat^2) / W - m^2
   }
+  sapply(y, function(s) (s - m)^2 / v + log(v))
 }
 
 # kernel density estimation
@@ -229,7 +233,7 @@ check_sample <- function(input) {
   
   input_isvector <- sapply(input, is.vector)
   if (!all(input_isvector)) {
-    stop(paste("Non-scalar or non-vectorial input:",
+    stop(paste("Non-vector input:",
                paste(names(input)[!input_isvector], collapse=", ")))
   }
   
@@ -250,12 +254,8 @@ check_sample <- function(input) {
   }
   
   if (!is.null(input$w)) {
-    w <- input$w
-    if (any(w < 0 | w > 1)) {
-      stop("Weight parameter 'w' contains values not in [0, 1].")
-    }
-    if (!isTRUE(all.equal(sum(w), 1))) {
-      stop("Weight parameter 'w' does not sum up to 1.")
+    if (any(input$w < 0)) {
+      stop("Weight parameter 'w' contains negative values.")
     }
   }
   if (!is.null(input$bw)) {
@@ -312,12 +312,8 @@ check_sample2 <- function(input) {
   }
   
   if (!is.null(input$w)) {
-    w <- input$w
-    if (any(w < 0 | w > 1)) {
-      stop("Weight parameter 'w' contains values not in [0, 1].")
-    }
-    if (!isTRUE(all.equal(rowSums(w), 1))) {
-      stop("Weight parameter 'w' does not sum up to 1.")
+    if (any(input$w < 0)) {
+      stop("Weight parameter 'w' contains negative values.")
     }
   }
   if (!is.null(input$bw)) {

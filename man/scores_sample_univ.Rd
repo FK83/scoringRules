@@ -24,9 +24,9 @@ of simulation draws from forecast distribution.}
 "edf" (empirical distribution function) and
 "kde" (kernel density estimation).}
 
-\item{w}{vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.}
+\item{w}{optional; vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.}
 
-\item{bw}{vector (matching \code{y}) of bandwidths for kernel density
+\item{bw}{optional; vector (matching \code{y}) of bandwidths for kernel density
 estimation; see details.}
 
 \item{num_int}{logical; if TRUE numerical integration is used for method \code{"kde"}.}
