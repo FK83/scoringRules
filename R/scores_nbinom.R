@@ -52,12 +52,12 @@ dss_nbinom <- function(y, size, prob, mu) {
     prob[prob <= 0] <- NaN
     prob[prob >= 1] <- NaN
     mu <- size * (1 - prob) / prob
-    s <- sqrt(mu / prob)
+    v <- mu / prob
   } else {
     mu[mu < 0] <- NaN
-    s <- sqrt(mu * (1 + mu / size))
+    v <- mu * (1 + mu / size)
   }
-  ((y - mu) / s)^2 + 2*log(s)
+  (y - mu)^2 / v + log(v)
 }
 
 
