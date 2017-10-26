@@ -25,12 +25,9 @@ logs_pois <- function(y, lambda) {
 #' @rdname scores_pois
 #' @export
 dss_pois <- function(y, lambda) {
-  s <- sqrt(lambda)
-  (y / s - s)^2 + 2*log(s)
+  lambda[lambda <= 0] <- NaN
+  (y - lambda)^2 / lambda + log(lambda)
 }
-# mean = lambda
-# sd = sqrt(lambda)
-  
 
 
 check_crps_pois <- function(input) {
