@@ -6,28 +6,6 @@
 
 using namespace Rcpp;
 
-// dnormC
-double dnormC(double x);
-RcppExport SEXP _scoringRules_dnormC(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(dnormC(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pnormC
-double pnormC(double x);
-RcppExport SEXP _scoringRules_pnormC(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(pnormC(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // auxcrpsC
 double auxcrpsC(double m, double s);
 RcppExport SEXP _scoringRules_auxcrpsC(SEXP mSEXP, SEXP sSEXP) {
@@ -65,6 +43,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(lsmixnC(w, m, s, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dssmixnC
+NumericVector dssmixnC(NumericVector w, NumericVector m, NumericVector s, NumericVector y);
+RcppExport SEXP _scoringRules_dssmixnC(SEXP wSEXP, SEXP mSEXP, SEXP sSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type s(sSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(dssmixnC(w, m, s, y));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -273,11 +265,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_scoringRules_dnormC", (DL_FUNC) &_scoringRules_dnormC, 1},
-    {"_scoringRules_pnormC", (DL_FUNC) &_scoringRules_pnormC, 1},
     {"_scoringRules_auxcrpsC", (DL_FUNC) &_scoringRules_auxcrpsC, 2},
     {"_scoringRules_crpsmixnC", (DL_FUNC) &_scoringRules_crpsmixnC, 4},
     {"_scoringRules_lsmixnC", (DL_FUNC) &_scoringRules_lsmixnC, 4},
+    {"_scoringRules_dssmixnC", (DL_FUNC) &_scoringRules_dssmixnC, 4},
     {"_scoringRules_dmixnC", (DL_FUNC) &_scoringRules_dmixnC, 3},
     {"_scoringRules_pmixnC", (DL_FUNC) &_scoringRules_pmixnC, 3},
     {"_scoringRules_mvndrawC", (DL_FUNC) &_scoringRules_mvndrawC, 2},

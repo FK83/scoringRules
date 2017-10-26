@@ -5,8 +5,7 @@ test_that("computed values are correct", {
                             matrix(-1.4, 1, 1),
                             matrix(.9, 1, 1),
                             matrix(1, 1, 1)),
-               crps_norm(-1,-1.4, .9),
-               tolerance = 1e-5)
+               crps_norm(-1,-1.4, .9))
   expect_equal(crps_mixnorm_int(-1,
                                 matrix(-1.4, 1, 1),
                                 matrix(.9, 1, 1),

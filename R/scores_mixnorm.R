@@ -1,9 +1,9 @@
 #' Calculating scores for a mixture of normal distributions.
 #'
 #' @param y vector of observations.
-#' @param m matrix of mean parameters (rows represent observations, columns represent mixture components).
-#' @param s matrix of scale parameters (same structure as for \code{m}).
-#' @param w matrix of weights (same structure as for \code{m}; row sums must equal one).
+#' @param m matrix of mean parameters; rows represent observations, columns represent mixture components.
+#' @param s matrix of scale parameters; same structure as \code{m}.
+#' @param w optional; matrix of non-negative weights; same structure as \code{m}.
 #' @param rel_tol relative accuracy for numerical integration.
 #' @return A vector of score values.
 #' @details \code{logs_mixnorm} and \code{crps_mixnorm} calculate scores via analytical formulas. \code{crps_mixnorm_int} uses numerical integration for the CRPS; this can be faster if there are many mixture components (i.e., if \code{m}, \code{s} and \code{w} have many columns). See examples below.
@@ -32,28 +32,59 @@ NULL
 
 #' @rdname scores_mixnorm
 #' @export
-crps_mixnorm = function(y, m, s, w) {
-  s[s < 0] <- NaN
-  sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+crps_mixnorm <- function(y, m, s, w = NULL) {
+  if (is.null(w)) {
+    w <- rep(1, ncol(m))
+    sapply(seq_along(y), function(i) crpsmixnC(w, m[i, ], s[i, ], y[i]))
+  } else {
+    sapply(seq_along(y), function(i) crpsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+  }
 }
 
 #' @rdname scores_mixnorm
 #' @export
-crps_mixnorm_int <- function(y, m, s, w, rel_tol = 1e-6) {
-  constructF <- function(i) {
-    function(x) {
-      sapply(x, function(z) sum(w[i, ] * pnorm(z, m[i, ], s[i, ])))
+crps_mixnorm_int <- function(y, m, s, w = NULL, rel_tol = 1e-6) {
+  if (is.null(w)) {
+    constructF <- function(i) {
+      function(x) {
+        sapply(x, function(z) mean(pnorm(z, m[i, ], s[i, ])))
+      }
+    }
+  } else {
+    w[w < 0] <- NaN
+    constructF <- function(i) {
+      W <- sum(w[i, ])
+      function(x) {
+        sapply(x, function(z) sum(w[i, ] * pnorm(z, m[i, ], s[i, ])) / W)
+      }
     }
   }
-  sapply(seq_along(y),
-         function(i) crps_int(y[i], constructF(i), -Inf, Inf, rel_tol))
+  sapply(
+    seq_along(y),
+    function(i) crps_int(y[i], constructF(i), -Inf, Inf, rel_tol)
+  )
 }
 
 #' @rdname scores_mixnorm
 #' @export
-logs_mixnorm <- function(y, m, s, w) {
-  s[s < 0] <- NaN
-  sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+logs_mixnorm <- function(y, m, s, w = NULL) {
+  if (is.null(w)) {
+    w <- rep(1, ncol(m))
+    sapply(seq_along(y), function(i) lsmixnC(w, m[i, ], s[i, ], y[i]))
+  } else {
+    sapply(seq_along(y), function(i) lsmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+  }
+}
+
+#' @rdname scores_mixnorm
+#' @export
+dss_mixnorm <- function(y, m, s, w = NULL) {
+  if (is.null(w)) {
+    w <- rep(1, ncol(m))
+    sapply(seq_along(y), function(i) dssmixnC(w, m[i, ], s[i, ], y[i]))
+  } else {
+    sapply(seq_along(y), function(i) dssmixnC(w[i, ], m[i, ], s[i, ], y[i]))
+  }
 }
   
 

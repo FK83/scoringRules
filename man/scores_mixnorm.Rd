@@ -5,22 +5,25 @@
 \alias{crps_mixnorm}
 \alias{crps_mixnorm_int}
 \alias{logs_mixnorm}
+\alias{dss_mixnorm}
 \title{Calculating scores for a mixture of normal distributions.}
 \usage{
-crps_mixnorm(y, m, s, w)
+crps_mixnorm(y, m, s, w = NULL)
 
-crps_mixnorm_int(y, m, s, w, rel_tol = 1e-06)
+crps_mixnorm_int(y, m, s, w = NULL, rel_tol = 1e-06)
 
-logs_mixnorm(y, m, s, w)
+logs_mixnorm(y, m, s, w = NULL)
+
+dss_mixnorm(y, m, s, w = NULL)
 }
 \arguments{
 \item{y}{vector of observations.}
 
-\item{m}{matrix of mean parameters (rows represent observations, columns represent mixture components).}
+\item{m}{matrix of mean parameters; rows represent observations, columns represent mixture components.}
 
-\item{s}{matrix of scale parameters (same structure as for \code{m}).}
+\item{s}{matrix of scale parameters; same structure as \code{m}.}
 
-\item{w}{matrix of weights (same structure as for \code{m}; row sums must equal one).}
+\item{w}{optional; matrix of non-negative weights; same structure as \code{m}.}
 
 \item{rel_tol}{relative accuracy for numerical integration.}
 }
