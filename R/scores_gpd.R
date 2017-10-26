@@ -43,6 +43,17 @@ logs_gpd <- function(y, shape, location = 0, scale = 1) {
   -fgpd(y, location, scale, shape, 0, log = TRUE)
 }
 
+#' @rdname scores_gpd
+#' @export
+dss_gpd <- function(y, shape, location = 0, scale = 1) {
+  if (!identical(location, 0)) y <- y - location
+  shape[shape >= 0.5] <- NaN
+  scale[scale <= 0] <- NaN
+  m <- scale / (1 - shape)
+  v <- m^2 / (1 - 2 * shape)
+  (y - m)^2 / v + log(v)
+}
+
 
 check_crps_gpd <- function(input) {
   required <- c("y", "location", "scale", "shape", "mass")

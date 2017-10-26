@@ -4,11 +4,14 @@
 \alias{scores_gpd}
 \alias{crps_gpd}
 \alias{logs_gpd}
+\alias{dss_gpd}
 \title{Calculating scores for the generalized Pareto distribution}
 \usage{
 crps_gpd(y, shape, location = 0, scale = 1, mass = 0)
 
 logs_gpd(y, shape, location = 0, scale = 1)
+
+dss_gpd(y, shape, location = 0, scale = 1)
 }
 \arguments{
 \item{y}{vector of observations.}
