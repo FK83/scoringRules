@@ -4,11 +4,14 @@
 \alias{scores_gev}
 \alias{crps_gev}
 \alias{logs_gev}
+\alias{dss_gev}
 \title{Calculating scores for the generalized extreme value distribution}
 \usage{
 crps_gev(y, shape, location = 0, scale = 1)
 
 logs_gev(y, shape, location = 0, scale = 1)
+
+dss_gev(y, shape, location = 0, scale = 1)
 }
 \arguments{
 \item{y}{vector of observations.}
