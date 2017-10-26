@@ -4,11 +4,14 @@
 \alias{scores_beta}
 \alias{crps_beta}
 \alias{logs_beta}
+\alias{dss_beta}
 \title{Calculating scores for the beta distribution}
 \usage{
 crps_beta(y, shape1, shape2, lower = 0, upper = 1)
 
 logs_beta(y, shape1, shape2, lower = 0, upper = 1)
+
+dss_beta(y, shape1, shape2, lower = 0, upper = 1)
 }
 \arguments{
 \item{y}{vector of observations.}

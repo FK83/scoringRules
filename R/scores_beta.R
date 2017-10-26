@@ -53,6 +53,20 @@ logs_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
   }
 }
 
+#' @rdname scores_beta
+#' @export
+dss_beta <- function(y, shape1, shape2, lower = 0, upper = 1) {
+  if (!identical(lower, 0)) y <- y - lower
+  shape1[shape1 <= 0] <- NaN
+  shape2[shape2 <= 0] <- NaN
+  scale <- upper - lower
+  scale[scale <= 0] <- NaN
+  r <- shape2 / shape1
+  m <- scale / (1 + r)
+  v <- m^2 * r / (1 + shape1 + shape2)
+  (y - m)^2 / v + log(v)
+}
+
 
 check_crps_beta <- function(input) {
   required <- c("y", "shape1", "shape2", "lower", "upper")
