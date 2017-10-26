@@ -8,6 +8,7 @@
 \alias{crps_gtclogis}
 \alias{logs_logis}
 \alias{logs_tlogis}
+\alias{dss_logis}
 \alias{gradcrps_logis}
 \alias{gradcrps_clogis}
 \alias{gradcrps_tlogis}
@@ -23,6 +24,7 @@ crps_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
 crps_gtclogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 logs_logis(y, location = 0, scale = 1)
 logs_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+dss_logis(y, location = 0, scale = 1)
 
 ## gradient (location, scale) functions
 gradcrps_logis(y, location = 0, scale = 1)

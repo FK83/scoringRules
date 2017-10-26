@@ -14,6 +14,7 @@
 #' crps_gtclogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 #' logs_logis(y, location = 0, scale = 1)
 #' logs_tlogis(y, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' dss_logis(y, location = 0, scale = 1)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_logis(y, location = 0, scale = 1)
@@ -343,6 +344,16 @@ logs_logis <- function(y, location = 0, scale = 1) {
 logs_tlogis <- function(y, location = 0, scale = 1,
                         lower = -Inf, upper = Inf) {
   -flogis(y, location, scale, lower, upper, log = TRUE)
+}
+
+#' @rdname scores_logis
+#' @usage NULL
+#' @export
+dss_logis <- function(y, location = 0, scale = 1) {
+  if (!identical(location, 0)) y <- y - location
+  scale[scale <= 0] <- NaN
+  s <- scale * pi / sqrt(3)
+  (y / s)^2 + 2 * log(s)
 }
 
 
