@@ -8,6 +8,7 @@
 \alias{crps_gtct}
 \alias{logs_t}
 \alias{logs_tt}
+\alias{dss_t}
 \alias{gradcrps_t}
 \alias{gradcrps_ct}
 \alias{gradcrps_tt}
@@ -23,6 +24,7 @@ crps_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
 crps_gtct(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 logs_t(y, df, location = 0, scale = 1)
 logs_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
+dss_t(y, df, location = 0, scale = 1)
 
 ## gradient (location, scale) functions
 gradcrps_t(y, df, location = 0, scale = 1)

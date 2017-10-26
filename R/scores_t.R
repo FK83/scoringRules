@@ -14,6 +14,7 @@
 #' crps_gtct(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf, lmass = 0, umass = 0)
 #' logs_t(y, df, location = 0, scale = 1)
 #' logs_tt(y, df, location = 0, scale = 1, lower = -Inf, upper = Inf)
+#' dss_t(y, df, location = 0, scale = 1)
 #'
 #' ## gradient (location, scale) functions
 #' gradcrps_t(y, df, location = 0, scale = 1)
@@ -337,6 +338,18 @@ logs_t <- function(y, df, location = 0, scale = 1) {
 logs_tt <- function(y, df, location = 0, scale = 1,
                     lower = -Inf, upper = Inf) {
   -ft(y, df, location, scale, lower, upper, log = TRUE)
+}
+
+
+#' @rdname scores_t
+#' @usage NULL
+#' @export
+dss_t <- function(y, df, location = 0, scale = 1) {
+  if (!identical(location, 0)) y <- y - location
+  df[df <= 2] <- NaN
+  scale[scale <= 0] <- NaN
+  v <- scale^2 * ifelse(is.infinite(df), 1, df / (df - 2))
+  y^2 / v  + log(v)
 }
 
 
