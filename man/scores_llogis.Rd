@@ -4,11 +4,14 @@
 \alias{scores_llogis}
 \alias{crps_llogis}
 \alias{logs_llogis}
+\alias{dss_llogis}
 \title{Calculating scores for the log-logistic distribution}
 \usage{
 crps_llogis(y, locationlog, scalelog)
 
 logs_llogis(y, locationlog, scalelog)
+
+dss_llogis(y, locationlog, scalelog)
 }
 \arguments{
 \item{y}{vector of observations.}

@@ -26,6 +26,18 @@ logs_llogis <- function(y, locationlog, scalelog) {
   -log(fllogis(y, locationlog, scalelog))
 }
 
+#' @rdname scores_llogis
+#' @export
+dss_llogis <- function(y, locationlog, scalelog) {
+  scalelog[scalelog <= 0] <- NaN
+  scalelog[scalelog >= 0.5] <- NaN
+  b <- pi * scalelog
+  sb <- sin(b)
+  ell <- exp(locationlog)
+  m <- ell * b / sb
+  v <- ell^2 * 2 * b / sin(2 * b) - b^2 / sb^2
+  (y - m)^2 / v + log(v)
+}
 
 
 check_crps_llogis <- function(input) {
