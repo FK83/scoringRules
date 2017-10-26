@@ -37,13 +37,9 @@ logs_lapl <- function(y, location = 0, scale = 1) {
 #' @export
 dss_lapl <- function(y, location = 0, scale = 1) {
   if (!identical(location, 0)) y <- y - location
-  if (identical(scale, 1)) {
-    y^2
-  } else {
-    scale[scale <= 0] <- NaN
-    s <- sqrt(2) * scale
-    (y / s)^2 + 2*log(s)
-  }
+  scale[scale <= 0] <- NaN
+  s <- sqrt(2) * scale
+  (y / s)^2 + 2 * log(s)
 }
 
 
