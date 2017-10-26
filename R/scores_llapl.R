@@ -29,6 +29,18 @@ crps_llapl <- function(y, locationlog, scalelog) {
 logs_llapl <- function(y, locationlog, scalelog) {
   -log(fllapl(y, locationlog, scalelog))
 }
+
+#' @rdname scores_llapl
+#' @export
+dss_llapl <- function(y, locationlog, scalelog) {
+  scalelog[scalelog <= 0] <- NaN
+  scalelog[scalelog >= 0.5] <- NaN
+  sl2 <- scalelog^2
+  ell <- exp(locationlog)
+  m <- ell / (1 - sl2)
+  v <- ell^2 * (1 / (1 - 4 * sl2) - 1 / (1 - sl2)^2)
+  (y - m)^2 / v + log(v)
+}
   
 
 
