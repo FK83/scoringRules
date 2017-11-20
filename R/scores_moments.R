@@ -6,7 +6,7 @@
 #' @param mean vector of mean values.
 #' @param var vector of variance values.
 #' @param skew vector of skewness values. 
-
+#' 
 #' @return
 #' Value of the score. \emph{A lower score indicates a better forecast.}
 #' 
@@ -27,17 +27,19 @@
 #' @author Alexander Jordan, Sebastian Lerch
 #' 
 #' @details 
-#' The skewness of a random variable \eqn{X} is the third standardized moment
-#' \deqn{E[(\frac{X-\textnormal{mean}}{\sqrt{\textnormal{var}}})^3].}
+#' The skewness of a random variable \eqn{X} is the third standardized moment 
+#' \deqn{E[(\frac{X-\textnormal{mean}}{\sqrt{\textnormal{var}}})^3].} 
 #' 
 #' 
 #' @name scores_moments
-#' 
+NULL
+
+#' @rdname scores_moments
 #' @export
 dss_moments <- function(y, mean = 0, var = 1) {
   (y - mean)^2 / var + log(var)
 }
-#'
+
 #' @rdname scores_moments
 #' @export
 ess_moments <- function(y, mean = 0, var = 1, skew = 0) {

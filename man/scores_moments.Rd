@@ -26,7 +26,7 @@ Value of the score. \emph{A lower score indicates a better forecast.}
 Calculate scores (DSS, ESS) given observations and moments of the predictive distributions.
 }
 \details{
-The skewness of a random variable \eqn{X} is the third standardized moment
+The skewness of a random variable \eqn{X} is the third standardized moment 
 \deqn{E[(\frac{X-\textnormal{mean}}{\sqrt{\textnormal{var}}})^3].}
 }
 \references{
