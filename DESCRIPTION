@@ -13,13 +13,13 @@ License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.12.0),
     methods,
-	MASS
+	MASS,
+	knitr
 Depends:
     R (>= 3.00)
 Suggests:
     gsl (>= 1.8-3),
     hypergeo(>= 1.0),
-    knitr,
     rmarkdown,
     testthat,
     crch
