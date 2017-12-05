@@ -1,10 +1,3 @@
-#' @export ar_ms run_mcstudy run_casestudy 
-#' @method plot casestudy
-#' @method plot mcstudy
-#' @method print casestudy
-#' @method print mcstudy
-#' @method summary casestudy
-#' @method summary mcstudy
 #' @importFrom Rcpp evalCpp
 #' @importFrom MASS mvrnorm
 #' @importFrom graphics axis legend lines mtext plot points segments title
