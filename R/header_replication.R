@@ -205,12 +205,14 @@ plot.casestudy <- function(x, ...){
 }
 
 #' Simple print method for object of class casestudy
+#' @param x Object of class casestudy, generated via \link{run_casestudy}
 #' @export
 print.casestudy <- function(x, ...){
   print("Object of class casestudy, generated via run_casestudy (scoringRules package).")
 }
 
 #' Summary method for class casestudy
+#' @param object Object of class casestudy, generated via \link{run_casestudy}
 #' @export
 summary.casestudy <- function(object, ...){
   # Get output component
@@ -460,12 +462,14 @@ plot.mcstudy <- function(x, ...){
 }
 
 #' Simple print function for object of class mcstudy
+#' @param x Object of class mcstudy, generated via \link{run_mcstudy}
 #' @export
 print.mcstudy <- function(x, ...){
   print("Object of class mcstudy, generated via run_mcstudy (scoringRules package).")
 }
 
 #' Simple summary method for class mcstudy
+#' @param object Object of class mcstudy, generated via \link{run_mcstudy}
 #' @export
 summary.mcstudy <- function(object, ...){
   # Get output component of mcstudy

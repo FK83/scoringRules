@@ -6,6 +6,9 @@
 \usage{
 \method{print}{mcstudy}(x, ...)
 }
+\arguments{
+\item{x}{Object of class mcstudy, generated via \link{run_mcstudy}}
+}
 \description{
 Simple print function for object of class mcstudy
 }

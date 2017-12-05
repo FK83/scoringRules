@@ -6,6 +6,9 @@
 \usage{
 \method{summary}{mcstudy}(object, ...)
 }
+\arguments{
+\item{object}{Object of class mcstudy, generated via \link{run_mcstudy}}
+}
 \description{
 Simple summary method for class mcstudy
 }

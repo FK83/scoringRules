@@ -6,6 +6,9 @@
 \usage{
 \method{summary}{casestudy}(object, ...)
 }
+\arguments{
+\item{object}{Object of class casestudy, generated via \link{run_casestudy}}
+}
 \description{
 Summary method for class casestudy
 }

@@ -6,6 +6,9 @@
 \usage{
 \method{print}{casestudy}(x, ...)
 }
+\arguments{
+\item{x}{Object of class casestudy, generated via \link{run_casestudy}}
+}
 \description{
 Simple print method for object of class casestudy
 }
