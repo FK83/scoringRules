@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{Object of class mcstudy, generated via \link{run_mcstudy}}
+
+\item{...}{Additional specifications (presently not in use)}
 }
 \description{
 Simple print function for object of class mcstudy

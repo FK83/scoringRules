@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{object}{Object of class casestudy, generated via \link{run_casestudy}}
+
+\item{...}{Additional specifications (presently not in use)}
 }
 \description{
 Summary method for class casestudy
