@@ -32,7 +32,7 @@ crps_hyper <- function(y, m, n, k) {
         tol <- .Machine$double.eps^0.5
         m <- if (abs(m - m_rounded) < tol) m_rounded else return(NaN)
         n <- if (abs(n - n_rounded) < tol) n_rounded else return(NaN)
-        k <- if (abs(k - k_rounded) < tol) m_rounded else return(NaN)
+        k <- if (abs(k - k_rounded) < tol) k_rounded else return(NaN)
         if (m >= 0 && n >= 0 && k >= 0) {
           x <- seq.int(max(0, k - n), min(k, m), 1)
           w <- dhyper(x, m, n, k)
@@ -61,7 +61,7 @@ crps_hyper <- function(y, m, n, k) {
         listNaN <- list(x = NaN, w = NaN, a = NaN)
         m <- if (abs(m - m_rounded) < tol) m_rounded else return(listNaN)
         n <- if (abs(n - n_rounded) < tol) n_rounded else return(listNaN)
-        k <- if (abs(k - k_rounded) < tol) m_rounded else return(listNaN)
+        k <- if (abs(k - k_rounded) < tol) k_rounded else return(listNaN)
         if (m >= 0 && n >= 0 && k >= 0) {
           x <- seq.int(max(0, k - n), min(k, m), 1)
           w <- dhyper(x, m, n, k)
