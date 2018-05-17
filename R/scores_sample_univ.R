@@ -165,7 +165,7 @@ crps_edf <- function(y, dat, w = NULL) {
   if (is.null(w)) {
     c_1n <- 1 / length(dat)
     x <- sort(dat)
-    a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, c_1n)
+    a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, length.out = length(dat))
     f <- function(s) 2 * c_1n * sum(((s < x) - a) * (x - s))
   } else {
     if (!identical(length(dat), length(w)) || any(w < 0, na.rm = TRUE)) {
