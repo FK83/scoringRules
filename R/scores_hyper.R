@@ -89,3 +89,28 @@ crps_hyper <- function(y, m, n, k) {
 logs_hyper <- function(y, m, n, k) {
   -dhyper(y, m, n, k, log = TRUE)
 }
+
+
+check_crps_hyper <- function(input) {
+  required <- c("y", "m", "n", "k")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$m <= 0))
+    stop("Parameter 'm' contains non-positive values.")
+  if (any(input$n <= 0))
+    stop("Parameter 'n' contains non-positive values.")
+  if (any(input$k <= 0))
+    stop("Parameter 'k' contains non-positive values.")
+  if (any(input$k > input$m + input$n))
+    stop("Parameter 'k' contains values larger than the respective values in 'm + n'.")
+  if (any(abs(input$m - round(input$m)) > sqrt(.Machine$double.eps)))
+    stop("Parameter 'm' is not a whole number.")
+  if (any(abs(input$n - round(input$n)) > sqrt(.Machine$double.eps)))
+    stop("Parameter 'n' is not a whole number.")
+  if (any(abs(input$k - round(input$k)) > sqrt(.Machine$double.eps)))
+    stop("Parameter 'k' is not a whole number.")
+}
+
+check_logs_hyper <- check_crps_hyper
