@@ -87,3 +87,17 @@ crps_binom <- function(y, size, prob) {
 logs_binom <- function(y, size, prob) {
   -dbinom(y, size, prob, log = TRUE)
 }
+
+check_crps_binom <- function(input) {
+  required <- c("y", "size", "prob")
+  checkNames1(required, names(input))
+  checkNumeric(input)
+  checkVector(input)
+  
+  if (any(input$size <= 0))
+    stop("Parameter 'size' contains non-positive values.")
+  if (any(input$prob > 1 | input$prob < 0))
+    stop("Parameter 'prob' contains values not in [0, 1].")
+}
+
+check_logs_binom <- check_crps_binom
