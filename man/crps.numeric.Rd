@@ -10,7 +10,7 @@
 \item{y}{vector of realized values.}
 
 \item{family}{string which specifies the parametric family; current options:
-\code{"2pexp", "2pnorm", "beta", "clogis", "cnorm", "ct", "exp", "expM",
+\code{"2pexp", "2pnorm", "beta", "binom", "clogis", "cnorm", "ct", "exp", "expM",
 "exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "lapl",
 "laplace", "llapl", "llogis", "lnorm", "log-laplace", "log-logistic",
 "log-normal", "logis", "logistic", "mixnorm", "mixture-normal", "nbinom",
@@ -196,6 +196,17 @@ The parameters supplied to each of the functions are numeric vectors:
    }
  \item Distributions of discrete variables:
    \itemize{
+     \item 
+       \code{"binom"}:
+       \code{size} (number of trials (zero or more)),
+       \code{prob} (probability of success on each trial);
+       see \code{\link{crps_binom}}
+     \item 
+       \code{"hyper"}:
+       \code{m} (the number of white balls in the urn),
+       \code{n} (the number of black balls in the urn),
+       \code{k} (the number of balls drawn from the urn);
+       see \code{\link{crps_hyper}}
      \item
        \code{"negative-binomial"} or \code{"nbinom"}:
        \code{size} (positive dispersion parameter),
