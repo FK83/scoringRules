@@ -6,7 +6,7 @@
 #' @param y vector of realized values.
 #' @param family string which specifies the parametric family; current options:
 #' \code{"2pexp", "2pnorm", "beta", "binom", "clogis", "cnorm", "ct", "exp", "expM",
-#' "exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "hyper", "lapl",
+#' "exponential", "gamma", "gev", "gpd", "gtclogis", "gtcnorm", "gtct", "lapl",
 #' "laplace", "llapl", "llogis", "lnorm", "log-laplace", "log-logistic",
 #' "log-normal", "logis", "logistic", "mixnorm", "mixture-normal", "nbinom",
 #' "negative-binomial", "norm", "normal", "pois", "poisson", "t", "tlogis",
@@ -317,3 +317,4 @@ crps.numeric <- function(y, family, ...) {
   
   out
 }
+
