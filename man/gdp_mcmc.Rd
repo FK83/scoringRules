@@ -22,7 +22,7 @@ Historical data and forecast distributions for the growth rate of US gross domes
 }
 
 \source{
-The GDP growth rate is computed from real-time data provided by the Federal Reserve Bank of Philadelphia, \url{http://www.phil.frb.org/research-and-data/real-time-center/} (series code ``ROUTPUT'', second-vintage data). The same data also enters the model which is used to generate the forecast distribution. \emph{Disclaimer: The provider of the raw data takes no responsibility for the accuracy of the data posted here. Furthermore, the raw data may be revised over time, and the website linked above should be consulted for the official, most recent version.}
+The GDP growth rate is computed from real-time data provided by the Federal Reserve Bank of Philadelphia, \url{https://www.phil.frb.org/research-and-data/real-time-center/} (series code ``ROUTPUT'', second-vintage data). The same data also enters the model which is used to generate the forecast distribution. \emph{Disclaimer: The provider of the raw data takes no responsibility for the accuracy of the data posted here. Furthermore, the raw data may be revised over time, and the website linked above should be consulted for the official, most recent version.}
 
 The model from which the forecast draws are generated is described in Section 5 of KLTG (2016). Forecasts are one quarter ahead (that is, they are based on data until the previous quarter).
 
