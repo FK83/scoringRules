@@ -1,0 +1,16 @@
+citHeader("To cite the scoringRules package, please use:")
+
+citEntry(entry = "Article",
+  title        = "Evaluating Probabilistic Forecasts with scoringRules",
+  author       = personList(as.person("Alexander Jordan"),
+                   as.person("Fabian Krueger"), 
+		   as.person("Sebastian Lerch")),
+  journal      = "Journal of Statistical Software",
+  year         = "2018",
+  note         = "forthcoming",
+
+  textVersion  =
+  paste("Alexander Jordan, Fabian Krueger, Sebastian Lerch (2018).",
+        "Evaluating Probabilistic Forecasts with scoringRules.",
+        "Journal of Statistical Software, forthcoming.")
+)
