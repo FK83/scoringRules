@@ -29,8 +29,9 @@ Calculate the Continuous Ranked Probability Score (CRPS) given observations
 and parameters of a family of distributions.
 }
 \details{
-Mathematical details are available in the \emph{CRPS formulas} vignette
-to the \emph{scoringRules} package.
+Mathematical details are available in Appendix A of the vignette
+\emph{Evaluating probabilistic forecasts with scoringRules} that
+accompanies the \emph{scoringRules} package.
 
 The parameters supplied to each of the functions are numeric vectors:
 \enumerate{
@@ -237,7 +238,7 @@ weights <- matrix(rep(1/50, 20*50), nrow = 20)
 crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 
 ## Mathematical details
-vignette("crpsformulas", "scoringRules")
+vignette("article", "scoringRules")
 
 }
 \references{

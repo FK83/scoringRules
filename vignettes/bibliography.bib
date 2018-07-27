@@ -1,5 +1,5 @@
 @article{ArdiaHoogerheide2010,
-  title={Bayesian Estimation of the {GARCH}(1, 1) Model with {S}tudent-t Innovations.},
+  title={Bayesian Estimation of the {GARCH}(1,1) Model with {S}tudent-t Innovations.},
   author={Ardia, David and Hoogerheide, Lennart F},
   journal={The \proglang{R} Journal},
   volume={2},
@@ -8,6 +8,16 @@
   pages = {41-47}
 }
 
+@article{BaranLerch2015,
+	title={Log-Normal Distribution Based Ensemble Model Output Statistics Models for Probabilistic Wind-Speed Forecasting},
+	author={Baran, S and Lerch, S},
+	journal={Quarterly Journal of the Royal Meteorological Society},
+	volume={141},
+	number = {691},
+	pages={2289--2299},
+	year={2015},
+	doi={10.1002/qj.2521}
+}
 
 @article{CarpenterEtAl2017,
    author = {Bob Carpenter and Andrew Gelman and Matthew Hoffman and Daniel Lee and Ben Goodrich and Michael Betancourt and Marcus Brubaker and Jiqiang Guo and Peter Li and Allen Riddell},
@@ -35,31 +45,33 @@
   author =	 "Dawid, A. P. and Sebastiani, P.",
   journal =	 "The Annals of Statistics",
   pages =	 "65--81",
-  title =	 "{Coherent dispersion criteria for optimal
-                  experimental design}",
+  title =	 "{Coherent Dispersion Criteria for Optimal
+                  Experimental Design}",
   volume =	 27,
-  year =	 1999
+  number = 1,
+  year =	 1999,
+  doi = {10.1214/aos/1018031101}
 }
 
 
 @Manual{ensembleBMA,
-    title = {\pkg{ensembleBMA}: Probabilistic Forecasting using Ensembles and Bayesian Model Averaging},
-    author = {Chris Fraley and Adrian E. Raftery and J. McLean Sloughter and Tilmann Gneiting},
-    year = {2015},
-    note = {\proglang{R} package version 5.1.1},
-    url = {http://CRAN.R-project.org/package=ensembleBMA},
+    title = {\pkg{ensembleBMA}: Probabilistic Forecasting Using Ensembles and Bayesian Model Averaging},
+    author = {Chris Fraley and Adrian E. Raftery and J. McLean Sloughter and Tilmann Gneiting and {University of Washington}},
+    year = {2018},
+    note = {\proglang{R}~package version~5.1.5},
+    url = {https://CRAN.R-project.org/package=ensembleBMA},
 }
   
 @Manual{ensembleMOS,
     title = {\pkg{ensembleMOS}: Ensemble Model Output Statistics},
     author = {R. A. Yuen and Sandor Baran and Chris Fraley and Tilmann Gneiting and Sebastian Lerch and Michael Scheuerer and Thordis L. Thorarinsdottir},
-    year = {2017},
-    note = {\proglang{R} package version 0.8},
-    url = {http://CRAN.R-project.org/package=ensembleMOS},
+    year = {2018},
+    note = {\proglang{R}~package version~0.8.2},
+    url = {https://CRAN.R-project.org/package=ensembleMOS},
 }
 
 @article{EVS,
-  title="{The \proglang{Ensemble Verification System} (EVS): A Software Tool for Verifying Ensemble Forecasts of Hydrometeorological and Hydrologic Variables at Discrete Locations}",
+  title="{The \proglang{Ensemble Verification System} (\proglang{EVS}): A Software Tool for Verifying Ensemble Forecasts of Hydrometeorological and Hydrologic Variables at Discrete Locations}",
   author={Brown, James D and Demargne, Julie and Seo, Dong-Jun and Liu, Yuqiong},
   journal={Environmental Modelling \& Software},
   volume={25},
@@ -76,8 +88,20 @@
   volume={3},
   number = 1,
   pages={55--63},
-  year={2011}
+  year={2011},
 }
+
+@article{FriederichsThorarinsdottir2012,
+	title={Forecast Verification for Extreme Value Distributions with an Application to Probabilistic Peak Wind Prediction},
+	author={Friederichs, P and Thorarinsdottir, T L},
+	journal={Environmetrics},
+	volume={23},
+	number = {7},
+	pages={579--594},
+	year={2012},
+	doi={10.1002/env.2176}
+}
+
 
 @book{Fruhwirth2006,
 	title={Finite Mixture and Markov Switching Models},
@@ -85,6 +109,14 @@
 	year={2006},
 	publisher={Springer-Verlag},
 	address={New York},
+	doi = {10.1007/978-0-387-35768-3}
+}
+
+@misc{GebetsbergerEtAl2017,
+  title = {Estimation Methods for Non-Homogeneous Regression Models: Minimum Continuous Ranked Probability Score vs.~Maximum Likelihood},
+  author = {Manuel Gebetsberger and Jakob W. Messner and Georg J. Mayr and Achim Zeileis},
+	note = "Working paper. Preprint available at \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-23}.",
+	year={2017}
 }
 
 @article{GneitingEtAl2005,
@@ -96,6 +128,17 @@
   year={2005},
   doi = {10.1175/MWR2904.1},
   number = 5,
+}
+
+@article{GneitingEtAl2006,
+	author = {Tilmann Gneiting and Kristin Larson and Kenneth Westrick and Marc G Genton and Eric Aldrich},
+	title = {Calibrated Probabilistic Forecasting at the Stateline Wind Energy Center},
+	journal = {Journal of the American Statistical Association},
+	volume = {101},
+	number = {475},
+	pages = {968-979},
+	year  = {2006},
+	doi = {10.1198/016214506000000456},	
 }
 
 @article{GneitingEtAl2007,
@@ -115,6 +158,7 @@
   pages =	 "211--235",
   title =	 "{Assessing Probabilistic Forecasts of Multivariate Quantities, with an Application to Ensemble Predictions of Surface Winds}",
   volume =	 17,
+  number = 2,
   year =	 2008,
   doi = {doi.org/10.1007/s11749-008-0114-x},
 }
@@ -152,6 +196,13 @@
   number = 477,
 }
 
+@misc{GneitingThorarinsdottir2010,
+	title={Predicting Inflation: Professional Experts Versus No-Change Forecasts},
+	author={Gneiting, T and Thorarinsdottir, T L},
+	note = "Working paper. Preprint available at \url{https://arxiv.org/abs/1010.2318}.",
+	year={2010}
+}
+
 @article{Good1952,
   author =	 "Good, I. J.",
   journal =	 "Journal of the Royal Statistical Society B",
@@ -160,6 +211,7 @@
   volume =	 14,
   year =	 1952,
   number = 1,
+  url = {https://www.jstor.org/stable/2984087}
 }
 
 @article{GrimitEtAl2006,
@@ -213,9 +265,17 @@
 @Manual{JordanEtAl2016scoringRules,
     title = {\pkg{scoringRules}: Scoring Rules for Parametric and Simulated Distribution Forecasts},
     author = {Jordan, Alexander and Kr{\"u}ger, Fabian and Lerch, Sebastian},
-    year = {2017},
-    note = {\proglang{R} package version 0.9.4},
+    year = {2018},
+    note = {\proglang{R}~package version~0.9.5},
     url = {https://CRAN.R-project.org/package=scoringRules},
+}
+
+@article{JordanEtAl2018,
+    title = {Evaluating Probabilistic Forecasts with \pkg{scoringRules}},
+    author = {Jordan, Alexander and Kr{\"u}ger, Fabian and Lerch, Sebastian},
+    year = {2018},
+    journal = {Journal of Statistical Software},
+    note = {forthcoming},
 }
 
 @article{Kastner2016,
@@ -265,7 +325,7 @@
     edition = {Fourth},
     address = {New York},
     year = {2002},
-    url = {http://www.stats.ox.ac.uk/pub/MASS4},
+    url = {https://www.stats.ox.ac.uk/pub/MASS4},
 }
 
 @article{MathesonWinkler1976,
@@ -279,6 +339,17 @@
   number = 10,
   doi = {10.1287/mnsc.22.10.1087},
 }
+
+@Article{MerkleSteyvers2013,
+    title = {Choosing a Strictly Proper Scoring Rule},
+    author = {Edgar C. Merkle and Mark Steyvers},
+    journal = {Decision Analysis},
+    year = {2013},
+    volume = {10},
+    number = {4},
+    pages = {292--304},
+  }
+
 
 @article{MessnerEtAl2014,
   title="{Extending Extended Logistic Regression: Extended Versus Separate Versus Ordered Versus Censored}",
@@ -302,10 +373,11 @@
 }
 
 @Manual{MET,
-    title = {{\proglang{Model Evaluation Tools} Version 6.0 (METv6.0) User's Guide}},
-    author = {{Developmental Testbed Center}},
-    year = {2017},
-    url = {http://www.dtcenter.org/met/users/docs/users_guide/MET_Users_Guide_v6.0.pdf},
+	author = {{Developmental Testbed Center}},
+	title = {\proglang{MET}: Version~7.0 \proglang{Model Evaluation Tools} Users Guide},
+	year    = {2018},
+	note = {Available at \url{http://www.dtcenter.org/met/users/docs/overview.php}}
+	
 }
 
 @article{MeyerEtAl2017,
@@ -319,6 +391,17 @@
    doi = {10.18637/jss.v077.i11},
 }
 
+@article{MoellerScheuerer2015,
+	title={Probabilistic Wind Speed Forecasting on a Grid Based on Ensemble Model Output Statistics},
+	author={M{\"o}ller, D and Scheuerer, M},
+	journal={Annals of Applied Statistics},
+	volume={9},
+	number={3},
+	pages={1328--1349},
+	year={2015},
+	doi={doi:10.1214/15-AOAS843}
+}
+
 @article{Murphy1970,
   title = {The Ranked Probability Score and the Probability Score: A Comparison},
   author = {Murphy, Allan H},
@@ -327,24 +410,34 @@
   pages = {917--924},
   year = {1970},
   number = 12,
+  doi = {10.1175/1520-0493(1970)098<0917:TRPSAT>2.3.CO;2}
 }
 
 @incollection{Pocernich2012,
 	author = {Pocernich, M.},
-	title = {Verification Software},
+	title = {Appendix: Verification Software},
   	booktitle  = "{Forecast Verification: A Practitioner's Guide in Atmospheric Science}",
 	publisher =  "John Wiley \& Sons",
+	address = {Chichester},
 	year = {2012},
 	editor = {I. T. Jolliffe and D. B. Stephenson},
 	pages = "231--240",
-	edition = {2}
+	edition = {2nd},
+	doi = {10.1002/9781119960003.app1}
 }
 
-@Manual{caret,
+@Manual{caret2,
 	title = {\pkg{caret}: Classification and Regression Training},
 	author = {Kuhn, M and Wing, J and Weston, S and Williams, A and Keefer, C and Engelhardt, A and Cooper, T and Mayer, Z and Kenkel, B and the \proglang{R} Core Team and Benesty, M and Lescarbeau, R and Ziem, A and Scrucca, L and Tang, Y and Candan, C and Hunt, T},
 	year = {2017},
-	note = {\proglang{R} package version 6.0-77},
+	note = {\proglang{R}~package version~6.0-77},
+	url = {https://CRAN.R-project.org/package=caret},
+}
+@Manual{caret,
+	title = {\pkg{caret}: Classification and Regression Training},
+	author = {Max Kuhn and {Contributions from Wing J} and Weston, S and Williams, A and Keefer, C and Engelhardt, A and Cooper, T and Mayer, Z and Kenkel, B and the \proglang{R} Core Team and Benesty, M and Lescarbeau, R and Ziem, A and Scrucca, L and Tang, Y and Candan, C and Hunt, T},
+	year = {2018},
+	note = {\proglang{R}~package version~6.0-80},
 	url = {https://CRAN.R-project.org/package=caret},
 }
 
@@ -352,8 +445,16 @@
     title = {\pkg{properscoring}: Proper Scoring Rules in \proglang{Python}},
     author = {{The Climate Corporation}},
     year = {2015},
-    note = {\proglang{Python} package version 0.1},
+    note = {\proglang{Python}~package version~0.1},
     url = {https://pypi.python.org/pypi/properscoring},
+}
+
+@Manual{Python,
+	author  = {{\proglang{Python} Software Foundation}},
+	title   = {\proglang{Python} Software, Version~3.6.4},
+	year    = {2017},
+	address = {Beaverton, OR},
+	url     = {https://www.python.org/}
 }
 
 @Manual{R,
@@ -421,7 +522,7 @@
 }
 
 @article{ScheuererHamill2015VS,
-  title={Variogram-based Proper Scoring Rules for Probabilistic Forecasts of Multivariate Quantities},
+  title={Variogram-Based Proper Scoring Rules for Probabilistic Forecasts of Multivariate Quantities},
   author={Scheuerer, Michael and Hamill, Thomas M},
   journal={Monthly Weather Review},
   volume={143},
@@ -431,34 +532,69 @@
   doi = {10.1175/MWR-D-14-00269.1},
 }
 
+@article{TaillardatEtAl2016,
+	title={Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output
+	Statistics},
+	author={Taillardat, M and Mestre, O and Zamo, M and Naveau, P},
+	journal={Monthly Weather Review},
+	volume={144},
+	number={6},
+	pages={2375--2393},
+	year={2016},
+	doi={10.1175/MWR-D-15-0260.1}
+}
+
+@article{ThorarinsdottirGneiting2010,
+	author = {Thorarinsdottir, Thordis L. and Gneiting, Tilmann},
+	title = {Probabilistic Forecasts of Wind Speed: Ensemble Model Output Statistics by Using Heteroscedastic Censored Regression},
+	journal = {Journal of the Royal Statistical Society A},
+	volume = {173},
+	number = {2},
+	doi = {10.1111/j.1467-985X.2009.00616.x},
+	pages = {371--388},
+	year = {2010},
+}
+
+
 @book{Silverman1986,
   title={Density Estimation for Statistics and Data Analysis},
   author={Silverman, Bernard W},
   year={1986},
-  publisher={CRC press},
-  address={Boca Raton}
+  publisher={Chapman and Hall},
+  address={London}
 }
 
 @Manual{SpecsVerificationR,
     title = {\pkg{SpecsVerification}: Forecast Verification Routines for the SPECS FP7 Project},
     author = {Stefan Siegert},
-    year = {2015},
-    note = {\proglang{R} package version 0.4-1},
-    url = {http://CRAN.R-project.org/package=SpecsVerification},
+    year = {2017},
+    note = {\proglang{R}~package version~0.5-2},
+    url = {https://CRAN.R-project.org/package=SpecsVerification},
 }
 
 @Manual{verificationRpackage,
     title = {\pkg{verification}: Weather Forecast Verification Utilities},
-    author = "{National Center for Atmospheric Research}",
+    author = "{NCAR - Research Applications Laboratory}",
     year = {2015},
-    note = {\proglang{R} package version 1.42},
-    url = {http://CRAN.R-project.org/package=verification},
+    note = {\proglang{R}~package version~1.42},
+    url = {https://CRAN.R-project.org/package=verification},
 }
 
 @Manual{loo,
-	title = {\pkg{loo}: Efficient Leave-one-out Cross-validation and WAIC for Bayesian Models},
+	title = {\pkg{loo}: Efficient Leave-One-Out Cross-Validation and WAIC for Bayesian Models},
 	author = {Aki Vehtari and Andrew Gelman and Jonah Gabry},
-	year = {2016},
-	note = {\proglang{R} package version 1.1.0},
+	year = {2018},
+	note = {\proglang{R}~package version~2.0.0},
 	url = {https://CRAN.R-project.org/package=loo},
+}
+
+@article{WeiHeld2014,
+	title={Calibration Tests for Count Data},
+	author={Wei, W and Held, L},
+	journal={TEST},
+	volume={23},
+	number={4},
+	pages={787--805},
+	year={2014},
+	doi={10.1007/s11749-014-0380-8}
 }
