@@ -31,7 +31,7 @@ and parameters of a family of distributions.
 \details{
 Mathematical details are available in Appendix A of the vignette
 \emph{Evaluating probabilistic forecasts with scoringRules} that
-accompanies the \emph{scoringRules} package.
+accompanies the package.
 
 The parameters supplied to each of the functions are numeric vectors:
 \enumerate{
@@ -237,8 +237,6 @@ sdval <- matrix(runif(20*50, min = 0, max = 2), nrow = 20)
 weights <- matrix(rep(1/50, 20*50), nrow = 20)
 crps(y = rnorm(20), family = "mixnorm", m = mval, s = sdval, w = weights)
 
-## Mathematical details
-vignette("article", "scoringRules")
 
 }
 \references{
