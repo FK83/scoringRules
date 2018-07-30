@@ -85,7 +85,7 @@
 #' @details
 #' Mathematical details are available in Appendix A of the vignette
 #' \emph{Evaluating probabilistic forecasts with scoringRules} that
-#' accompanies the \emph{scoringRules} package.
+#' accompanies the package.
 #' 
 #' The parameters supplied to each of the functions are numeric vectors:
 #' \enumerate{

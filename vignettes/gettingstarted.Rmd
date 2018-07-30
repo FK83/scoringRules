@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette provides a two-page introduction to the *scoringRules* package; it summarizes the paper 'Evaluating probabilistic forecasts with the scoringRules package' (Jordan, Kr&uuml;ger, and Lerch, 2017, available at XXX). A second vignette called *closedforms* provides mathematical details.
+This vignette provides a two-page introduction to the *scoringRules* package. For a more detailed introduction, see the paper 'Evaluating probabilistic forecasts with scoringRules' (Jordan, Kr&uuml;ger, and Lerch, *Journal of Statistical Software*, forthcoming) which is available as a further vignette to *scoringRules*. 
 
 # Background 
 
@@ -39,11 +39,11 @@ library(scoringRules)
 # CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero
 crps(y = 0, family = "normal", mean = 2, sd = 2)
 ```
-As documented under `?crps`, the parametric family used in the example is one of 22 choices currently implemented in *scoringRules*: 
+As documented under `?crps`, the parametric family used in the example is one of the following choices currently implemented in *scoringRules*: 
 
-- Normal, Mixture of normals, Two-piece normal, Log-normal, Generalized truncated/censored normal, (Scaled) Student t, Generalized truncated/censored Student t, Laplace, Log-Laplace, Logistic, Log-logistic, Generalized truncated/censored logistic, Exponential, Exponential with point mass, Two-piece exponential, Beta, Gamma, Uniform, Generalized extreme value, Generalized Pareto, Negative binomial, Poisson
+- Normal, Mixture of normals, Two-piece normal, Log-normal, Generalized truncated/censored normal, (Scaled) Student t, Generalized truncated/censored Student t, Laplace, Log-Laplace, Logistic, Log-logistic, Generalized truncated/censored logistic, Exponential, Exponential with point mass, Two-piece exponential, Beta, Gamma, Uniform, Generalized extreme value, Generalized Pareto, Binomial, Hypergeometric, Negative binomial, Poisson
 
-We provide details and analytical CRPS formulas in the *closedforms* vignette. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
+We provide analytical CRPS formulas in Appendix A of the vignette 'Evaluating Probabilistic Forecasts with scoringRules'. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
 
 # Example 2: Simulated forecast distribution
 
