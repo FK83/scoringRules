@@ -31,6 +31,7 @@
 %\VignetteDepends{scoringRules,crch}
 %\VignetteKeywords{comparative evaluation, ensemble forecasts, out-of-sample evaluation, predictive distributions, proper scoring rules, score calculation, R}
 %\VignettePackage{scoringRules}
+%\VignetteEncoding{UTF-8}
 
 %% need no \usepackage{Sweave}
 <<preliminaries, echo=FALSE, results='hide'>>=
