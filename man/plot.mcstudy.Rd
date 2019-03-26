@@ -18,7 +18,7 @@ none, used for the effect of drawing a plot.
 Plot the output of run_mcstudy
 }
 \details{
-The plot is in the same format as Figure 1 or 2 in KLTG (2016), depending on the 
+The plot is in the same format as Figure 1 or 2 in KLTG (2019), depending on the 
 parameters set when running \link{run_mcstudy}. These parameters also determine the plot content 
 (nr of MCMC chains, maximal sample size, etc). In terms of 
 additional inputs (\code{...}), the following are currently implemented:

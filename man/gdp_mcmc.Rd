@@ -11,7 +11,7 @@ Historical data and forecast distributions for the growth rate of US gross domes
 }
 
 \format{
-\code{gdp} is a data frame which contains the real-time data set used in Section 5 of KLTG (2016), with the following columns:
+\code{gdp} is a data frame which contains the real-time data set used in Section 5 of KLTG (2019), with the following columns:
 \itemize{
 \item \code{dt} - date in question (e.g., \code{"2013Q2"} for the second quarter of 2013)
 \item \code{vint} - data vintage (i.e., the date at which the realization was recorded); same format as \code{dt}
@@ -24,7 +24,7 @@ Historical data and forecast distributions for the growth rate of US gross domes
 \source{
 The GDP growth rate is computed from real-time data provided by the Federal Reserve Bank of Philadelphia, \url{https://www.phil.frb.org/research-and-data/real-time-center/} (series code ``ROUTPUT'', second-vintage data). The same data also enters the model which is used to generate the forecast distribution. \emph{Disclaimer: The provider of the raw data takes no responsibility for the accuracy of the data posted here. Furthermore, the raw data may be revised over time, and the website linked above should be consulted for the official, most recent version.}
 
-The model from which the forecast draws are generated is described in Section 5 of KLTG (2016). Forecasts are one quarter ahead (that is, they are based on data until the previous quarter).
+The model from which the forecast draws are generated is described in Section 5 of KLTG (2019). Forecasts are one quarter ahead (that is, they are based on data until the previous quarter).
 
 }
 \details{
@@ -53,6 +53,6 @@ crps_sample(y = rlz, dat = fc_draws)
 
 \references{
 
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016): `Probabilistic forecasting and comparative model assessment based on Markov Chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019): `Predictive inference based on Markov Chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 
 }

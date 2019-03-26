@@ -84,8 +84,8 @@ crps_sample(y = y, dat = sample) # error
 \references{
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016):
-`Probabilistic forecasting and comparative model assessment based on
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019):
+`Predictive inference based on
 Markov Chain Monte Carlo output', working paper,
 Heidelberg Institute for Theoretical Studies,
 available at \url{http://arxiv.org/abs/1608.06802}.

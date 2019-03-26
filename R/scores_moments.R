@@ -14,14 +14,14 @@
 #' \emph{Dawid-Sebastiani score:}
 #' 
 #' Dawid, A.P. and P. Sebastiani (1999):
-#' `Coherent dispersion criteria for optimal experimental design'
-#' The Annals of Statistics, 27, 65–81.
+#' 'Coherent dispersion criteria for optimal experimental design'
+#' The Annals of Statistics, 27, 65-81.
 #'  
 #' \emph{Error-spread score:}
 #'  
 #' Christensen, H.M., I.M. Moroz, and T.N. Palmer (2015):
 #' `Evaluation of ensemble forecast uncertainty using a new proper score:
-#' Application to medium‐range and seasonal forecasts.',
+#' Application to medium-range and seasonal forecasts',
 #' Quarterly Journal of the Royal Meteorological Society, 141, 538-549.
 #'  
 #' @author Alexander Jordan, Sebastian Lerch

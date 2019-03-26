@@ -21,8 +21,8 @@
 #' @references
 #' \emph{Evaluating simulation based forecast distributions:}
 #' 
-#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016):
-#' `Probabilistic forecasting and comparative model assessment based on
+#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019):
+#' `Predictive inference based on
 #' Markov Chain Monte Carlo output', working paper,
 #' Heidelberg Institute for Theoretical Studies,
 #' available at \url{http://arxiv.org/abs/1608.06802}.
@@ -125,7 +125,7 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
   input$bw <- bw
   
   if (show_messages)
-    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2016) for details.")
+    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2019) for details.")
   if (identical(length(y), 1L) && is.vector(dat)) {
     check_sample(input)
     if (is.null(bw)) bw <- bw.nrd(dat)

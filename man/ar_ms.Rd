@@ -27,7 +27,7 @@ dependence in regression parameters and residual variance, respectively. Default
 
 \item{printout}{logical, whether to print progress report during MCMC (defaults to \code{FALSE}).}
 
-\item{Hm1_delta, mu_delta, s_, nu_, R}{prior parameters as described in KLTG (2016, Appendix E and Table 5).}
+\item{Hm1_delta, mu_delta, s_, nu_, R}{prior parameters as described in KLTG (2019, Appendix E and Table 4).}
 }
 \value{
 List containing parameter estimates and forecasts, with the following elements:
@@ -42,7 +42,7 @@ List containing parameter estimates and forecasts, with the following elements:
 Bayesian analysis of a Markov Switching autoregressive model
 }
 \details{
-The default parameters are as set by KLTG (2016, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
+The default parameters are as set by KLTG (2019, Section 5). The output matrices \code{fcMeans} and \code{fcSds} can be used to construct 
 the mixture-of-parameters estimator analyzed by KLTG. While many of the model features can be changed as described above, the number of Markov regimes is always fixed at two. 
 
 \link{ar_ms} is an R/C++ implementation of Matlab code kindly shared by Gianni Amisano via his website (\url{https://sites.google.com/site/gianniamisanowebsite/}). See Amisano and Giacomini (2007) who analyze a similar model.
@@ -72,10 +72,10 @@ print(mean(1/fit$pars[,3] < 1/fit$pars[,4]))
 \references{
 Amisano, G. and R. Giacomini (2007), `Comparing density forecasts via weighted likelihood ratio tests', Journal of Business and Economic Statistics 25, 177-190.
 
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016): `Probabilistic forecasting and comparative model assessment based on Markov chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019): `Predictive inference based on Markov chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 }
 \seealso{
-\link{run_casestudy} uses \link{ar_ms} to replicate the results of KLTG (2016, Section 5).
+\link{run_casestudy} uses \link{ar_ms} to replicate the results of KLTG (2019, Section 5).
 }
 \author{
 Fabian Krueger, based on Matlab code by Gianni Amisano (see details section)
