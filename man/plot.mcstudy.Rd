@@ -27,7 +27,7 @@ either \code{"crps"} or \code{"logs"}. Defaults to \code{"crps"}. \item \code{ad
 whether to add main title to plot. Defaults to \code{TRUE}.}
 }
 \references{
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2016): `Probabilistic forecasting and comparative model assessment based on Markov chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019): `Predictive inference based on Markov chain Monte Carlo output', working paper, Heidelberg Institute for Theoretical Studies, available at \url{http://arxiv.org/abs/1608.06802}.
 }
 \seealso{
 \link{run_mcstudy} produces the simulation results summarized by \link{plot.mcstudy}
