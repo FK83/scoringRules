@@ -111,7 +111,7 @@ crps_clogis <- function(y, location = 0, scale = 1,
     out[lower == upper] <- 0
     out + abs(y - z)
   } else if (!nan_in_bounds &&
-             is.finite(scale) & all(scale > 0)) {
+             all(is.finite(scale) & scale > 0)) {
     if (!identical(lower, -Inf)) lower <- (lower - location) / scale
     if (!identical(upper,  Inf)) upper <- (upper - location) / scale
     scale * crps_clogis((y - location) / scale,
