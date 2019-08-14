@@ -1,16 +1,23 @@
-citHeader("To cite the scoringRules package, please use:")
-
-citEntry(entry = "Article",
-  title        = "Evaluating Probabilistic Forecasts with scoringRules",
-  author       = personList(as.person("Alexander Jordan"),
-                   as.person("Fabian Krueger"), 
-		   as.person("Sebastian Lerch")),
+bibentry(bibtype = "Article",
+  title        = "Evaluating Probabilistic Forecasts with {scoringRules}",
+  author       = c(person(given = "Alexander",
+                          family = "Jordan"),
+                   person(given = "Fabian",
+                          family = "Kr\\\"uger"),
+                   person(given = "Sebastian",
+                          family = "Lerch")),
   journal      = "Journal of Statistical Software",
-  year         = "2018",
-  note         = "forthcoming",
-
+  year         = "2019",
+  volume       = "90",
+  number       = "12",
+  pages        = "1--37",
+  doi          = "10.18637/jss.v090.i12",
   textVersion  =
-  paste("Alexander Jordan, Fabian Krueger, Sebastian Lerch (2018).",
+  paste("Alexander Jordan, Fabian Krueger, Sebastian Lerch (2019).",
         "Evaluating Probabilistic Forecasts with scoringRules.",
-        "Journal of Statistical Software, forthcoming.")
+        "Journal of Statistical Software, 90(12), 1-37.",
+        "DOI 10.18637/jss.v090.i12"),
+
+  header       = "To cite scoringRules in publications use:"
 )
+
