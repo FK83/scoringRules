@@ -1,8 +1,8 @@
 Package: scoringRules
 Type: Package
 Title: Scoring Rules for Parametric and Simulated Distribution Forecasts
-Version: 0.9.6
-Date: 2019-05-24
+Version: 1.0.0
+Date: 2019-08-19
 Author: Alexander Jordan, Fabian Krueger, Sebastian Lerch
 Maintainer: Fabian Krueger <Fabian.Krueger83@gmail.com>
 Description: Dictionary-like reference for computing scoring rules in a wide
@@ -24,5 +24,6 @@ Suggests:
     testthat,
     crch
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
+Encoding: UTF-8
