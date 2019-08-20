@@ -103,6 +103,7 @@ library(crch)
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \section*{Preface}
 
