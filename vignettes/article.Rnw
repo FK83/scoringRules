@@ -60,7 +60,7 @@ library(crch)
 
 \author{Alexander Jordan\\University of Bern
 	\And Fabian Kr\"uger\\Heidelberg University
-	\And Sebastian Lerch\\Heidelberg Institute for\\Theoretical Studies\\Karlsruhe Institute of\\Technology}
+	\And Sebastian Lerch\\Karlsruhe Institute of\\Technology\\Heidelberg Institute for\\Theoretical Studies}
 \Plainauthor{Alexander Jordan, Fabian Kr\"uger, Sebastian Lerch}
 
 \title{Evaluating Probabilistic Forecasts with \pkg{scoringRules}}
@@ -91,15 +91,14 @@ library(crch)
   URL: \url{https://sites.google.com/site/fk83research/home}\\
   
   Sebastian Lerch\\
-  Heidelberg Institute for Theoretical Studies\\
-  HITS gGmbH\\
-  Schloss-Wolfsbrunnenweg 35\\
-  69118 Heidelberg, Germany\\
-  E-Mail: \email{sebastian.lerch@h-its.org}\\
+  Karlsruhe Institute of Technology\\
+  Institute for Stochastics\\
+  Englerstr. 2\\
+  76131 Karlsruhe, Germany \\
+  E-Mail: \email{sebastian.lerch@kit.edu}\\
   URL: \url{https://sites.google.com/site/sebastianlerch/}\\
   \emph{and}\\
-  Institute for Stochastics\\
-  Karlsruhe Institute of Technology\\
+  Heidelberg Institute for Theoretical Studies\\
 }
 
 
@@ -107,7 +106,7 @@ library(crch)
 
 \section*{Preface}
 
-This vignette corresponds to an article of the same name which has been conditionally accepted for publication at the Journal of Statistical Software. While the two articles are close to identical at the time of this writing (July 27, 2018), the vignette may be updated to reflect future changes in the package. To cite the package, please use \cite{JordanEtAl2018}. 
+This vignette corresponds to an article of the same name in the \emph{Journal of Statistical Software} \citep{JordanEtAl2018}. While the two articles are close to identical at the time of this writing (August 20, 2019), the vignette may be updated to reflect future changes in the package.
 
 \section{Introduction: Forecast evaluation} \label{sec:intro}
 

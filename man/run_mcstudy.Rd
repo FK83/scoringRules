@@ -4,8 +4,8 @@
 \alias{run_mcstudy}
 \title{Run the Monte Carlo study by KLTG (2019), or a smaller version thereof}
 \usage{
-run_mcstudy(s = 2, a = 0.5, n = 12, nr_iterations = 50, zoom = FALSE,
-  random_seed = 816)
+run_mcstudy(s = 2, a = 0.5, n = 12, nr_iterations = 50,
+  zoom = FALSE, random_seed = 816)
 }
 \arguments{
 \item{s, a, n}{parameters characterizing the process from which data are simulated (see Section 4 and Table 4 of KLTG, 2019). Defaults to the values reported in the main text of the paper.}

@@ -5,9 +5,10 @@
 \title{Bayesian analysis of a Markov Switching autoregressive model}
 \usage{
 ar_ms(y, nlag = 1, beta_switch = FALSE, variance_switch = TRUE,
-  identification_constraint = "variance", n_burn = 5000, n_rep = 20000,
-  forecast_periods = 5, printout = FALSE, Hm1_delta = 25, mu_delta = 0,
-  s_ = 0.3, nu_ = 3, R = matrix(c(8, 2, 2, 8), nrow = 2))
+  identification_constraint = "variance", n_burn = 5000,
+  n_rep = 20000, forecast_periods = 5, printout = FALSE,
+  Hm1_delta = 25, mu_delta = 0, s_ = 0.3, nu_ = 3,
+  R = matrix(c(8, 2, 2, 8), nrow = 2))
 }
 \arguments{
 \item{y}{numeric vector (time series to be analyzed).}
