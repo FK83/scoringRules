@@ -718,7 +718,7 @@ ar_ms <- function(y, nlag = 1, beta_switch = FALSE, variance_switch = TRUE, iden
     }  
     
     if (printout & im %in% printseq){
-      print(paste(round(im/M2, 3), "percent complete"))
+      print(paste(round(im/M2, 3) * 100, "percent complete"))
     }
     
   }
