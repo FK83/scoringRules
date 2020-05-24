@@ -1,5 +1,5 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/scoringRules)](https://cran.r-project.org/package=scoringRules) 
-[![Downloads](https://cranlogs.r-pkg.org/badges/scoringRules)](https://cran.r-project.org/package=scoringRules)
+[![Downloads](https://cranlogs.r-pkg.org/badges/scoringRules)](https://cranlogs.r-pkg.org/badges/scoringRules)
 
 # scoringRules 
 
