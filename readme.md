@@ -1,3 +1,6 @@
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/scoringRules)](https://cran.r-project.org/package=scoringRules) 
+[![Downloads](https://cranlogs.r-pkg.org/badges/scoringRules)](https://cran.r-project.org/package=scoringRules)
+
 # scoringRules 
 
 An R package to compute scoring rules for fixed (parametric) and simulated forecast distributions. Authored by Alexander Jordan (University of Bern), Fabian Krüger (Karlsruhe Institute of Technology (KIT)) and Sebastian Lerch (KIT and Heidelberg Institute for Theoretical Studies), with contributions from Maximiliane Graeter (KIT). 
@@ -24,29 +27,16 @@ install_github("FK83/scoringRules")
 
 ## Background
 
-Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast distribution F, given that an outcome y was observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of distributions F that come up in applied work, and two popular choices of S. Two main classes of distributions are
+Scoring rules are functions $S(F, y)$ which evaluate the accuracy of a forecast distribution $F$, given that an outcome $y$ was observed. The **scoringRules** package contains functions to compute scoring rules, for a variety of  distributions $F$ that come up in applied work, and two popular choices of $S$. Two main classes of distributions are
 
   - Parametric distributions like normal, t, and gamma. For example, most weather forecasts (which apply statistical postprocessing to physical models) take such a form. 
   - Distributions that are not known analytically, but are indirectly described through a sample of simulaton draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
 
-The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, 1976) and the logarithmic score (Good, 1952). The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
+The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, *Management Science*, 1976) and the logarithmic score (Good, *Journal of the Royal Statistical Society (Series B)*, 1952). The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
 
 ## History
-  - August 2019: Release Version 1.0.0 on CRAN
-  - May 2019: Version 0.9.6 on CRAN (minor updates)
-  - July 2018: Version 0.9.5 on CRAN, vignette accepted for publication at the *Journal of Statistical Software*
-  - November 2017: Version 0.9.4, including a detailed vignette 
-  - August 10, 2017: Version 0.9.3 published on CRAN
-  - July 2017: Version 0.9.3, including vignette for closed-form expressions of the CRPS (Alexander Jordan), and functions for CRPS-based fitting of truncated/censored distributions
-  - January 2017: Added multivariate energy and variogram score
-  - January 11, 2017: Version 0.9.2 published on CRAN
-  - December 2016: Small fixes for truncated/censored distributions
-  - September 6, 2016: Version 0.9.1 published on CRAN 
-  - August 2016: Added replication materials for our paper on MCMC based forecasting 
-    (see <http://arxiv.org/abs/1608.06802>)
+  - August 2019: Version 1.0.0 on CRAN, vignette published in the *Journal of Statistical Software*
+  - November 2017: Version 0.9.4 on CRAN, including a detailed vignette 
+  - July 2017: Vignette for closed-form expressions of the CRPS (Alexander Jordan), and functions for CRPS-based fitting of truncated/censored distributions
   - July 7, 2016: Version 0.9 published on CRAN
-  - April -- June 2016: Various small changes (improved consistency and better documentation)
-  - August 3, 2015: Some name changes to header functions
-  - February 6, 2015: Re-design of internal function structure
-  - November 19, 2014: Split functions according to parametric versus simulated forecast distributions
   - September 15, 2014: First commit 
