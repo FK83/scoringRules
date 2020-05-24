@@ -51,7 +51,7 @@ calcHess_trunc <- function(z, scale, lb, ub,
   )
   
   Hessian <- cbind(d2mu, d2sigma, dmu.dsigma, dsigma.dmu)
-  colnames(Hessia) <- c("d2loc", "d2scale", "dloc.dscale", "dscale.dloc")
+  colnames(Hessian) <- c("d2loc", "d2scale", "dloc.dscale", "dscale.dloc")
   rownames(Hessian) <- NULL
   
   return(Hessian)
