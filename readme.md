@@ -8,7 +8,7 @@ An R package to compute scoring rules for fixed (parametric) and simulated forec
 ## Highlights
   - Coherent, dictionary-like reference for computing scoring rules in a wide range of situations
   - Previously unavailable closed-form expressions of the CRPS for many parametric distributions
-  - Efficient implementation thanks to R/Rcpp 
+  - Efficient implementation thanks to R and Rcpp 
   - Whenever more than one implementation variant exists, we offer statistically principled default choices
   
 ## Installation
