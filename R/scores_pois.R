@@ -10,10 +10,11 @@ NULL
 #' @rdname scores_pois
 #' @export
 crps_pois <- function(y, lambda) {
-  c1 <- (y - lambda) * (2*ppois(y, lambda) - 1)
-  c2 <- 2*dpois(floor(y), lambda) -
-    exp(-2*lambda) * (besselI(2*lambda, 0) + besselI(2*lambda, 1))
-  return(c1 + lambda*c2)
+  c1 <- (y - lambda) * (2 * ppois(y, lambda) - 1)
+  c2 <- 2 * dpois(floor(y), lambda) -
+    besselI(2 * lambda, 0, expon.scaled = TRUE) -
+    besselI(2 * lambda, 1, expon.scaled = TRUE)
+  return(c1 + lambda * c2)
 }
 
 #' @rdname scores_pois
