@@ -21,18 +21,14 @@
 #' @references
 #' \emph{Evaluating simulation based forecast distributions:}
 #' 
-#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2019):
-#' `Predictive inference based on
-#' Markov Chain Monte Carlo output', working paper,
-#' Heidelberg Institute for Theoretical Studies,
-#' available at \url{http://arxiv.org/abs/1608.06802}.
+#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2020): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review}, forthcoming. \doi{10.1111/insr.12405}
 #'  
 #' \emph{Empirical quantile decomposition of the CRPS:}
 #'  
 #' Laio, F. and S. Tamea (2007):
 #' `Verification tools for probabilistic forecasts of continuous
 #' hydrological variables',
-#' Hydrology and Earth System Sciences, 11, 1267-1277.
+#' Hydrology and Earth System Sciences, 11, 1267-1277. \doi{10.5194/hess-11-1267-2007}
 #'  
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #'  

@@ -39,14 +39,14 @@
 #' N.A. Johnson (2008):
 #' `Assessing probabilistic forecasts of multivariate quantities, with an
 #' application to ensemble predictions of surface winds',
-#' TEST, 17, 211-235.
+#' TEST, 17, 211-235. \doi{10.1007/s11749-008-0114-x}
 #' 
-#' \emph{Variogram-based	proper scoring rules}
+#' \emph{Variogram-based proper scoring rules}
 #' 
 #' Scheuerer, M. and T.M. Hamill (2015):
 #' `Variogram-based proper scoring rules for probabilistic forecasts of
 #' multivariate quantities',
-#' Monthly Weather Review, 143, 1321-1334.
+#' Monthly Weather Review, 143, 1321-1334. \doi{10.1175/mwr-d-14-00269.1}
 #' 
 #' @author Maximiliane Graeter, Sebastian Lerch, Fabian Krueger
 #' 

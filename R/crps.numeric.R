@@ -25,24 +25,28 @@
 #' `Log-normal distribution based Ensemble Model Output Statistics models for
 #' probabilistic wind-speed forecasting',
 #' Quarterly Journal of the Royal Meteorological Society 141, 2289-2299.
+#' \doi{10.1002/qj.2521}
 #' \emph{(Log-normal)}
 #' 
 #' Friederichs, P. and T.L. Thorarinsdottir (2012):
 #' `Forecast verification for extreme value distributions with an application
 #' to probabilistic peak wind prediction',
 #' Environmetrics 23, 579-594.
+#' \doi{10.1002/env.2176}
 #' \emph{(Generalized Extreme Value, Generalized Pareto)}
 #' 
 #' Gneiting, T., Larson, K., Westvelt III, A.H. and T. Goldman (2005):
 #' `Calibrated probabilistic forecasting using ensemble model output statistics
 #' and minimum CRPS estimation',
 #' Monthly Weather Review 133, 1098-1118.
+#' \doi{10.1175/mwr2904.1}
 #' \emph{(Normal)}
 #' 
 #' Gneiting, T., Larson, K., Westrick, K., Genton, M.G. and E. Aldrich (2006):
 #' `Calibrated probabilistic forecasting at the stateline wind energy center:
 #' The regime-switching space-time method',
 #' Journal of the American Statistical Association 101, 968-979.
+#' \doi{10.1198/016214506000000456}
 #' \emph{(Censored normal)}
 #' 
 #' Gneiting, T. and T.L. Thorarinsdottir (2010):
@@ -54,22 +58,26 @@
 #' `The continuous ranked probability score for circular variables and its
 #' application to mesoscale forecast ensemble verification',
 #' Quarterly Journal of the Royal Meteorological Society 132, 2925-2942.
+#' \doi{10.1256/qj.05.235}
 #' \emph{(Mixture of normals)}
 #' 
 #' Scheuerer, M. and D. Moeller (2015):
 #' `Probabilistic wind speed forecasting on a grid based on ensemble model
 #' output statistics', Annals of Applied Statistics 9, 1328-1349.
+#' \doi{10.1214/15-aoas843}
 #' \emph{(Gamma)}
 #' 
 #' Thorarinsdottir, T.L. and T. Gneiting (2010):
 #' `Probabilistic forecasts of wind speed: ensemble model output statistics by
 #' using heteroscedastic censored regression',
 #' Journal of the Royal Statistical Society (Series A) 173, 371-388.
+#' \doi{10.1111/j.1467-985x.2009.00616.x}
 #' \emph{(Truncated normal)}
 #' 
 #' Wei, W. and L. Held (2014):
 #' `Calibration tests for count data',
 #' TEST 23, 787-205.
+#' \doi{10.1007/s11749-014-0380-8}
 #' \emph{(Poisson, Negative Binomial)}
 #' 
 #' \emph{Independent listing of closed-form solutions for the CRPS:}
@@ -78,6 +86,7 @@
 #' `Calibrated ensemble forecasts using quantile regression forests and
 #' ensemble model output statistics',
 #' Monthly Weather Review 144, 2375-2393. 
+#' \doi{10.1175/mwr-d-15-0260.1}
 #' 
 #' 
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch

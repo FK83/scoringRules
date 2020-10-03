@@ -22,11 +22,11 @@
 #' 
 #' Gneiting, T. and A.E. Raftery (2007):
 #' `Strictly proper scoring rules, prediction and estimation',
-#' Journal of the American Statistical Association 102, 359-378.
+#' Journal of the American Statistical Association 102, 359-378. \doi{10.1198/016214506000001437}
 #' 
 #' Gneiting, T. and M. Katzfuss (2014):
 #' `Probabilistic forecasting',
-#' Annual Review of Statistics and Its Application 1, 125-151.
+#' Annual Review of Statistics and Its Application 1, 125-151. \doi{10.1146/annurev-statistics-062713-085831}
 #' 
 #' @seealso
 #' \code{\link{crps.numeric}}, \code{\link{logs.numeric}}

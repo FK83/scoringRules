@@ -34,14 +34,14 @@ The skewness of a random variable \eqn{X} is the third standardized moment
 
 Dawid, A.P. and P. Sebastiani (1999):
 'Coherent dispersion criteria for optimal experimental design'
-The Annals of Statistics, 27, 65-81.
+The Annals of Statistics, 27, 65-81. \doi{10.1214/aos/1018031101}
  
 \emph{Error-spread score:}
  
 Christensen, H.M., I.M. Moroz, and T.N. Palmer (2015):
 `Evaluation of ensemble forecast uncertainty using a new proper score:
 Application to medium-range and seasonal forecasts',
-Quarterly Journal of the Royal Meteorological Society, 141, 538-549.
+Quarterly Journal of the Royal Meteorological Society, 141, 538-549. \doi{10.1002/qj.2375}
 }
 \author{
 Alexander Jordan, Sebastian Lerch
