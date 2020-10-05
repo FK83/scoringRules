@@ -17,7 +17,8 @@ logs_hyper(y, m, n, k)
 
 \item{n}{the number of black balls in the urn.}
 
-\item{k}{the number of balls drawn from the urn.}
+\item{k}{the number of balls drawn from the urn, hence must be in
+    \eqn{0,1,\dots, m+n}.}
 }
 \value{
 A vector of score values.

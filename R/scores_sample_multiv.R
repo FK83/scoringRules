@@ -61,8 +61,8 @@
 #' S0[S0==0] <- 0.2
 #' 
 #' # generate samples from multivariate normal distributions
-#' obs <- drop(mu0 + rnorm(d) \%*\% chol(S0))
-#' fc_sample <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
+#' obs <- drop(mu0 + rnorm(d) %*% chol(S0))
+#' fc_sample <- replicate(m, drop(mu + rnorm(d) %*% chol(S)))
 #' 
 #' es_sample(y = obs, dat = fc_sample)
 #' 
