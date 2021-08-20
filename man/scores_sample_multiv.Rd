@@ -36,7 +36,7 @@ Compute multivariate scores of the form \eqn{S(y, dat)}, where \eqn{S} is a
 proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
 \eqn{dat} is a simulated sample of multivariate forecasts. Three scores
 are available: The energy score, a score based on a Gaussian kernel 
-(\link{mmds_score}, see details below) and the variogram score of order \eqn{p}.
+(\link{mmd_sample}, see details below) and the variogram score of order \eqn{p}.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample
@@ -57,7 +57,7 @@ square matrix with dimensions equal to the length of the input vector
 corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples,
 see Scheuerer and Hamill (2015).
 
-The `mmds score' is a kernel scoring rule as described in 
+The `MMD score' in \link{mmds_sample} is a kernel scoring rule as described in 
 Gneiting and Raftery (2007, Section 5). As for all other scores, 
 we use a negative orientation, such that a smaller score corresponds to a better
 forecast. We use a Gaussian kernel with standard deviation 1. This kernel is
@@ -115,7 +115,7 @@ N.A. Johnson (2008):
 application to ensemble predictions of surface winds',
 TEST, 17, 211-235. \doi{10.1007/s11749-008-0114-x}
 
-\emph{MMDS score}
+\emph{MMD score}
  
 Gneiting, T. and A.E. Raftery (2007):
 `Strictly proper scoring rules, prediction and estimation',
