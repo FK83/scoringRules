@@ -73,7 +73,27 @@ euclnormC <- function(x) {
     .Call(`_scoringRules_euclnormC`, x)
 }
 
-energyscoreC <- function(y, dat) {
-    .Call(`_scoringRules_energyscoreC`, y, dat)
+energyscoreC <- function(y, dat, w) {
+    .Call(`_scoringRules_energyscoreC`, y, dat, w)
+}
+
+esC_xx <- function(dat, w) {
+    .Call(`_scoringRules_esC_xx`, dat, w)
+}
+
+esC_xy <- function(y, dat, w) {
+    .Call(`_scoringRules_esC_xy`, y, dat, w)
+}
+
+mmdscoreC <- function(y, dat, w) {
+    .Call(`_scoringRules_mmdscoreC`, y, dat, w)
+}
+
+mmdsC_xx <- function(dat, w) {
+    .Call(`_scoringRules_mmdsC_xx`, dat, w)
+}
+
+mmdsC_xy <- function(y, dat, w) {
+    .Call(`_scoringRules_mmdsC_xy`, y, dat, w)
 }
 

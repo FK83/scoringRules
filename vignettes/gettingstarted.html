@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Alexander Jordan, Fabian Krüger, Sebastian Lerch" />
+
+<meta name="date" content="2021-08-16" />
+
+<title>R package scoringRules: Getting started</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">R package scoringRules: Getting started</h1>
+<h4 class="author">Alexander Jordan, Fabian Krüger, Sebastian Lerch</h4>
+<h4 class="date">2021-08-16</h4>
+
+
+
+<p>This vignette provides a two-page introduction to the <em>scoringRules</em> package. For a more detailed introduction, see the paper ‘Evaluating probabilistic forecasts with scoringRules’ (Jordan, Krüger, and Lerch, <em>Journal of Statistical Software</em> 90, 2019) which is available as a further vignette to <em>scoringRules</em>.</p>
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The <em>scoringRules</em> package offers mathematical tools to evaluate a forecast distribution, <span class="math inline">\(F\)</span>, after an outcome <span class="math inline">\(y\)</span> has realized. To this end, we use scoring rules which assign a penalty score <span class="math inline">\(S(y, F)\)</span> to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss (‘Probabilistic Forecasting’, <em>Annual Review of Statistics and Its Application</em>, 2014) for an introduction to the relevant statistical literature.</p>
+<p><em>scoringRules</em> supports two types of forecast distributions, <span class="math inline">\(F\)</span>: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules <span class="math inline">\(S\)</span>: The logarithmic score (LogS), given by <span class="math display">\[\text{LogS}(y, F) = -\log f(y),\]</span> where <span class="math inline">\(f\)</span> is the density conforming to <span class="math inline">\(F\)</span>, and the continuous ranked probability score (CRPS), given by <span class="math display">\[
+\text{CRPS}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
+\]</span> where <span class="math inline">\(\mathbf{1}(A)\)</span> is the indicator function of the event <span class="math inline">\(A\)</span>. The LogS is typically easy to compute, and we include it mainly for reference purposes. By contrast, the CRPS can be very tricky to compute analytically, and cumbersome to approximate numerically. The <em>scoringRules</em> package implements several new methods to tackle this challenge. Specifically, we include many previously unknown analytical expressions, and incorporate recent findings on how to best compute the CRPS of a simulated forecast distribution.</p>
+</div>
+<div id="example-1-parametric-forecast-distribution" class="section level1">
+<h1>Example 1: Parametric forecast distribution</h1>
+<p>Suppose the forecast distribution is <span class="math inline">\(\mathcal{N}(2, 4)\)</span>, and an outcome of zero realizes:</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>The following piece of code computes the CRPS for this situation:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(scoringRules)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">crps</span>(<span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">family =</span> <span class="st">&quot;normal&quot;</span>, <span class="dt">mean =</span> <span class="dv">2</span>, <span class="dt">sd =</span> <span class="dv">2</span>)</a></code></pre></div>
+<pre><code>## [1] 1.204883</code></pre>
+<p>As documented under <code>?crps</code>, the parametric family used in the example is one of the following choices currently implemented in <em>scoringRules</em>:</p>
+<ul>
+<li>Normal, Mixture of normals, Two-piece normal, Log-normal, Generalized truncated/censored normal, (Scaled) Student t, Generalized truncated/censored Student t, Laplace, Log-Laplace, Logistic, Log-logistic, Generalized truncated/censored logistic, Exponential, Exponential with point mass, Two-piece exponential, Beta, Gamma, Uniform, Generalized extreme value, Generalized Pareto, Binomial, Hypergeometric, Negative binomial, Poisson</li>
+</ul>
+<p>We provide analytical CRPS formulas in Appendix A of the vignette ‘Evaluating Probabilistic Forecasts with scoringRules’. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example <code>?f2pnorm</code>.</p>
+</div>
+<div id="example-2-simulated-forecast-distribution" class="section level1">
+<h1>Example 2: Simulated forecast distribution</h1>
+<p>Via <code>data(gdp_mcmc)</code>, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:</p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Let’s now compute the CRPS for this simulated forecast distribution:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Load data</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">data</span>(gdp_mcmc)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># Get forecast distribution for 2012:Q4</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">dat &lt;-<span class="st"> </span>gdp_mcmc<span class="op">$</span>forecasts[, <span class="st">&quot;X2012Q4&quot;</span>]</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># Get realization for 2012:Q4</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">y &lt;-<span class="st"> </span>gdp_mcmc<span class="op">$</span>actuals[, <span class="st">&quot;X2012Q4&quot;</span>]</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co"># Compute CRPS of simulated sample</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="kw">crps_sample</span>(<span class="dt">y =</span> y, <span class="dt">dat =</span> dat)</a></code></pre></div>
+<pre><code>## [1] 0.9058803</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

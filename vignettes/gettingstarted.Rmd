@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette provides a two-page introduction to the *scoringRules* package. For a more detailed introduction, see the paper 'Evaluating probabilistic forecasts with scoringRules' (Jordan, Kr&uuml;ger, and Lerch, *Journal of Statistical Software*, forthcoming) which is available as a further vignette to *scoringRules*. 
+This vignette provides a two-page introduction to the *scoringRules* package. For a more detailed introduction, see the paper 'Evaluating probabilistic forecasts with scoringRules' (Jordan, Kr&uuml;ger, and Lerch, *Journal of Statistical Software* 90, 2019) which is available as a further vignette to *scoringRules*. 
 
 # Background 
 
@@ -25,7 +25,7 @@ where $\mathbf{1}(A)$ is the indicator function of the event $A$. The LogS is ty
 
 Suppose the forecast distribution is $\mathcal{N}(2, 4)$, and an outcome of zero realizes:\vspace{-1.5cm}
 
-```{r echo = FALSE, fig.align='center', fig.width = 5}
+```{r echo = FALSE, fig.align='center', fig.width = 7, fig.height = 3}
 
 grid <- seq(from = -5, to = 10, length.out = 1000)
 plot(x = grid, y = dnorm(grid, mean = 2, sd = 2), bty = "n", type = "l", xlab = "Value", ylab = "Density")
@@ -49,7 +49,7 @@ We provide analytical CRPS formulas in Appendix A of the vignette 'Evaluating Pr
 
 Via `data(gdp_mcmc)`, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:\vspace{-1.3cm}
 
-```{r echo = FALSE, fig.align='center', fig.width = 5}
+```{r echo = FALSE, fig.align='center', fig.width = 7, fig.height = 3}
 # Load data
 data(gdp_mcmc)
 

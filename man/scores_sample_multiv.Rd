@@ -3,12 +3,15 @@
 \name{scores_sample_multiv}
 \alias{scores_sample_multiv}
 \alias{es_sample}
+\alias{mmds_sample}
 \alias{vs_sample}
 \title{Multivariate Scoring Rules for Simulated Forecast Distributions}
 \usage{
-es_sample(y, dat)
+es_sample(y, dat, w = NULL)
 
-vs_sample(y, dat, w = NULL, p = 0.5)
+mmds_sample(y, dat, w = NULL)
+
+vs_sample(y, dat, w_vs = NULL, p = 0.5)
 }
 \arguments{
 \item{y}{realized values (numeric vector of length d).}
@@ -16,8 +19,10 @@ vs_sample(y, dat, w = NULL, p = 0.5)
 \item{dat}{numeric matrix of data
 (columns are simulation draws from multivariate forecast distribution).}
 
-\item{w}{numeric matrix of weights for \code{dat} used in the variogram
-score. If no weights are specified, constant weights with \eqn{w = 1}
+\item{w}{numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})}
+
+\item{w_vs}{numeric matrix of weights for \code{dat} used in the variogram
+score. If no weights are specified, constant weights with \eqn{w_vs = 1}
 are used.}
 
 \item{p}{order of variogram score. Standard choices include \eqn{p = 1} and
@@ -29,8 +34,9 @@ Value of the score. \emph{A lower score indicates a better forecast.}
 \description{
 Compute multivariate scores of the form \eqn{S(y, dat)}, where \eqn{S} is a
 proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
-\eqn{dat} is a simulated sample of multivariate forecasts. Available are the
-energy score and the variogram score of order \eqn{p}.
+\eqn{dat} is a simulated sample of multivariate forecasts. Three scores
+are available: The energy score, a score based on a Gaussian kernel 
+(\link{mmds_score}, see details below) and the variogram score of order \eqn{p}.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample
@@ -38,38 +44,66 @@ from the multivariate forecast distribution, the number of rows of \code{dat}
 thus has to match the length of the observation vector \code{y}, and the
 number of columns of \code{dat} is the number of simulated samples.
 
-In \link{vs_sample} it is possible to specify a matrix \code{w} of
+In \link{es_sample} it is possible to specify a vector \code{w} of weights 
+attached to each forecast draw (i.e. each column of matrix \code{dat}). These
+weights are analogous to the input \code{w} in \link{crps_sample}. 
+
+In \link{vs_sample} it is possible to specify a matrix \code{w_vs} of
 non-negative weights that allow to emphasize or downweight pairs of
-component combinations based on subjective expert decisions. \code{w} is a
+component combinations based on subjective expert decisions. \code{w_vs} is a
 square matrix with dimensions equal to the length of the input vector
 \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of
-\code{w} corresponds to the weight assigned to the combination of the
+\code{w_vs} corresponds to the weight assigned to the combination of the
 corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples,
 see Scheuerer and Hamill (2015).
+
+The `mmds score' is a kernel scoring rule as described in 
+Gneiting and Raftery (2007, Section 5). As for all other scores, 
+we use a negative orientation, such that a smaller score corresponds to a better
+forecast. We use a Gaussian kernel with standard deviation 1. This kernel is
+the same as the one obtained by setting \code{rbfdot(sigma = .5)} in the 
+R package kernlab (Karatzoglou et al., 2004). The naming prefix `MMD' is 
+motivated by the machine learning literature on two sample testing 
+(e.g. Gretton et al., 2012), where this type of kernel function is popular.
 }
 \examples{
 d <- 10  # number of dimensions
 m <- 50  # number of samples from multivariate forecast distribution
 
+# parameters for multivariate normal example
 mu0 <- rep(0, d)
 mu <- rep(1, d)
 S0 <- S <- diag(d)
-S[S==0] <- 0.1
 S0[S0==0] <- 0.2
+S[S==0] <- 0.1
 
 # generate samples from multivariate normal distributions
 obs <- drop(mu0 + rnorm(d) \%*\% chol(S0))
 fc_sample <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
 
+# compute Energy Score
 es_sample(y = obs, dat = fc_sample)
 
+# in the univariate case, Energy Score and CRPS are the same
+# illustration: Evaluate forecast sample for the first variable
+es_sample(y = obs[1], dat = fc_sample[1, , drop = FALSE])
+crps_sample(y = obs[1], dat = fc_sample[1, ])
+
+# illustration of observation weights for Energy Score
+# example: equal weights for first half of draws; zero weights for other draws
+w <- rep(c(1, 0), each = .5*m)/(.5*m)
+es_sample(y = obs, dat = fc_sample, w = w)
+
 # weighting matrix for variogram score
+# note that, unlike for w, weights in w_vs refer to dimensions 
+# (rows of dat) rather than draws (cols of dat)
 w_vs <- matrix(NA, nrow = d, ncol = d)
 for(d1 in 1:d){for(d2 in 1:d){w_vs[d1,d2] <- 0.5^abs(d1-d2)}}
 
 vs_sample(y = obs, dat = fc_sample) 
-vs_sample(y = obs, dat = fc_sample, w = w_vs) 
-vs_sample(y = obs, dat = fc_sample, w = w_vs, p = 1)
+vs_sample(y = obs, dat = fc_sample, w_vs = w_vs) 
+vs_sample(y = obs, dat = fc_sample, w_vs = w_vs, p = 1)
+
 
 }
 \references{
@@ -80,6 +114,20 @@ N.A. Johnson (2008):
 `Assessing probabilistic forecasts of multivariate quantities, with an
 application to ensemble predictions of surface winds',
 TEST, 17, 211-235. \doi{10.1007/s11749-008-0114-x}
+
+\emph{MMDS score}
+ 
+Gneiting, T. and A.E. Raftery (2007):
+`Strictly proper scoring rules, prediction and estimation',
+Journal of the American Statistical Association 102, 359-378. \doi{10.1198/016214506000001437}
+
+Gretton, A., Borgwardt, K. M., Rasch, M. J., Schölkopf, B. and
+A. Smola (2012): `A kernel two-sample test', Journal of` Machine 
+Learning Research, 13, 723-773.
+
+Karatzoglou, A., Smola, A., Hornik, K. and Zeileis A. (2004). 
+kernlab - An S4 Package for Kernel Methods in R. Journal of Statistical 
+Software 11, 1-20. \doi{10.18637/jss.v011.i09} 
 
 \emph{Variogram-based proper scoring rules}
 
