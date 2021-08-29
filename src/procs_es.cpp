@@ -11,6 +11,38 @@ double euclnormC(arma::colvec x){
   return(out);
 }
 
+// function for variogram score when no weights are specified
+// [[Rcpp::export]]
+double vsC(arma::colvec y, arma::mat dat, double p){
+  
+  double out = 0;
+  double d = dat.n_rows;
+  for (int i = 1; i < (d+1); i++) {
+    for (int j = i; j < (d+1); j++) {
+      double vdat = mean(pow(abs(dat.row(i-1) - dat.row(j-1)), p));
+      double vy = pow(abs(y[i-1]-y[j-1]), p);
+      out += 2*pow(vy - vdat, 2.0);
+    }
+  }
+  return (out);
+}
+
+// function for variogram score when weights w_vs are specified
+// [[Rcpp::export]]
+double vsC_w_vs(arma::colvec y, arma::mat dat, arma::mat w_vs, double p){
+  
+  double out = 0;
+  double d = dat.n_rows;
+  for (int i = 1; i < (d+1); i++) {
+    for (int j = i; j < (d+1); j++) {
+      double vdat = mean(pow(abs(dat.row(i-1) - dat.row(j-1)), p));
+      double vy = pow(abs(y[i-1]-y[j-1]), p);
+      out += 2*w_vs(i-1,j-1)*pow(vy - vdat, 2.0);
+    }
+  }
+  return (out);
+}
+
 // complete function kept for now; however, exported R function "es_sample" uses separate component functions 
 // for "XX" and "XY" parts of score (see below)
 // [[Rcpp::export]]

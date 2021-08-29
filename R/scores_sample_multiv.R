@@ -22,7 +22,7 @@
 #' thus has to match the length of the observation vector \code{y}, and the
 #' number of columns of \code{dat} is the number of simulated samples.
 #' 
-#' In \link{es_sample} it is possible to specify a vector \code{w} of weights 
+#' In \link{es_sample} and \link{mmds_sample} it is possible to specify a vector \code{w} of weights 
 #' attached to each forecast draw (i.e. each column of matrix \code{dat}). These
 #' weights are analogous to the input \code{w} in \link{crps_sample}. 
 #' 
@@ -110,8 +110,7 @@
 #' # weighting matrix for variogram score
 #' # note that, unlike for w, weights in w_vs refer to dimensions 
 #' # (rows of dat) rather than draws (cols of dat)
-#' w_vs <- matrix(NA, nrow = d, ncol = d)
-#' for(d1 in 1:d){for(d2 in 1:d){w_vs[d1,d2] <- 0.5^abs(d1-d2)}}
+#' w_vs <- outer(1:d, 1:d, function(x, y) .5^abs(x-y))
 #' 
 #' vs_sample(y = obs, dat = fc_sample) 
 #' vs_sample(y = obs, dat = fc_sample, w_vs = w_vs) 

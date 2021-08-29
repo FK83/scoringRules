@@ -73,6 +73,14 @@ euclnormC <- function(x) {
     .Call(`_scoringRules_euclnormC`, x)
 }
 
+vsC <- function(y, dat, p) {
+    .Call(`_scoringRules_vsC`, y, dat, p)
+}
+
+vsC_w_vs <- function(y, dat, w_vs, p) {
+    .Call(`_scoringRules_vsC_w_vs`, y, dat, w_vs, p)
+}
+
 energyscoreC <- function(y, dat, w) {
     .Call(`_scoringRules_energyscoreC`, y, dat, w)
 }

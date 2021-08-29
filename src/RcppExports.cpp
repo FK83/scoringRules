@@ -256,6 +256,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vsC
+double vsC(arma::colvec y, arma::mat dat, double p);
+RcppExport SEXP _scoringRules_vsC(SEXP ySEXP, SEXP datSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::colvec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(vsC(y, dat, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vsC_w_vs
+double vsC_w_vs(arma::colvec y, arma::mat dat, arma::mat w_vs, double p);
+RcppExport SEXP _scoringRules_vsC_w_vs(SEXP ySEXP, SEXP datSEXP, SEXP w_vsSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::colvec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type w_vs(w_vsSEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(vsC_w_vs(y, dat, w_vs, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // energyscoreC
 double energyscoreC(arma::colvec y, arma::mat dat, NumericVector w);
 RcppExport SEXP _scoringRules_energyscoreC(SEXP ySEXP, SEXP datSEXP, SEXP wSEXP) {
@@ -352,6 +379,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scoringRules_drawMultinomC", (DL_FUNC) &_scoringRules_drawMultinomC, 1},
     {"_scoringRules_filterMarkovMixtureC", (DL_FUNC) &_scoringRules_filterMarkovMixtureC, 3},
     {"_scoringRules_euclnormC", (DL_FUNC) &_scoringRules_euclnormC, 1},
+    {"_scoringRules_vsC", (DL_FUNC) &_scoringRules_vsC, 3},
+    {"_scoringRules_vsC_w_vs", (DL_FUNC) &_scoringRules_vsC_w_vs, 4},
     {"_scoringRules_energyscoreC", (DL_FUNC) &_scoringRules_energyscoreC, 3},
     {"_scoringRules_esC_xx", (DL_FUNC) &_scoringRules_esC_xx, 2},
     {"_scoringRules_esC_xy", (DL_FUNC) &_scoringRules_esC_xy, 3},
