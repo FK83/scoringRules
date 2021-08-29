@@ -166,6 +166,9 @@ vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
     if (any(w_vs < 0)) {
       stop("Weighting matrix 'w_vs' contains negative values")
     }
+    if (!isSymmetric(w_vs)) {
+      stop("Weighting matrix 'w_vs' is not symmetric")
+    }
   }
   
   if (!is.numeric(p) || length(p) != 1 ){
