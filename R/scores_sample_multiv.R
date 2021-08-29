@@ -155,7 +155,7 @@ vs_sample <- function(y, dat, w_vs = NULL,  p = 0.5) {
   check.multivsample(input)
   d <- length(y)
   
-  # additional input checks for weighting matrix w and order p
+  # additional input checks for weighting matrix w_vs and order p
   if (!is.null(w_vs)) {
     if (!is.matrix(w_vs)) {
       stop("'w_vs' is not a matrix ")
