@@ -150,7 +150,7 @@ mmds_sample <- function(y, dat, w = NULL) {
 # variogram score of order p
 #' @rdname scores_sample_multiv
 #' @export
-vs_sample <- function(y, dat, w_vs = NULL,  p = 0.5) {
+vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
   input <- list(y = y, dat = dat)
   check.multivsample(input)
   d <- length(y)
@@ -185,7 +185,6 @@ vs_sample <- function(y, dat, w_vs = NULL,  p = 0.5) {
 
 ################################################################################
 ### input checks for multivariate scoring rules
-
 check.multivsample <- function(input) {
   input_isnumeric <- sapply(input, is.numeric)
   if (!all(input_isnumeric)) {
