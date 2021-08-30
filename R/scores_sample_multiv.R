@@ -11,8 +11,9 @@
 #' (columns are simulation draws from multivariate forecast distribution).
 #' @param w numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})
 #' @param w_vs numeric matrix of weights for \code{dat} used in the variogram
-#' score. If no weights are specified, constant weights with \eqn{w_vs = 1}
-#' are used.
+#' score. This matrix must be square and symmetric, with all elements being non-negative.
+#' If no weights are specified, constant weights (with all elements of \code{w_vs} 
+#' equal to one) are used.
 #' @param p order of variogram score. Standard choices include \eqn{p = 1} and
 #' \eqn{p = 0.5}.
 #' 
@@ -29,11 +30,11 @@
 #' In \link{vs_sample} it is possible to specify a matrix \code{w_vs} of
 #' non-negative weights that allow to emphasize or downweight pairs of
 #' component combinations based on subjective expert decisions. \code{w_vs} is a
-#' square matrix with dimensions equal to the length of the input vector
+#' square, symmetric matrix with dimensions equal to the length of the input vector
 #' \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of
 #' \code{w_vs} corresponds to the weight assigned to the combination of the
-#' corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples,
-#' see Scheuerer and Hamill (2015).
+#' corresponding \eqn{i}-th and \eqn{j}-th component. A small example is provided below. 
+#' For details and further examples, see Scheuerer and Hamill (2015).
 #' 
 #' The `MMD score' in \link{mmds_sample} is a kernel scoring rule as described in 
 #' Gneiting and Raftery (2007, Section 5). As for all other scores, 
@@ -129,7 +130,7 @@ es_sample <- function(y, dat, w = NULL) {
   check.multivsample(input)
   w <- w.helper.multiv(dat, w)
   es <- esC_xy(y, dat, w) - .5*esC_xx(dat, w)
-  es
+  return(es)
 }
 
 ################################################################################
@@ -143,7 +144,7 @@ mmds_sample <- function(y, dat, w = NULL) {
   # note that order of xx and xy parts is reverse to Energy Score
   # (since underlying kernels are in reverse orientation)
   mmds <- .5*mmdsC_xx(dat, w) - mmdsC_xy(y, dat, w)
-  mmds
+  return(mmds)
 }
 
 ################################################################################
@@ -154,7 +155,6 @@ vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
   input <- list(y = y, dat = dat)
   check.multivsample(input)
   d <- length(y)
-  
   # additional input checks for weighting matrix w_vs and order p
   if (!is.null(w_vs)) {
     if (!is.matrix(w_vs)) {
@@ -170,44 +170,40 @@ vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
       stop("Weighting matrix 'w_vs' is not symmetric")
     }
   }
-  
   if (!is.numeric(p) || length(p) != 1 ){
     stop("Order 'p' must be numeric of length 1")
   } else if (p < 0) {
     stop("Order 'p' must be positive")
   }
-  
+  # Compute score 
   if (is.null(w_vs)){
     out <- vsC(y, dat, p)
   } else {
     out <- vsC_w_vs(y, dat, w_vs, p)
   }
-  
   return(out)
 }
 
 ################################################################################
-### input checks for multivariate scoring rules
+# helper functions
+# input checks for multivariate scoring rules
 check.multivsample <- function(input) {
   input_isnumeric <- sapply(input, is.numeric)
   if (!all(input_isnumeric)) {
     stop(paste("Non-numeric input:", 
                paste(names(input)[!input_isnumeric], collapse=", ")))
   }
-  
   if (!is.vector(input$y)) {
     stop("'y' is not a vector")
   } 
-  
   if (!is.matrix(input$dat)) {
     stop("'dat' is not a matrix ")
   }
-  
   if (length(input$y) != dim(input$dat)[1]) {
     stop("Dimensions of 'y' and 'dat' do not fit")
   }
 }
-
+# function to check or generate weights in `es_sample' and `mmds_sample` 
 w.helper.multiv <- function(dat, w){
   m <- ncol(dat)
   if (is.null(w)){

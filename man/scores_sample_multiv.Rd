@@ -22,8 +22,9 @@ vs_sample(y, dat, w_vs = NULL, p = 0.5)
 \item{w}{numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})}
 
 \item{w_vs}{numeric matrix of weights for \code{dat} used in the variogram
-score. If no weights are specified, constant weights with \eqn{w_vs = 1}
-are used.}
+score. This matrix must be square and symmetric, with all elements being non-negative.
+If no weights are specified, constant weights (with all elements of \code{w_vs} 
+equal to one) are used.}
 
 \item{p}{order of variogram score. Standard choices include \eqn{p = 1} and
 \eqn{p = 0.5}.}
@@ -51,11 +52,11 @@ weights are analogous to the input \code{w} in \link{crps_sample}.
 In \link{vs_sample} it is possible to specify a matrix \code{w_vs} of
 non-negative weights that allow to emphasize or downweight pairs of
 component combinations based on subjective expert decisions. \code{w_vs} is a
-square matrix with dimensions equal to the length of the input vector
+square, symmetric matrix with dimensions equal to the length of the input vector
 \code{y}, and the entry in the \eqn{i}-th row and \eqn{j}-th column of
 \code{w_vs} corresponds to the weight assigned to the combination of the
-corresponding \eqn{i}-th and \eqn{j}-th component. For details and examples,
-see Scheuerer and Hamill (2015).
+corresponding \eqn{i}-th and \eqn{j}-th component. A small example is provided below. 
+For details and further examples, see Scheuerer and Hamill (2015).
 
 The `MMD score' in \link{mmds_sample} is a kernel scoring rule as described in 
 Gneiting and Raftery (2007, Section 5). As for all other scores, 
