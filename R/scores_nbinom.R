@@ -26,8 +26,31 @@ crps_nbinom <- function(y, size, prob, mu) {
   c1 <- y * (2 * pnbinom(y, size, prob) - 1)
   c2 <- (1 - prob) / prob ^ 2
   c3 <- (prob * (2 * pnbinom(y - 1, size + 1, prob) - 1)
-         + Re(hypergeo::hypergeo(size + 1, 0.5, 2, -4 * c2)))
+         #+ Re(hypergeo::hypergeo(size + 1, 0.5, 2, -4 * c2)))
+         + hypergeo_0.5_2(size + 1, -4 * c2))
   return(c1 - size * c2 * c3)
+}
+
+hypergeo_0.5_2 <- function(a, z) {
+  if (!identical(length(a), 1L) || !identical(length(z), 1L)) {
+    l <- max(length(a), length(z))
+    a <- rep_len(a, l)
+    z <- rep_len(z, l)
+    return(sapply(seq_along(a), function(i) {hypergeo_0.5_2(a[i], z[i])}))
+  }
+  # 2F1(a, 0.5, 2, z)
+  res <- NA
+  if (a > 2.5 && abs(a - round(a)) < 1e-12) {
+    res <- (1 - z)^(1.5 - a) *
+             hypergeo::hypergeo_taylor(2 - a, 1.5, 2, z, maxiter = a - 2)
+  }
+  if (!is.finite(res) && z > -1) {
+    res <- hypergeo::f15.3.4(a, 0.5, 2, z)
+  }
+  if (!is.finite(res)) {
+    res <- Re(hypergeo::f15.3.8(a, 0.5, 2, z))
+  }
+  res
 }
 
 #' @rdname scores_nbinom
