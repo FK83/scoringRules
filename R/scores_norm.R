@@ -310,7 +310,7 @@ dss_norm <- function(y, mean = 0, sd = 1, location = mean, scale = sd) {
     stop("specify 'mean' or 'location' but not both")
   if (!missing(sd) && !missing(scale))
     stop("specify 'sd' or 'scale' but not both")
-  if (!identical(location, 1)) y <- y - location
+  if (!identical(location, 0)) y <- y - location
   if (identical(scale, 1)) {
     y^2
   } else {
