@@ -21,7 +21,7 @@
 #' @references
 #' \emph{Evaluating simulation based forecast distributions:}
 #' 
-#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2020): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review}, forthcoming. \doi{10.1111/insr.12405}
+#' Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2021): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review} 89, 274-301. \doi{10.1111/insr.12405}
 #'  
 #' \emph{Empirical quantile decomposition of the CRPS:}
 #'  
@@ -121,7 +121,7 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
   input$bw <- bw
   
   if (show_messages)
-    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2019) for details.")
+    message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2021) for details.")
   if (identical(length(y), 1L) && is.vector(dat)) {
     check_sample(input)
     if (is.null(bw)) bw <- bw.nrd(dat)

@@ -91,7 +91,7 @@ crps_sample(y = y, dat = sample) # error
 \references{
 \emph{Evaluating simulation based forecast distributions:}
 
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2020): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review}, forthcoming. \doi{10.1111/insr.12405}
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2021): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review} 89, 274-301. \doi{10.1111/insr.12405}
  
 \emph{Empirical quantile decomposition of the CRPS:}
  

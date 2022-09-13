@@ -52,14 +52,19 @@ set.seed(42)
 
 # Required packages
 library(scoringRules)
-library(crch)
+if (requireNamespace("crch", quietly = TRUE)) {
+  use_crch <- TRUE
+  library(crch)
+  } else {
+  use_crch <- FALSE
+}
 @
 
 
 %% -- Article metainformation (author, title, ...) -----------------------------
 
-\author{Alexander Jordan\\University of Bern
-	\And Fabian Kr\"uger\\Heidelberg University
+\author{Alexander Jordan\\Heidelberg Institute for\\Theoretical Studies
+	\And Fabian Kr\"uger\\Karlsruhe Institute of\\Technology
 	\And Sebastian Lerch\\Karlsruhe Institute of\\Technology\\Heidelberg Institute for\\Theoretical Studies}
 \Plainauthor{Alexander Jordan, Fabian Kr\"uger, Sebastian Lerch}
 
@@ -76,25 +81,25 @@ library(crch)
 
 \Address{
   Alexander Jordan\\
-  University of Bern\\
-  Institute of Mathematical Statistics and Actuarial Science\\
-  Alpeneggstrasse 22\\
-  3012 Bern, Switzerland\\
-  E-Mail: \email{alexander.jordan@stat.unibe.ch}\\
+  Heidelberg Institute for Theoretical Studies\\
+  Computational Statistics Group\\
+  Schloss-Wolfsbrunnenweg 35\\
+  69118 Heidelberg, Germany\\
+  E-Mail: \email{alexander.jordan@h-its.org}\\
   
   Fabian Kr\"uger\\
-  Alfred-Weber-Institute for Economics\\
-  Heidelberg University\\
-  Bergheimer Str. 58\\
-  69115 Heidelberg, Germany\\
-  E-Mail: \email{fabian.krueger@awi.uni-heidelberg.de}\\
-  URL: \url{https://sites.google.com/site/fk83research/home}\\
+  Karlsruhe Institute of Technology\\
+  Department of Economics\\
+  Bl\"ucherstr. 17\\
+  76185 Karlsruhe, Germany\\
+  E-Mail: \email{fabian.krueger@kit.edu}\\
+  URL: \url{https://ewifo.econ.kit.edu/}\\
   
   Sebastian Lerch\\
   Karlsruhe Institute of Technology\\
-  Institute for Stochastics\\
-  Englerstr. 2\\
-  76131 Karlsruhe, Germany \\
+  Department of Economics\\
+  Bl\"ucherstr. 17\\
+  76185 Karlsruhe, Germany\\
   E-Mail: \email{sebastian.lerch@kit.edu}\\
   URL: \url{https://sites.google.com/site/sebastianlerch/}\\
   \emph{and}\\
@@ -106,7 +111,7 @@ library(crch)
 
 \section*{Preface}
 
-This vignette corresponds to an article of the same name in the \emph{Journal of Statistical Software} \citep{JordanEtAl2018}. While the two articles are close to identical at the time of this writing (August 20, 2019), the vignette may be updated to reflect future changes in the package.
+This vignette corresponds to an article of the same name in the \emph{Journal of Statistical Software} \citep{JordanEtAl2018}. The two articles are close to identical at the time of this writing (September 12, 2022).
 
 \section{Introduction: Forecast evaluation} \label{sec:intro}
 
@@ -441,7 +446,7 @@ For kernel density estimation, i.e., the default in \logssample{} and the corres
 @
 In numerical weather prediction (NWP), physical processes in the atmosphere are modeled through systems of partial differential equations that are solved numerically on three-dimensional grids. To account for major sources of uncertainty, weather forecasts are typically obtained from multiple runs of NWP models with varying initial conditions and model physics resulting in a set of deterministic predictions, called the forecast ensemble. While ensemble predictions are an important step from deterministic to probabilistic forecasts, they tend to be biased and underdispersive (such that, empirically, the actual observation falls outside the range of the ensemble too frequently). Hence, ensembles require some form of statistical post-processing. Over the past decade, a variety of approaches to statistical post-processing has been proposed, including non-homogeneous regression \citep{GneitingEtAl2005} and Bayesian model averaging \citep{RafteryEtAl2005}. 
 
-Here we illustrate how to evaluate post-processed ensemble forecasts of precipitation, based on data and methods from the \pkg{crch} \citep{MessnerEtAl2016} package for \proglang{R}. We model the conditional distribution of precipitation accumulation, $Y \geq 0$, given the ensemble forecasts $X_1,\dots,X_m$ using censored non-homogeneous regression models of the form
+Here we illustrate how to evaluate post-processed ensemble forecasts of precipitation, based on data and methods from the \pkg{crch} \citep{MessnerEtAl2016} package for \proglang{R}. (The corresponding code chunks are run only if the \pkg{crch} package has been installed, as indicated by the logical variable \code{use_crch}). We model the conditional distribution of precipitation accumulation, $Y \geq 0$, given the ensemble forecasts $X_1,\dots,X_m$ using censored non-homogeneous regression models of the form
 \begin{eqnarray}
 \Prob(Y = 0|X_1,\dots,X_m) &=& F_{\theta}(0) \label{eq:pproc1}, \\
 \Prob(Y \le y|X_1,\dots,X_m) &=& F_{\theta}(y),~\text{for}~y >0, \label{eq:pproc2}
@@ -459,115 +464,127 @@ A logarithmic link function is used to ensure positivity of the scale parameter.
 The \pkg{crch} package contains a data set \code{RainIbk} of precipitation for Innsbruck, Austria. It comprises ensemble forecasts \code{rainfc.1}, \ldots, \code{rainfc.11} and observations \code{rain} for 4971 cases from January 2000 to September 2013. The precipitation amounts are accumulated over three days, and the corresponding 11 member ensemble consists of accumulated precipitation amount forecasts between five and eight days ahead. Following \citet{MessnerEtAl2016} we model the square root of precipitation amounts, and omit forecast cases where the ensemble has a standard deviation of zero. From \citet{MessnerEtAl2016}:
 %
 <<Prepare-post-processing-example>>=
-library("crch")
-data("RainIbk", package = "crch")
-RainIbk <- sqrt(RainIbk)
-ensfc <- RainIbk[, grep('^rainfc', names(RainIbk))]
-RainIbk$ensmean <- apply(ensfc, 1, mean)
-RainIbk$enssd <- apply(ensfc, 1, sd)
-RainIbk <- subset(RainIbk, enssd > 0)
+if (use_crch){
+  library("crch")
+  data("RainIbk", package = "crch")
+  RainIbk <- sqrt(RainIbk)
+  ensfc <- RainIbk[, grep('^rainfc', names(RainIbk))]
+  RainIbk$ensmean <- apply(ensfc, 1, mean)
+  RainIbk$enssd <- apply(ensfc, 1, sd)
+  RainIbk <- subset(RainIbk, enssd > 0)  
+} 
 @
 %
 We split the data into a training set until November 2004, and an out-of-sample evaluation period (or test sample) from January 2005.
 %
 <<Splitting-data>>=
-data_train <- subset(RainIbk, as.Date(rownames(RainIbk)) <= "2004-11-30")
-data_eval <- subset(RainIbk, as.Date(rownames(RainIbk)) >= "2005-01-01")
+if (use_crch){
+  data_train <- subset(RainIbk, as.Date(rownames(RainIbk)) <= "2004-11-30")
+  data_eval <- subset(RainIbk, as.Date(rownames(RainIbk)) >= "2005-01-01")  
+} 
 @
 %
 Then, we estimate the censored regression models that are based on the logistic, Student's $t$, and Gaussian distributions, and produce the parameters of the forecast distributions for the evaluation period using built-in functionality of the \pkg{crch} package. We only show the code for the Gaussian model since it can be adapted straightforwardly for the logistic and Student's $t$ models.
 %
 <<Forecasting-Gauss>>=
-CRCHgauss <- crch(rain ~ ensmean | log(enssd), data_train,
+if (use_crch){
+  CRCHgauss <- crch(rain ~ ensmean | log(enssd), data_train,
   dist = "gaussian", left = 0)
-gauss_mu <- predict(CRCHgauss, data_eval, type = "location")
-gauss_sc <- predict(CRCHgauss, data_eval, type = "scale")
+  gauss_mu <- predict(CRCHgauss, data_eval, type = "location")
+  gauss_sc <- predict(CRCHgauss, data_eval, type = "scale")
+} 
 @
 <<Forecasting-logis-stud, echo=FALSE>>=
-CRCHlogis <- crch(rain ~ ensmean | log(enssd), data = data_train, 
-left = 0, dist = "logistic")
-CRCHstud <- crch(rain ~ ensmean | log(enssd), data = data_train, 
-left = 0, dist = "student")
-logis_mu <- predict(CRCHlogis, data_eval, type = "location")
-logis_sc <- predict(CRCHlogis, data_eval, type = "scale")
-stud_mu <- predict(CRCHstud, data_eval, type = "location")
-stud_sc <- predict(CRCHstud, data_eval, type = "scale")
-stud_df <- CRCHstud$df
+if (use_crch){
+  CRCHlogis <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+                    left = 0, dist = "logistic")
+  CRCHstud <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+                   left = 0, dist = "student")
+  logis_mu <- predict(CRCHlogis, data_eval, type = "location")
+  logis_sc <- predict(CRCHlogis, data_eval, type = "scale")
+  stud_mu <- predict(CRCHstud, data_eval, type = "location")
+  stud_sc <- predict(CRCHstud, data_eval, type = "scale")
+  stud_df <- CRCHstud$df
+} 
 @
 %
 The raw ensemble of forecasts is a natural benchmark for comparison since interest commonly lies in quantifying the gains in forecast accuracy that result from post-processing:
 %
 <<Forecasting-raw>>=
-ens_fc <- data_eval[, grep('^rainfc', names(RainIbk))]
+if (use_crch){
+  ens_fc <- data_eval[, grep('^rainfc', names(RainIbk))]  
+} 
 @
 %
 \begin{figure}
 <<Post-processing-example-illustration, echo=FALSE, dev='pdf', fig.width=10.4, fig.height = 3.7, fig.align="center", out.width="\\linewidth">>=
 # Layout
-m <- matrix(c(1, 2, 3), nrow = 1)
-layout(mat = m, widths = c(3.55, 2.95, 3.90))
-par(pty = "s", cex = 1.1)
+if (use_crch){
+  m <- matrix(c(1, 2, 3), nrow = 1)
+  layout(mat = m, widths = c(3.55, 2.95, 3.90))
+  par(pty = "s", cex = 1.1)
 
-# Looping through forecast cases
-ID.list <- c(206,953,2564)
-for(ID in ID.list){
-  col.logis <- "blue"
-  col.gauss <- "green3"
-  col.stud <- "darkorange"
+  # Looping through forecast cases
+  ID.list <- c(206,953,2564)
+  for(ID in ID.list){
+    col.logis <- "blue"
+    col.gauss <- "green3"
+    col.stud <- "darkorange"
 
-  # Forecast densities
-  z <- seq(0,10,0.01)
-  flogis.plot <- suppressWarnings(
-    flogis(z, logis_mu[ID], logis_sc[ID], lower = 0, lmass = "cens"))
-  flogis.p0 <- plogis(0, logis_mu[ID], logis_sc[ID])
-  fnorm.plot <- suppressWarnings(
-    fnorm(z, gauss_mu[ID], gauss_sc[ID], lower = 0, lmass = "cens"))
-  fnorm.p0 <- pnorm(0, gauss_mu[ID], gauss_sc[ID])
-  fstud.plot <- suppressWarnings(
-    ft(z, stud_df, stud_mu[ID], stud_sc[ID], lower = 0, lmass = "cens"))
-  fstud.p0 <- pt(-stud_mu[ID] / stud_sc[ID], stud_df)
+    # Forecast densities
+    z <- seq(0,10,0.01)
+    flogis.plot <- suppressWarnings(
+      flogis(z, logis_mu[ID], logis_sc[ID], lower = 0, lmass = "cens"))
+      flogis.p0 <- plogis(0, logis_mu[ID], logis_sc[ID])
+      fnorm.plot <- suppressWarnings(
+      fnorm(z, gauss_mu[ID], gauss_sc[ID], lower = 0, lmass = "cens"))
+      fnorm.p0 <- pnorm(0, gauss_mu[ID], gauss_sc[ID])
+      fstud.plot <- suppressWarnings(
+      ft(z, stud_df, stud_mu[ID], stud_sc[ID], lower = 0, lmass = "cens"))
+      fstud.p0 <- pt(-stud_mu[ID] / stud_sc[ID], stud_df)
 
-  # Reset margins  
-  if (ID == ID.list[1]) par(mai = c(0.9, 0.9, 0.3, 0.15))
-  if (ID == ID.list[2]) par(mai = c(0.9, 0.3, 0.3, 0.15))
-  if (ID == ID.list[3]) par(mai = c(0.9, 0.3, 0.3, 1.1))
+    # Reset margins  
+    if (ID == ID.list[1]) par(mai = c(0.9, 0.9, 0.3, 0.15))
+    if (ID == ID.list[2]) par(mai = c(0.9, 0.3, 0.3, 0.15))
+    if (ID == ID.list[3]) par(mai = c(0.9, 0.3, 0.3, 1.1))
   
-  # Initializing plot
-  plot(NULL, type = "n", bty = "n", xaxt = "n", yaxt = "n",
-    ylim = c(-0.025, 0.5), xlim = c(-0.4,10),
-    xlab = "Precipitation amount in mm",
-	ylab = ifelse(ID == ID.list[1], "Density", ""),
-	main = rownames(data_eval)[ID])
-  axis(1, at = c(0, 5, 10))
-  if (ID == ID.list[1]) axis(2, at = c(0, 0.25, 0.5))
+    # Initializing plot
+    plot(NULL, type = "n", bty = "n", xaxt = "n", yaxt = "n",
+         ylim = c(-0.025, 0.5), xlim = c(-0.4,10),
+         xlab = "Precipitation amount in mm",
+	       ylab = ifelse(ID == ID.list[1], "Density", ""),
+	       main = rownames(data_eval)[ID])
+    axis(1, at = c(0, 5, 10))
+    if (ID == ID.list[1]) axis(2, at = c(0, 0.25, 0.5))
   
-  # Add predictive densities
-  lines(z, flogis.plot, col = col.logis)
-  lines(z, fnorm.plot, col = col.gauss)
-  lines(z, fstud.plot, col = col.stud)	  
+    # Add predictive densities
+    lines(z, flogis.plot, col = col.logis)
+    lines(z, fnorm.plot, col = col.gauss)
+    lines(z, fstud.plot, col = col.stud)	  
 
-  # Add segments for point mass at zero
-  p0.offset <- 0.2
-  segments(0, 0, 0, flogis.p0, col = col.logis, lwd = 3)	  
-  segments(-p0.offset, 0, -p0.offset, fnorm.p0, col = col.gauss, lwd = 3)	  
-  segments(-2*p0.offset, 0, -2*p0.offset, fstud.p0, col = col.stud, lwd = 3)
+    # Add segments for point mass at zero
+    p0.offset <- 0.2
+    segments(0, 0, 0, flogis.p0, col = col.logis, lwd = 3)	  
+    segments(-p0.offset, 0, -p0.offset, fnorm.p0, col = col.gauss, lwd = 3)	  
+    segments(-2*p0.offset, 0, -2*p0.offset, fstud.p0, col = col.stud, lwd = 3)
 	  
-  # Add observation
-  segments(data_eval$rain[ID], 0, data_eval$rain[ID], 0.5, lty = 2)
+    # Add observation
+    segments(data_eval$rain[ID], 0, data_eval$rain[ID], 0.5, lty = 2)
 	  
-  # Add ensemble forecast
-  ens.fc <- as.numeric(data_eval[, grep('^rainfc',names(RainIbk))][ID,])
-  for (j in 1:length(ens.fc)) {
-    segments(ens.fc[j], -0.025, ens.fc[j], -0.005)
+    # Add ensemble forecast
+    ens.fc <- as.numeric(data_eval[, grep('^rainfc',names(RainIbk))][ID,])
+    for (j in 1:length(ens.fc)) {
+      segments(ens.fc[j], -0.025, ens.fc[j], -0.005)
+    }
   }
-}
 
-# Add legend
-par(xpd = TRUE)
-legend(6.5, .45, bty = "n",
-  legend = c("cens. logistic", "cens. Gaussian", "cens. Student's t"),
-  col = c("blue", "green3", "darkorange"),
-  lty = rep(1,3), ncol = 1)
+  # Add legend
+  par(xpd = TRUE)
+  legend(6.5, .45, bty = "n",
+         legend = c("cens. logistic", "cens. Gaussian", "cens. Student's t"),
+         col = c("blue", "green3", "darkorange"),
+         lty = rep(1,3), ncol = 1)
+} 
 @
 \caption{Illustration of the forecast distributions of the censored regression models for three illustrative 3-day accumulation periods (plot title indicates end of period). The predicted probabilities of zero precipitation are shown as solid thick vertical lines at 0, and the colored thin lines indicate the upper tail on the positive half axis of the forecast densities $f_\theta$, c.f., Equations~\ref{eq:pproc1} and \ref{eq:pproc2}. The raw ensemble forecasts are shown as short line segments at the bottom, and the realizing observation is indicated by the long dashed line. \label{fig:postprocplot}}
 \end{figure}
@@ -575,23 +592,29 @@ legend(6.5, .45, bty = "n",
 Figure~\ref{fig:postprocplot} shows the models' forecast distributions in three illustrative cases. To evaluate forecast performance in the entire out of sample period, we use the function \fct{crps} for the model outputs and the function \crpssample{} to compute the CRPS of the raw ensemble. Note that we have to turn \code{ens_fc} into an object of class \class{matrix} manually.
 %
 <<Computing-scores-Gauss>>=
-obs <- data_eval$rain
-gauss_crps <- crps(obs, family = "cnorm", location = gauss_mu, 
-  scale = gauss_sc, lower = 0, upper = Inf)
-ens_crps <- crps_sample(obs, dat = as.matrix(ens_fc))
+if (use_crch){
+  obs <- data_eval$rain
+  gauss_crps <- crps(obs, family = "cnorm", location = gauss_mu, 
+                     scale = gauss_sc, lower = 0, upper = Inf)
+  ens_crps <- crps_sample(obs, dat = as.matrix(ens_fc))
+} 
 @
 <<Computing-scores-logis-stud, echo=FALSE>>=
-logis_crps <- crps(obs, family = "clogis", location = logis_mu, 
-scale = logis_sc, lower = 0, upper = Inf)
-stud_crps <- crps(obs, family = "ct", df = stud_df, location = stud_mu, 
-scale = stud_sc, lower = 0, upper = Inf)
+if (use_crch){
+  logis_crps <- crps(obs, family = "clogis", location = logis_mu, 
+                     scale = logis_sc, lower = 0, upper = Inf)
+  stud_crps <- crps(obs, family = "ct", df = stud_df, location = stud_mu, 
+                    scale = stud_sc, lower = 0, upper = Inf)
+} 
 @
 %
 The mean CRPS values indicate that all post-processing models substantially improve upon the raw ensemble forecasts. There are only small differences between the censored regression models, with the models based on the logistic and Student's $t$ distributions slightly outperforming the model based on a normal distribution.
 <<Calculating-average-scores>>=
-scores <- data.frame(CRCHlogis = logis_crps, CRCHgauss = gauss_crps,
-  CRCHstud = stud_crps, Ensemble = ens_crps)
-sapply(scores, mean)
+if (use_crch){
+  scores <- data.frame(CRCHlogis = logis_crps, CRCHgauss = gauss_crps,
+                       CRCHstud = stud_crps, Ensemble = ens_crps)
+  sapply(scores, mean)
+} 
 @
 
 \subsection[Bayesian forecasts of US GDP growth rate]{Bayesian forecasts of {US~GDP} growth rate}\label{sec:example-econ}
@@ -1336,3 +1359,4 @@ head(cbind(es_vec_list, es_vec_array))
 \end{appendix}
 
 \end{document}
+

@@ -37,7 +37,7 @@ Compute multivariate scores of the form \eqn{S(y, dat)}, where \eqn{S} is a
 proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
 \eqn{dat} is a simulated sample of multivariate forecasts. Three scores
 are available: The energy score, a score based on a Gaussian kernel 
-(\link{mmd_sample}, see details below) and the variogram score of order \eqn{p}.
+(\link{mmds_sample}, see details below) and the variogram score of order \eqn{p}.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample

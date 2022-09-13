@@ -4,7 +4,7 @@
 #' proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
 #' \eqn{dat} is a simulated sample of multivariate forecasts. Three scores
 #' are available: The energy score, a score based on a Gaussian kernel 
-#' (\link{mmd_sample}, see details below) and the variogram score of order \eqn{p}.
+#' (\link{mmds_sample}, see details below) and the variogram score of order \eqn{p}.
 #' 
 #' @param y realized values (numeric vector of length d).
 #' @param dat numeric matrix of data

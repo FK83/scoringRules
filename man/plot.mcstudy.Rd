@@ -18,7 +18,7 @@ none, used for the effect of drawing a plot.
 Plot the output of run_mcstudy
 }
 \details{
-The plot is in the same format as Figure 1 or 2 in KLTG (2020), depending on the 
+The plot is in the same format as Figure 1 or 2 in KLTG (2021), depending on the 
 parameters set when running \link{run_mcstudy}. These parameters also determine the plot content 
 (nr of MCMC chains, maximal sample size, etc). In terms of 
 additional inputs (\code{...}), the following are currently implemented:
@@ -27,7 +27,7 @@ either \code{"crps"} or \code{"logs"}. Defaults to \code{"crps"}. \item \code{ad
 whether to add main title to plot. Defaults to \code{TRUE}.}
 }
 \references{
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2020): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review}, forthcoming. \doi{10.1111/insr.12405}
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2021): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review} 89, 274-301. \doi{10.1111/insr.12405}
 }
 \seealso{
 \link{run_mcstudy} produces the simulation results summarized by \link{plot.mcstudy}

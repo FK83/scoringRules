@@ -33,3 +33,7 @@ Icon
 .Spotlight-V100
 .Trashes
 inst/doc
+# tex related files (for vignette)
+*.cls
+*.sty
+*.bst

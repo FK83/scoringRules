@@ -18,7 +18,7 @@ none, used for the effect of drawing a plot.
 Plot the output of run_casestudy
 }
 \details{
-The plot is in the same format as Figure 3 in KLTG (2020). Its content (nr of MCMC chains, 
+The plot is in the same format as Figure 3 in KLTG (2021). Its content (nr of MCMC chains, 
 maximal sample size, etc) depends on the parameters used to generate \link{run_casestudy}. In terms of 
 additional inputs (\code{...}), the following are currently implemented:
 \itemize{\item \code{scoring_rule}, the scoring rule for which results are to be plotted, 
@@ -26,7 +26,7 @@ either \code{"crps"} or \code{"logs"}. Defaults to \code{"crps"}. \item \code{ad
 whether to add main title to plot. Defaults to \code{TRUE}.}
 }
 \references{
-Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2020): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review}, forthcoming. \doi{10.1111/insr.12405}
+Krueger, F., Lerch, S., Thorarinsdottir, T.L. and T. Gneiting (2021): `Predictive inference based on Markov chain Monte Carlo output', \emph{International Statistical Review} 89, 274-301. \doi{10.1111/insr.12405}
 }
 \seealso{
 \link{run_casestudy} produces the forecast results summarized by \link{plot.casestudy}
