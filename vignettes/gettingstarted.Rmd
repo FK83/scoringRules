@@ -2,7 +2,7 @@
 title: "R package scoringRules: Getting started"
 author: "Alexander Jordan, Fabian Kr&uuml;ger, Sebastian Lerch"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Getting Started}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,21 +11,21 @@ vignette: >
 
 This vignette provides a two-page introduction to the *scoringRules* package. For a more detailed introduction, see the paper 'Evaluating probabilistic forecasts with scoringRules' (Jordan, Kr&uuml;ger, and Lerch, *Journal of Statistical Software* 90, 2019) which is available as a further vignette to *scoringRules*. 
 
-# Background 
+## Background 
 
-Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The *scoringRules* package offers mathematical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application*, 2014) for an introduction to the relevant statistical literature. 
+Forecasting a continuous random variable, such as temperature (in degrees Celsius) or the inflation rate (in percent) is important in many situations. Since forecasts are usually surrounded by uncertainty, it makes sense to state forecast distributions, rather than point forecasts. The *scoringRules* package offers statistical tools to evaluate a forecast distribution, $F$, after an outcome $y$ has realized. To this end, we use scoring rules which assign a penalty score $S(y, F)$ to the realization/forecast pair; a smaller score corresponds to a better forecast. See Gneiting and Katzfuss ('Probabilistic Forecasting', *Annual Review of Statistics and Its Application* 1, 2014) for an introduction to the relevant statistical literature. 
 
 *scoringRules* supports two types of forecast distributions, $F$: Distributions given by a parametric family (such as Normal or Gamma), and distributions given by a simulated sample. Furthermore, the package covers the two most popular scoring rules $S$: The logarithmic score (LogS), given by $$\text{LogS}(y, F) = -\log f(y),$$ where $f$ is the density conforming to $F$, and the continuous ranked probability score (CRPS), given by 
 $$
 \text{CRPS}(y, F) = \int_{-\infty}^\infty (F(z) - \mathbf{1}(y \le z))^2 dz,
 $$
-where $\mathbf{1}(A)$ is the indicator function of the event $A$. The LogS is typically easy to compute, and we include it mainly for reference purposes. By contrast, the CRPS can be very tricky to compute analytically, and cumbersome to approximate numerically. The *scoringRules* package implements several new methods to tackle this challenge. Specifically, we include many previously unknown analytical expressions, and incorporate recent findings on how to best compute the CRPS of a simulated forecast distribution.  
+where $\mathbf{1}(A)$ is the indicator function of the event $A$. The LogS is typically easy to compute, and we include it mainly for reference purposes. By contrast, the CRPS can be very tricky to compute analytically, and cumbersome to approximate numerically. To tackle this challenge, the *scoringRules* includes many previously unknown analytical expressions, and incorporates recent findings on how to best compute the CRPS of a simulated forecast distribution.  
 
-# Example 1: Parametric forecast distribution
+## Example 1: Parametric forecast distribution
 
-Suppose the forecast distribution is $\mathcal{N}(2, 4)$, and an outcome of zero realizes:\vspace{-1.5cm}
+Suppose the forecast distribution is $\mathcal{N}(2, 4)$, and an outcome of zero realizes:
 
-```{r echo = FALSE, fig.align='center', fig.width = 7, fig.height = 3}
+```{r echo = FALSE, fig.align='center', fig.width = 4.5, fig.height = 3}
 
 grid <- seq(from = -5, to = 10, length.out = 1000)
 plot(x = grid, y = dnorm(grid, mean = 2, sd = 2), bty = "n", type = "l", xlab = "Value", ylab = "Density")
@@ -39,17 +39,13 @@ library(scoringRules)
 # CRPS of a normal distribution with mean = standard deviation = 2, outcome is zero
 crps(y = 0, family = "normal", mean = 2, sd = 2)
 ```
-As documented under `?crps`, the parametric family used in the example is one of the following choices currently implemented in *scoringRules*: 
+As documented under `?crps.numeric`, many additional parametric families have been implemented in *scoringRules*, covering both continuous and discrete random variables. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
 
-- Normal, Mixture of normals, Two-piece normal, Log-normal, Generalized truncated/censored normal, (Scaled) Student t, Generalized truncated/censored Student t, Laplace, Log-Laplace, Logistic, Log-logistic, Generalized truncated/censored logistic, Exponential, Exponential with point mass, Two-piece exponential, Beta, Gamma, Uniform, Generalized extreme value, Generalized Pareto, Binomial, Hypergeometric, Negative binomial, Poisson
+## Example 2: Simulated forecast distribution
 
-We provide analytical CRPS formulas in Appendix A of the vignette 'Evaluating Probabilistic Forecasts with scoringRules'. Whenever possible, our syntax and parametrization closely follow base R. For distributions not supported by base R, we have created documentation pages with details; see for example `?f2pnorm`.
+Via `data(gdp_mcmc)`, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:
 
-# Example 2: Simulated forecast distribution
-
-Via `data(gdp_mcmc)`, the user can load a sample data set with forecasts and realizations for the growth rate of US gross domestic product, a widely regarded economic indicator. The following plot shows the histogram of a simulated forecast distribution for the fourth quarter of 2012:\vspace{-1.3cm}
-
-```{r echo = FALSE, fig.align='center', fig.width = 7, fig.height = 3}
+```{r echo = FALSE, fig.align='center', fig.width = 4.5, fig.height = 3}
 # Load data
 data(gdp_mcmc)
 
@@ -66,7 +62,6 @@ abline(v = gdp_mcmc$actuals[, "X2012Q4"], lwd = 2, lty = 2)
 ```
 
 Let's now compute the CRPS for this simulated forecast distribution:
-
 ```{r}
 # Load data
 data(gdp_mcmc)
