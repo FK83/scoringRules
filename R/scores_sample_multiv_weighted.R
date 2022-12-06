@@ -9,6 +9,10 @@
 #' @param y realized values (numeric vector of length d).
 #' @param dat numeric matrix of data
 #' (columns are simulation draws from multivariate forecast distribution).
+#' @param a numeric vector of of length d containing lower bounds for the indicator 
+#' weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.
+#' @param b numeric vector of of length d containing lower bounds for the indicator 
+#' weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.
 #' @param w numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})
 #' @param w_vs numeric matrix of weights for \code{dat} used in the variogram
 #' score. This matrix must be square and symmetric, with all elements being non-negative.
@@ -53,52 +57,85 @@ NULL
 # energy score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twes_sample <- function(y, dat, v = identity, w = NULL){
+twes_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }else if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }else if (length(a) != length(y) | length(b) != length(y)) {
+    stop("The vector of weight values is not the same length as the vector of realizations")
+  }
+  v_y <- pmin(pmax(y, a), b)
+  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
+  v_dat <- t(v_dat)
+  score <- es_sample(y = v_y, dat = v_dat, w)
+  return (score)
+}
 
-  v_y <- v(y)
-  check.chaining(y, v_y)
-  v_dat <- apply(dat, 2, v)
-  check.chaining(dat, v_dat)
-  
-  out <- es_sample(y = v_y, dat = v_dat, w = w)
-  
-  return(out)
+#' @rdname scores_sample_multiv_weighted
+#' @export
+owes_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+  weight_func <- function(x) as.numeric(x > a & x < b)
+  w_y <- sapply(y, weight_func)
+  w_dat <- array(sapply(dat, weight_func), dim(dat))
+  score <- es_sample(y, dat, w = w_dat)*w_y 
+  return (score)
 }
 
 ################################################################################
 # MMD score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twmmds_sample <- function(y, dat, v = identity, w = NULL){
-  
-  v_y <- v(y)
-  check.chaining(y, v_y)
-  v_dat <- apply(dat, 2, v)
-  check.chaining(dat, v_dat)
-  
-  out <- es_sample(y = v_y, dat = v_dat, w = w)
-  
-  return(out)
+twmmds_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }else if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }else if (length(a) != length(y) | length(b) != length(y)) {
+    stop("The vector of weight values is not the same length as the vector of realizations")
+  }
+  v_y <- pmin(pmax(y, a), b)
+  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
+  v_dat <- t(v_dat)
+  score <- mmds_sample(y = v_y, dat = v_dat, w)
+  return (score)
+}
+
+#' @rdname scores_sample_multiv_weighted
+#' @export
+owmmds_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+  weight_func <- function(x) as.numeric(x > a & x < b)
+  w_y <- sapply(y, weight_func)
+  w_dat <- array(sapply(dat, weight_func), dim(dat))
+  score <- es_sample(y, dat, w = w_dat)*w_y 
+  return (score)
 }
 
 ################################################################################
 # variogram score of order p
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twvs_sample <- function(y, dat, v = identity, w_vs = NULL, p = 0.5){
-  # y: realised values (numeric vector of length d)
-  # dat: numeric matrix of data (columns are simulation draws from multivariate forecast distribution)
-  # v: chaining function to transform the forecasts and observations (function)
-  # w_vs: numeric matrix of weights for dat used in the variogram score. This matrix must be square and symmetric, with all elements being non-negative.
-  # p: order of variogram score. Standard choices include p = 1 and p = 0.5.
-  
-  v_y <- v(y)
-  check.chaining(y, v_y)
-  v_dat <- apply(dat, 2, v)
-  check.chaining(dat, v_dat)
-  
-  out <- vs_sample(y = v_y, dat = v_dat, w_vs = w_vs, p = p)
-  
-  return(out)
+twvs_sample <- function(y, dat, a = -Inf, b = Inf, w_vs = NULL, p = 0.5){
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }else if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }else if (length(a) != length(y) | length(b) != length(y)) {
+    stop("The vector of weight values is not the same length as the vector of realizations")
+  }
+  v_y <- pmin(pmax(y, a), b)
+  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
+  v_dat <- t(v_dat)
+  score <- vs_sample(y = v_y, dat = v_dat, w_vs, p)
+  return (score)
 }
 
+#' @rdname scores_sample_multiv_weighted
+#' @export
+owvs_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL, w_vs = NULL, p = 0.5) {
+  weight_func <- function(x) as.numeric(x > a & x < b)
+  w_y <- sapply(y, weight_func)
+  w_dat <- array(sapply(dat, weight_func), dim(dat))
+  score <- vs_sample(y, dat, w_vs, p)*w_y # add w argument
+  return (score)
+}

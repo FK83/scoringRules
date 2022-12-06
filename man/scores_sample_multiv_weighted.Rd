@@ -3,21 +3,36 @@
 \name{scores_sample_multiv_weighted}
 \alias{scores_sample_multiv_weighted}
 \alias{twes_sample}
+\alias{owes_sample}
 \alias{twmmds_sample}
+\alias{owmmds_sample}
 \alias{twvs_sample}
+\alias{owvs_sample}
 \title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions}
 \usage{
-twes_sample(y, dat, v = identity, w = NULL)
+twes_sample(y, dat, a = -Inf, b = Inf, w = NULL)
 
-twmmds_sample(y, dat, v = identity, w = NULL)
+owes_sample(y, dat, a = -Inf, b = Inf, w = NULL)
 
-twvs_sample(y, dat, v = identity, w_vs = NULL, p = 0.5)
+twmmds_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+
+owmmds_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+
+twvs_sample(y, dat, a = -Inf, b = Inf, w_vs = NULL, p = 0.5)
+
+owvs_sample(y, dat, a = -Inf, b = Inf, w = NULL, w_vs = NULL, p = 0.5)
 }
 \arguments{
 \item{y}{realized values (numeric vector of length d).}
 
 \item{dat}{numeric matrix of data
 (columns are simulation draws from multivariate forecast distribution).}
+
+\item{a}{numeric vector of of length d containing lower bounds for the indicator 
+weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.}
+
+\item{b}{numeric vector of of length d containing lower bounds for the indicator 
+weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.}
 
 \item{w}{numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})}
 
