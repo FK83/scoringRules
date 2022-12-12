@@ -12,10 +12,8 @@ twcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  method = "edf",
+  chain_func = NULL,
   w = NULL,
-  bw = NULL,
-  num_int = FALSE,
   show_messages = TRUE
 )
 
@@ -24,12 +22,9 @@ owcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  method = "edf",
+  weight_func = NULL,
   w = NULL,
-  bw = NULL,
-  num_int = FALSE,
-  show_messages = TRUE,
-  comp = TRUE
+  show_messages = TRUE
 )
 
 clogs_sample(
@@ -49,23 +44,29 @@ clogs_sample(
 \item{dat}{vector or matrix (depending on \code{y}; see details)
 of simulation draws from forecast distribution.}
 
-\item{a}{optional; numeric lower bound for indicator weight function \code{w(z) = 1{a < z < b}}.}
+\item{a}{numeric lower bound for the indicator weight function \code{w(z) = 1{a < z < b}}.}
 
-\item{b}{optional; numeric upper bound for indicator weight function \code{w(z) = 1{a < z < b}}.}
+\item{b}{numeric upper bound for the indicator weight function \code{w(z) = 1{a < z < b}}.}
 
-\item{method}{string; approximation method. Options:
-"edf" (empirical distribution function) and
-"kde" (kernel density estimation).}
+\item{chain_func}{chaining function to be used in the threshold-weighted CRPS; the default 
+is the chaining function corresponding to the weight function \code{w(z) = 1{a < z < b}}.}
 
-\item{w}{optional; vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.}
-
-\item{bw}{optional; vector (matching \code{y}) of bandwidths for kernel density
-estimation; see details.}
-
-\item{num_int}{logical; if TRUE numerical integration is used for method \code{"kde"}.}
+\item{w}{optional; vector or matrix (matching \code{dat}) of ensemble weights for method \code{"edf"}. 
+Note that these weights are not used in the weighted scoring rules; see details.}
 
 \item{show_messages}{logical; display of messages (does not affect
 warnings and errors).}
+
+\item{weight_func}{weight function to be used in the observation-weighted CRPS; the default 
+is the weight function \code{w(z) = 1{a < z < b}}.}
+
+\item{bw}{optional; vector (matching \code{y}) of bandwidths for kernel density
+estimation for the weighted likelihood scores; see details.}
+
+\item{comp}{logical; if TRUE, the outcome-weighted scores are complemented with 
+a proper scoring rule for binary outcomes; see details.}
+
+\item{num_int}{logical; if TRUE, numerical integration is used for method \code{"kde"}.}
 }
 \value{
 Value of the score. \emph{A lower score indicates a better forecast.}

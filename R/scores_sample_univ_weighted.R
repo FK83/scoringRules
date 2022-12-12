@@ -5,17 +5,21 @@
 #' @param y vector of realized values.
 #' @param dat vector or matrix (depending on \code{y}; see details)
 #'  of simulation draws from forecast distribution. 
-#' @param a optional; numeric lower bound for indicator weight function \code{w(z) = 1{a < z < b}}.
-#' @param b optional; numeric upper bound for indicator weight function \code{w(z) = 1{a < z < b}}.
-#' @param method string; approximation method. Options:
-#'  "edf" (empirical distribution function) and
-#'  "kde" (kernel density estimation).
-#' @param w optional; vector or matrix (matching \code{dat}) of weights for method \code{"edf"}.
+#' @param a numeric lower bound for the indicator weight function \code{w(z) = 1{a < z < b}}.
+#' @param b numeric upper bound for the indicator weight function \code{w(z) = 1{a < z < b}}.
+#' @param chain_func chaining function to be used in the threshold-weighted CRPS; the default 
+#'  is the chaining function corresponding to the weight function \code{w(z) = 1{a < z < b}}.
+#' @param weight_func weight function to be used in the observation-weighted CRPS; the default 
+#'  is the weight function \code{w(z) = 1{a < z < b}}.
+#' @param w optional; vector or matrix (matching \code{dat}) of ensemble weights for method \code{"edf"}. 
+#'  Note that these weights are not used in the weighted scoring rules; see details.
 #' @param bw optional; vector (matching \code{y}) of bandwidths for kernel density
-#' estimation; see details.
-#' @param num_int logical; if TRUE numerical integration is used for method \code{"kde"}.
+#' estimation for the weighted likelihood scores; see details.
+#' @param num_int logical; if TRUE, numerical integration is used for method \code{"kde"}.
 #' @param show_messages logical; display of messages (does not affect
 #'  warnings and errors).
+#' @param comp logical; if TRUE, the outcome-weighted scores are complemented with 
+#'  a proper scoring rule for binary outcomes; see details.
 #'  
 #' @return
 #' Value of the score. \emph{A lower score indicates a better forecast.}
@@ -61,66 +65,52 @@ NULL
 
 #' @rdname scores_sample_univ_weighted
 #' @export
-twcrps_sample <- function(y, dat, a = -Inf, b = Inf, method = "edf", w = NULL, bw = NULL, 
-                          num_int = FALSE, show_messages = TRUE) {
-  input <- list(lower = a, upper = b)
+twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, show_messages = TRUE) {
+  input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_weight(input)
-  if (method == "edf") {
-    v_y <- pmin(pmax(y, a), b)
-    v_dat <- pmin(pmax(dat, a), b)
-    crps_sample(y = v_y, dat = v_dat, method, w, bw, num_int, show_messages)
-  } else if (method == "kde") {
-    stop("twcrps_sample is not yet available for method kde")
-  } else {
-    stop("Unexpected choice of method - please select either 'edf' or 'kde'.")
+  if (is.null(chain_func)) {
+    chain_func <- function(x) pmin(pmax(x, a), b) 
   }
-  
+  v_y <- sapply(y, chain_func)
+  if (is.vector(dat)) {
+    v_dat <- sapply(dat, chain_func)
+  } else {
+    v_dat <- array(sapply(dat, chain_func), dim(dat))
+  }
+  crps_sample(y = v_y, dat = v_dat, method = "edf", w = w, show_messages = show_messages)
 }
 
 
 #' @rdname scores_sample_univ_weighted
 #' @export
-owcrps_sample <- function(y, dat, a = -Inf, b = Inf, method = "edf", w = NULL, bw = NULL, 
-                          num_int = FALSE, show_messages = TRUE, comp = TRUE) {
-  input <- list(lower = a, upper = b)
+owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, show_messages = TRUE) {
+  input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_weight(input)
-  weight_func <- function(x) as.numeric(x > a & x < b)
+  if (is.null(weight_func)) {
+    weight_func <- function(x) as.numeric(x > a & x < b)
+  }
   w_y <- sapply(y, weight_func)
-  if (method == "edf"){
-    if (identical(length(y), 1L) && is.vector(dat)) {
-      w_dat <- sapply(dat, weight_func)
-    } else {
-      w_dat <- array(sapply(dat, weight_func), dim(dat))
-    }
-    if (is.null(w)) {
-      w <- w_dat
-    }else {
-      w <- w*w_dat
-    }
-    score <- crps_sample(y, dat, method, w = w, bw, num_int, show_messages)*w_y
-    # complement the owCRPS with the Brier score
-    if (comp) {
-      if (identical(length(y), 1L) && is.vector(dat)) {
-        int_wf <- mean(dat < b) - mean(dat < a)
-      }else {
-        int_wf <- rowMeans(dat < b) - rowMeans(dat < a)
-      }
-      score <- score + w_y*(1 - int_wf)^2 + (1 - w_y)*(int_wf^2)
-    }
-  }
-  if (method == "kde") {
-    stop("owcrps_sample is not yet available for method kde")
+  if (is.vector(dat)) {
+    w_dat <- sapply(dat, weight_func)
   } else {
-    stop("Unexpected choice of method - please select either 'edf' or 'kde'.")
+    w_dat <- array(sapply(dat, weight_func), dim(dat))
   }
-  return (score)
+  if (is.null(w)) {
+    w <- w_dat
+  }else {
+    if (dim(w) == dim(dat)) {
+      w <- w*w_dat
+    }else {
+      stop("The dimensions of w do not match the dimensions of dat.")
+    }
+  }
+  crps_sample(y, dat, method = "edf", w = w, show_messages = show_messages)*w_y
 }
 
 
 #' @rdname scores_sample_univ_weighted
 #' @export
-clogs_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, 
-                          show_messages = TRUE, comp = TRUE) {
+clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_messages = TRUE, comp = TRUE) {
   input <- list(y = y, dat = dat)
   input$bw <- bw
   if (show_messages)
@@ -150,15 +140,51 @@ clogs_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL,
 }
 
 
-#### input checks for weighted scoring rules ####
+#### checks on the weight and chaining functions for weighted scoring rules ####
 check_weight <- function(input) {
   a <- input$lower
   b <- input$upper
+  w <- input$w
+  v <- input$v
+  y <- sort(input$y)
   
-  if (length(a) > 1 | length(b) > 1) {
+  if (!is.numeric(a) | !is.numeric(b)) {
+    stop("The lower and upper bounds in the weight function must be single numeric values.")
+  } else if (length(a) > 1 | length(b) > 1) {
     stop("The lower and upper bounds in the weight function must be single numeric values.")
   } else if (a >= b) {
     stop("The lower bound in the weight function is not smaller than the upper bound.")
   }
+  
+  if (!is.null(w)) {
+    if (!is.function(w)) {
+      stop("The weight function must be of type 'function'.")
+    } else {
+      w_y <- w(y)
+    }
+    if (any(is.na(w_y))) {
+      stop("The weight function returns NAs.")
+    }else if (length(w_y) != length(y)) {
+      stop("The weight function does not return a vector of the same length as y.")
+    } else if (any(w_y < 0)) {
+      stop("The weight function returns negative weights.")
+    }
+  }
+  
+  if (!is.null(v)) {
+    if (!is.function(v)) {
+      stop("The chaining function must be of type 'function'.")
+    } else {
+      v_y <- v(y)
+    }
+    if (any(is.na(v_y))) {
+      stop("The chaining function returns NAs.")
+    }else if (length(v_y) != length(y)) {
+      stop("The chaining function does not return a vector of the same length as y.")
+    } else if (any(diff(v_y) < 0)) {
+      message("The chaining function is not increasing.")
+    }
+  }
+  
   
 }
