@@ -131,20 +131,53 @@
 #' twcrps_sample(y = y, dat = sample, a = 1) 
 #' 
 #' 
-#' # custom weight and chaining functions can also be used:
-#' # e.g. a Gaussian weight function with mean mu and standard deviation sigma
+#' # alternative custom weight and chaining functions can also be used
+#' 
+#' # Example 1: a Gaussian weight function with location mu and scale sigma
 #' mu <- 0
 #' sigma <- 0.5
 #' weight_func <- function(x) pnorm(x, mu, sigma)
-#' x <- seq(-2, 2, 0.01)
-#' plot(x, weight_func(x)) # positive outcomes are given higher weight
-#' owcrps_sample(y = y, dat = sample, a = mu)
-#' owcrps_sample(y = y, dat = sample, weight_func = weight_func)
-#' 
 #' # the corresponding chaining function is
 #' chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
+#' 
+#' x <- seq(-2, 2, 0.01)
+#' plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
+#' plot(x, chain_func(x), type = "l") 
+#' 
+#' owcrps_sample(y = y, dat = sample, a = mu)
+#' owcrps_sample(y = y, dat = sample, weight_func = weight_func)
 #' twcrps_sample(y = y, dat = sample, a = mu)
 #' twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+#' 
+#' 
+#' # Example 2: a sigmoid (or logistic) weight function with location mu and scale 
+#' weight_func <- function(x) plogis(x, mu, sigma)
+#' chain_func <- function(x) sigma*log(exp((x - mu)/sigma) + 1)
+#' 
+#' x <- seq(-2, 2, 0.01)
+#' plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
+#' plot(x, chain_func(x), type = "l") 
+#' 
+#' owcrps_sample(y = y, dat = sample, a = mu)
+#' owcrps_sample(y = y, dat = sample, weight_func = weight_func)
+#' twcrps_sample(y = y, dat = sample, a = mu)
+#' twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+#' 
+#' 
+#' # Example 3: the weight function w(z) = 1{z < a or z > b}
+#' a <- -1
+#' b <- 1
+#' weight_func <- function(x) as.numeric(x < a || x > b)
+#' chain_func <- function(x) (x < a)*(x - a) + (x > b)*(x - b) + a
+#' 
+#' x <- seq(-2, 2, 0.01)
+#' plot(x, weight_func(x), type = "l")
+#' plot(x, chain_func(x), type = "l")
+#' 
+#' owcrps_sample(y = y, dat = sample, weight_func = weight_func)
+#' twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+#' twcrps_sample(y = y, dat = sample, b = -1) + twcrps_sample(y = y, dat = sample, a = 1)
+#' crps_sample(y = y, dat = sample) - twcrps_sample(y = y, dat = sample, a = -1, b = 1)
 #' }
 #' 
 #' @name scores_sample_univ_weighted
