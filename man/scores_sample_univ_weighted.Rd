@@ -86,6 +86,61 @@ The \code{w} argument is used to weight the draws from the predictive distributi
 This argument is also present in the unweighted scores (e.g. \code{\link{crps_sample}}).
 This does not weight particular outcomes within the weighted scoring rules.
 }
+\examples{
+\dontrun{
+
+y <- rnorm(10)
+sample <- matrix(rnorm(100), nrow = 10)
+crps_sample(y = y, dat = sample)
+twcrps_sample(y = y, dat = sample)
+owcrps_sample(y = y, dat = sample)
+
+# emphasise outcomes above 0
+twcrps_sample(y = y, dat = sample, a = 0)
+owcrps_sample(y = y, dat = sample, a = 0)
+
+# emphasise outcomes below 0
+twcrps_sample(y = y, dat = sample, b = 0)
+owcrps_sample(y = y, dat = sample, b = 0)
+
+# emphasise outcomes between -1 and 1
+twcrps_sample(y = y, dat = sample, a = -1, b = 1)
+owcrps_sample(y = y, dat = sample, a = -1, b = 1)
+
+
+# a must be smaller than b 
+twcrps_sample(y = y, dat = sample, a = 1, b = -1) # error
+owcrps_sample(y = y, dat = sample, a = 0, b = 0) # error
+
+# a and b must be single numeric values (not vectors)
+twcrps_sample(y = y, dat = sample, a = rnorm(10)) # error
+
+
+# the owCRPS is not defined if none of dat are between a and b
+y <- rnorm(10)
+sample <- matrix(runif(100, -5, 1), nrow = 10)
+owcrps_sample(y = y, dat = sample, a = 1)
+# the twCRPS is zero if none of y and dat are between a and b
+twcrps_sample(y = y, dat = sample, a = 1) 
+
+
+# custom weight and chaining functions can also be used:
+# e.g. a Gaussian weight function with mean mu and standard deviation sigma
+mu <- 0
+sigma <- 0.5
+weight_func <- function(x) pnorm(x, mu, sigma)
+x <- seq(-2, 2, 0.01)
+plot(x, weight_func(x)) # positive outcomes are given higher weight
+owcrps_sample(y = y, dat = sample, a = 0)
+owcrps_sample(y = y, dat = sample, weight_func = weight_func)
+
+# the corresponding chaining function is
+chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
+twcrps_sample(y = y, dat = sample, a = 0)
+twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+}
+
+}
 \references{
 \emph{Threshold-weighted CRPS:}
 
