@@ -1,21 +1,22 @@
 #' Weighted Scoring Rules for Simulated Forecast Distributions
 #' 
-#' Calculate weighted scores (threshold-weighted CRPS, outcome-weighted CRPS, censored likelihood score) given observations and draws from the predictive distributions.
+#' Calculate weighted scores given observations and draws from univariate predictive distributions.
+#' The weighted scoring rules that are available are the threshold-weighted CRPS, outcome-weighted CRPS, 
+#' and conditional and censored likelihood scores. 
 #' 
 #' @param y vector of realized values.
 #' @param dat vector or matrix (depending on \code{y}; see details)
 #'  of simulation draws from forecast distribution. 
 #' @param a numeric lower bound for the indicator weight function \code{w(z) = 1{a < z < b}}.
 #' @param b numeric upper bound for the indicator weight function \code{w(z) = 1{a < z < b}}.
-#' @param chain_func chaining function to be used in the threshold-weighted CRPS; the default 
-#'  is the chaining function corresponding to the weight function \code{w(z) = 1{a < z < b}}.
-#' @param weight_func weight function to be used in the observation-weighted CRPS; the default 
-#'  is the weight function \code{w(z) = 1{a < z < b}}.
-#' @param w optional; vector or matrix (matching \code{dat}) of ensemble weights for method \code{"edf"}. 
+#' @param chain_func function used to target particular outcomes in the threshold-weighted CRPS; 
+#' the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.
+#' @param weight_func function used to target particular outcomes in the observation-weighted CRPS; 
+#' the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.
+#' @param w optional; vector or matrix (matching \code{dat}) of ensemble weights. 
 #'  Note that these weights are not used in the weighted scoring rules; see details.
 #' @param bw optional; vector (matching \code{y}) of bandwidths for kernel density
-#' estimation for the weighted likelihood scores; see details.
-#' @param num_int logical; if TRUE, numerical integration is used for method \code{"kde"}.
+#' estimation for \code{\link{clogs_sample}}; see details.
 #' @param show_messages logical; display of messages (does not affect
 #'  warnings and errors).
 #' @param comp logical; if TRUE, the outcome-weighted scores are complemented with 
@@ -31,6 +32,11 @@
 #' `Comparing density forecasts using threshold-and quantile-weighted scoring rules', 
 #' \emph{Journal of Business & Economic Statistics} 29, 411-422. 
 #' \doi{10.1198/jbes.2010.08110}
+#' 
+#' Allen, S., Ginsbourger, D. and J. Ziegel (2022): 
+#' `Evaluating forecasts for high-impact events using transformed kernel scores', 
+#' \emph{arXiv preprint} arXiv:2202.12732.
+#' \doi{10.48550/arXiv.2202.12732}
 #'  
 #' \emph{Outcome-weighted CRPS:}
 #'  
@@ -39,7 +45,7 @@
 #' \emph{Annals of Applied Statistics} 11, 2404-2431. 
 #' \doi{10.1214/17-AOAS1088}
 #' 
-#' \emph{Censored likelihood score:}
+#' \emph{Conditional and censored likelihood scores:}
 #' 
 #' Diks, C., Panchenko, V. and D. Van Dijk (2011):
 #' `Likelihood-based scoring rules for comparing density forecasts in tails',
@@ -52,13 +58,40 @@
 #' For a vector \code{y} of length n, \code{dat} should be given as a matrix
 #' with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
 #' 
-#' \code{\link{twcrps_sample}} transforms \code{y} and \code{dat} according to the
-#' weight function, and then employs \code{\link{crps_sample}}. See the documentation
-#' for \code{\link{crps_sample}} for further details.
+#' \code{\link{twcrps_sample}} transforms \code{y} and \code{dat} using the chaining
+#' function \code{chain_func} and then calls \code{\link{crps_sample}}. 
+#' \code{\link{owcrps_sample}} weights \code{y} and \code{dat} using the weight function
+#' \code{weight_func} and then calls \code{\link{crps_sample}}. 
+#' See the documentation for \code{\link{crps_sample}} for further details.
 #' 
-#' The \code{w} argument is used to weight the draws from the predictive distribution. 
-#' This argument is also present in the unweighted scores (e.g. \code{\link{crps_sample}}).
-#' This does not weight particular outcomes within the weighted scoring rules.  
+#' The default weight function used in the weighted scores is \code{w(z) = 1{a < z < b}}, 
+#' which is equal to one if \code{z} is between \code{a} and \code{b}, and zero otherwise.
+#' This weight function emphasises outcomes between \code{a} and \code{b}, and is 
+#' commonly used in practical applications when interest is on values above a threshold
+#' (set \code{b = Inf} and \code{a} equal to the threshold) or below a threshold 
+#' (set \code{a = -Inf} and \code{b} equal to the threshold). 
+#' 
+#' Alternative weight functions can also be employed using the \code{chain_func} 
+#' and \code{weight_func} arguments to \code{\link{twcrps_sample}} and \code{\link{owcrps_sample}},
+#' respectively. Computation of the threshold-weighted CRPS for samples from a predictive distribution 
+#' requires a chaining function rather than a weight function. This is why a chaining 
+#' function is an input for \code{twcrps_sample} whereas a weight function is an 
+#' input for \code{owcrps_sample.}
+#' 
+#' The \code{chain_func} and \code{weight_func} arguments are functions that will 
+#' be applied to the elements in \code{y} and \code{dat}. They must both input 
+#' and output a single numeric value. An error will be returned if \code{weight_func} 
+#' returns negative values, and a warning messages will appear if \code{chain_func} is 
+#' not increasing. 
+#' 
+#' If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 
+#' \code{weight_func}, then both \code{\link{twcrps_sample}} and \code{\link{owcrps_sample}} 
+#' are equivalent to the standard unweighted \code{\link{crps_sample}}.
+#' 
+#' The \code{w} argument is also present in the unweighted scores (e.g. \code{\link{crps_sample}}).
+#' \code{w} is used to weight the draws from the predictive distribution, and does 
+#' not weight particular outcomes within the weighted scoring rules. This should not be
+#' confused with the \code{weight_func} argument, which is used within the weighted scores.
 #' 
 #' @examples
 #' \dontrun{
