@@ -244,7 +244,7 @@ twes_sample(y = obs, dat = fc_sample, chain_func = chain_func)
 
 
 # Example 2: a mulivariate Gaussian weight function with mean vector mu and 
-diagonal covariance matrix sigma
+# diagonal covariance matrix sigma
 mu <- rep(0, d)
 sigma <- diag(d)
 weight_func <- function(x) prod(pnorm(x, mu, diag(sigma)))

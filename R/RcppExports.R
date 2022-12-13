@@ -81,6 +81,14 @@ vsC_w_vs <- function(y, dat, w_vs, p) {
     .Call(`_scoringRules_vsC_w_vs`, y, dat, w_vs, p)
 }
 
+vskernelC <- function(x1, x2, w_vs, p) {
+    .Call(`_scoringRules_vskernelC`, x1, x2, w_vs, p)
+}
+
+vsC_w <- function(y, dat, w_vs, w, p) {
+    .Call(`_scoringRules_vsC_w`, y, dat, w_vs, w, p)
+}
+
 energyscoreC <- function(y, dat, w) {
     .Call(`_scoringRules_energyscoreC`, y, dat, w)
 }

@@ -212,7 +212,7 @@
 #'
 #'
 #' # Example 2: a mulivariate Gaussian weight function with mean vector mu and 
-#' diagonal covariance matrix sigma
+#' # diagonal covariance matrix sigma
 #' mu <- rep(0, d)
 #' sigma <- diag(d)
 #' weight_func <- function(x) prod(pnorm(x, mu, diag(sigma)))
@@ -275,6 +275,7 @@ owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
   }else {
     w <- w*w_dat
   }
+  w <- w/sum(w)
   score <- es_sample(y, dat, w = w)*w_y 
   return(score)
 }
@@ -324,6 +325,7 @@ owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NUL
   }else {
     w <- w*w_dat
   }
+  w <- w/sum(w)
   score <- mmds_sample(y, dat, w = w)*w_y 
   return(score)
 }
@@ -373,6 +375,7 @@ owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL,
   }else {
     w <- w*w_dat
   }
+  w <- w/sum(w)
   score <- vs_sample(y, dat, w = w, w_vs = w_vs, p = p)*w_y 
   return(score)
 }
