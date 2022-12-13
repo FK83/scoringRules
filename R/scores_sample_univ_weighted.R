@@ -103,6 +103,7 @@
 #' 
 #' y <- rnorm(10)
 #' sample <- matrix(rnorm(100), nrow = 10)
+#' 
 #' crps_sample(y = y, dat = sample)
 #' twcrps_sample(y = y, dat = sample)
 #' owcrps_sample(y = y, dat = sample)
@@ -164,7 +165,7 @@
 #' twcrps_sample(y = y, dat = sample, chain_func = chain_func)
 #' 
 #' 
-#' # Example 2: a sigmoid (or logistic) weight function with location mu and scale 
+#' # Example 2: a sigmoid (or logistic) weight function with location mu and scale sigma
 #' weight_func <- function(x) plogis(x, mu, sigma)
 #' chain_func <- function(x) sigma*log(exp((x - mu)/sigma) + 1)
 #' 
@@ -303,10 +304,10 @@ check_weight <- function(input) {
     } else {
       w_y <- w(y)
     }
-    if (any(is.na(w_y))) {
-      stop("The weight function returns NAs.")
+    if (any(!is.numeric(w_y))) {
+      stop("The weight function does not return a numeric vector.")
     }else if (length(w_y) != length(y)) {
-      stop("The weight function does not return a vector of the same length as y.")
+      stop("The weight function does not return a numeric vector of the same length as y.")
     } else if (any(w_y < 0)) {
       stop("The weight function returns negative weights.")
     }
@@ -318,10 +319,10 @@ check_weight <- function(input) {
     } else {
       v_y <- v(y)
     }
-    if (any(is.na(v_y))) {
-      stop("The chaining function returns NAs.")
+    if (any(!is.numeric(v_y))) {
+      stop("The chaining function does not return a numeric vector.")
     }else if (length(v_y) != length(y)) {
-      stop("The chaining function does not return a vector of the same length as y.")
+      stop("The chaining function does not return a numeric vector of the same length as y.")
     } else if (any(diff(v_y) < 0)) {
       message("The chaining function is not increasing.")
     }

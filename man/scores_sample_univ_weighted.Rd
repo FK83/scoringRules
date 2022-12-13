@@ -123,6 +123,7 @@ confused with the \code{weight_func} argument, which is used within the weighted
 
 y <- rnorm(10)
 sample <- matrix(rnorm(100), nrow = 10)
+
 crps_sample(y = y, dat = sample)
 twcrps_sample(y = y, dat = sample)
 owcrps_sample(y = y, dat = sample)
@@ -184,7 +185,7 @@ twcrps_sample(y = y, dat = sample, a = mu)
 twcrps_sample(y = y, dat = sample, chain_func = chain_func)
 
 
-# Example 2: a sigmoid (or logistic) weight function with location mu and scale 
+# Example 2: a sigmoid (or logistic) weight function with location mu and scale sigma
 weight_func <- function(x) plogis(x, mu, sigma)
 chain_func <- function(x) sigma*log(exp((x - mu)/sigma) + 1)
 

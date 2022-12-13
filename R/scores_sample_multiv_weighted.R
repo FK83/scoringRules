@@ -2,17 +2,23 @@
 #' 
 #' Compute weighted versions of multivariate scores \eqn{S(y, dat)}, where \eqn{S} is a
 #' proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
-#' \eqn{dat} is a simulated sample of multivariate forecasts. Three scores
-#' are available: The energy score, a score based on a Gaussian kernel 
-#' (\link{mmds_sample}, see details below) and the variogram score of order \eqn{p}.
+#' \eqn{dat} is a simulated sample of multivariate forecasts. The weighted scores allow 
+#' particular outcomes of interest to be emphasised during forecast evaluation.
+#' Threshold-weighted and outcome-weighted versions of three multivariate scores are 
+#' available: the energy score, a score based on a Gaussian kernel (\link{mmds_sample}, 
+#' see details below) and the variogram score of order \eqn{p}.
 #' 
 #' @param y realized values (numeric vector of length d).
 #' @param dat numeric matrix of data
 #' (columns are simulation draws from multivariate forecast distribution).
 #' @param a numeric vector of of length d containing lower bounds for the indicator 
-#' weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.
-#' @param b numeric vector of of length d containing lower bounds for the indicator 
-#' weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.
+#' weight function \code{w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}}.
+#' @param b numeric vector of of length d containing upper bounds for the indicator 
+#' weight function \code{w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}}.
+#' @param chain_func function used to target particular outcomes in the threshold-weighted scores; 
+#' the default corresponds to the weight function above.
+#' @param weight_func function used to target particular outcomes in the outcome-weighted scores; 
+#' the default corresponds to the weight function above.
 #' @param w numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})
 #' @param w_vs numeric matrix of weights for \code{dat} used in the variogram
 #' score. This matrix must be square and symmetric, with all elements being non-negative.
@@ -54,88 +60,196 @@
 NULL
 
 ################################################################################
-# energy score
+# threshold-weighted energy score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twes_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) {
   if (length(a) == 1) {
     a <- rep(a, length(y))
-  }else if (length(b) == 1) {
-    b <- rep(b, length(y))
-  }else if (length(a) != length(y) | length(b) != length(y)) {
-    stop("The vector of weight values is not the same length as the vector of realizations")
   }
-  v_y <- pmin(pmax(y, a), b)
-  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
-  v_dat <- t(v_dat)
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, v = chain_func, y = y)
+  check_mv_weight(input)
+  if (is.null(chain_func)) {
+    chain_func <- function(x) pmin(pmax(x, a), b) 
+  }
+  v_y <- chain_func(y)
+  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
   score <- es_sample(y = v_y, dat = v_dat, w)
-  return (score)
-}
-
-#' @rdname scores_sample_multiv_weighted
-#' @export
-owes_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
-  weight_func <- function(x) as.numeric(x > a & x < b)
-  w_y <- sapply(y, weight_func)
-  w_dat <- array(sapply(dat, weight_func), dim(dat))
-  score <- es_sample(y, dat, w = w_dat)*w_y 
-  return (score)
+  return(score)
 }
 
 ################################################################################
-# MMD score
+# outcome-weighted energy score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twmmds_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
+owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
   if (length(a) == 1) {
     a <- rep(a, length(y))
-  }else if (length(b) == 1) {
-    b <- rep(b, length(y))
-  }else if (length(a) != length(y) | length(b) != length(y)) {
-    stop("The vector of weight values is not the same length as the vector of realizations")
   }
-  v_y <- pmin(pmax(y, a), b)
-  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
-  v_dat <- t(v_dat)
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, w = weight_func, y = y)
+  check_mv_weight(input)
+  if (is.null(weight_func)) {
+    weight_func <- function(x) as.numeric(all(x > a & x < b))
+  }
+  w_y <- weight_func(y)
+  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  if (is.null(w)) {
+    w <- w_dat
+  }else {
+    w <- w*w_dat
+  }
+  score <- es_sample(y, dat, w = w)*w_y 
+  return(score)
+}
+
+################################################################################
+# threshold-weighted MMD score
+#' @rdname scores_sample_multiv_weighted
+#' @export
+twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) {
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, v = chain_func, y = y)
+  check_mv_weight(input)
+  if (is.null(chain_func)) {
+    chain_func <- function(x) pmin(pmax(x, a), b) 
+  }
+  v_y <- chain_func(y)
+  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
   score <- mmds_sample(y = v_y, dat = v_dat, w)
-  return (score)
-}
-
-#' @rdname scores_sample_multiv_weighted
-#' @export
-owmmds_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL) {
-  weight_func <- function(x) as.numeric(x > a & x < b)
-  w_y <- sapply(y, weight_func)
-  w_dat <- array(sapply(dat, weight_func), dim(dat))
-  score <- es_sample(y, dat, w = w_dat)*w_y 
-  return (score)
+  return(score)
 }
 
 ################################################################################
-# variogram score of order p
+# outcome-weighted MMD score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twvs_sample <- function(y, dat, a = -Inf, b = Inf, w_vs = NULL, p = 0.5){
+owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
   if (length(a) == 1) {
     a <- rep(a, length(y))
-  }else if (length(b) == 1) {
-    b <- rep(b, length(y))
-  }else if (length(a) != length(y) | length(b) != length(y)) {
-    stop("The vector of weight values is not the same length as the vector of realizations")
   }
-  v_y <- pmin(pmax(y, a), b)
-  v_dat <- sapply(1:nrow(dat), function(m) pmin(pmax(dat[m, ], a), b))
-  v_dat <- t(v_dat)
-  score <- vs_sample(y = v_y, dat = v_dat, w_vs, p)
-  return (score)
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, w = weight_func, y = y)
+  check_mv_weight(input)
+  if (is.null(weight_func)) {
+    weight_func <- function(x) as.numeric(all(x > a & x < b))
+  }
+  w_y <- weight_func(y)
+  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  if (is.null(w)) {
+    w <- w_dat
+  }else {
+    w <- w*w_dat
+  }
+  score <- mmds_sample(y, dat, w = w)*w_y 
+  return(score)
 }
 
+################################################################################
+# threshold-weighted variogram score of order p
 #' @rdname scores_sample_multiv_weighted
 #' @export
-owvs_sample <- function(y, dat, a = -Inf, b = Inf, w = NULL, w_vs = NULL, p = 0.5) {
-  weight_func <- function(x) as.numeric(x > a & x < b)
-  w_y <- sapply(y, weight_func)
-  w_dat <- array(sapply(dat, weight_func), dim(dat))
-  score <- vs_sample(y, dat, w_vs, p)*w_y # add w argument
-  return (score)
+twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, w_vs = NULL, p = 0.5){
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, v = chain_func, y = y)
+  check_mv_weight(input)
+  if (is.null(chain_func)) {
+    chain_func <- function(x) pmin(pmax(x, a), b) 
+  }
+  v_y <- chain_func(y)
+  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
+  score <- vs_sample(y = v_y, dat = v_dat, w = w, w_vs = w_vs, p = p)
+  return(score)
 }
+
+################################################################################
+# outcome-weighted variogram score of order p
+#' @rdname scores_sample_multiv_weighted
+#' @export
+owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, w_vs = NULL, p = 0.5) {
+  if (length(a) == 1) {
+    a <- rep(a, length(y))
+  }
+  if (length(b) == 1) {
+    b <- rep(b, length(y))
+  }
+  input <- list(lower = a, upper = b, w = weight_func, y = y)
+  check_mv_weight(input)
+  if (is.null(weight_func)) {
+    weight_func <- function(x) as.numeric(all(x > a & x < b))
+  }
+  w_y <- weight_func(y)
+  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  if (is.null(w)) {
+    w <- w_dat
+  }else {
+    w <- w*w_dat
+  }
+  score <- vs_sample(y, dat, w = w, w_vs = w_vs, p = p)*w_y 
+  return(score)
+}
+
+################################################################################
+# checks for the weight and chaining functions in the multivariate weighted scoring rules
+check_mv_weight <- function(input) {
+  a <- input$lower
+  b <- input$upper
+  w <- input$w
+  v <- input$v
+  
+  if (length(a) != length(b)) {
+    stop("a and b do not have the same length.")
+  } else if (length(a) != length(y)) {
+    stop("a and b do not have the same length as the realized values.")
+  } else if (!is.numeric(a) | !is.numeric(b)) {
+    stop("The lower and upper bounds in the weight function must be numeric.")
+  } else if (any(a > b) | all(a == b)) {
+    stop("The lower bound in the weight function is not smaller than the upper bound.")
+  }
+  
+  if (!is.null(w)) {
+    if (!is.function(w)) {
+      stop("The weight function must be of type 'function'.")
+    } else {
+      w_y <- w(y)
+    }
+    if (!is.numeric(w_y)) {
+      stop("The weight function does not return a single numerical value.")
+    }else if (length(w_y) != 1) {
+      stop("The weight function does not return a single numerical value.")
+    } else if (w_y < 0) {
+      stop("The weight function returns negative weights.")
+    }
+  }
+  
+  if (!is.null(v)) {
+    if (!is.function(v)) {
+      stop("The chaining function must be of type 'function'.")
+    } else {
+      v_y <- v(y)
+    }
+    if (any(!is.numeric(v_y))) {
+      stop("The chaining function does not return a numeric vector.")
+    }else if (length(v_y) != length(y)) {
+      stop("The chaining function does not return a numeric vector of the same length as y.")
+    }
+  }
+}
+

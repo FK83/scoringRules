@@ -10,17 +10,35 @@
 \alias{owvs_sample}
 \title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions}
 \usage{
-twes_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+twes_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
 
-owes_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+owes_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
 
-twmmds_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+twmmds_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
 
-owmmds_sample(y, dat, a = -Inf, b = Inf, w = NULL)
+owmmds_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
 
-twvs_sample(y, dat, a = -Inf, b = Inf, w_vs = NULL, p = 0.5)
+twvs_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  chain_func = NULL,
+  w = NULL,
+  w_vs = NULL,
+  p = 0.5
+)
 
-owvs_sample(y, dat, a = -Inf, b = Inf, w = NULL, w_vs = NULL, p = 0.5)
+owvs_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  weight_func = NULL,
+  w = NULL,
+  w_vs = NULL,
+  p = 0.5
+)
 }
 \arguments{
 \item{y}{realized values (numeric vector of length d).}
@@ -29,12 +47,18 @@ owvs_sample(y, dat, a = -Inf, b = Inf, w = NULL, w_vs = NULL, p = 0.5)
 (columns are simulation draws from multivariate forecast distribution).}
 
 \item{a}{numeric vector of of length d containing lower bounds for the indicator 
-weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.}
+weight function \code{w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}}.}
 
-\item{b}{numeric vector of of length d containing lower bounds for the indicator 
-weight function \code{w(z) = 1{a_{1} < z_{1} < b_{1}, ..., a_{d} < z_{d} < b_{d}}}.}
+\item{b}{numeric vector of of length d containing upper bounds for the indicator 
+weight function \code{w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}}.}
+
+\item{chain_func}{function used to target particular outcomes in the threshold-weighted scores; 
+the default corresponds to the weight function above.}
 
 \item{w}{numeric vector of weights for forecast draws (length equal to number of columns of \code{dat})}
+
+\item{weight_func}{function used to target particular outcomes in the outcome-weighted scores; 
+the default corresponds to the weight function above.}
 
 \item{w_vs}{numeric matrix of weights for \code{dat} used in the variogram
 score. This matrix must be square and symmetric, with all elements being non-negative.
@@ -50,9 +74,11 @@ Value of the score. \emph{A lower score indicates a better forecast.}
 \description{
 Compute weighted versions of multivariate scores \eqn{S(y, dat)}, where \eqn{S} is a
 proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
-\eqn{dat} is a simulated sample of multivariate forecasts. Three scores
-are available: The energy score, a score based on a Gaussian kernel 
-(\link{mmds_sample}, see details below) and the variogram score of order \eqn{p}.
+\eqn{dat} is a simulated sample of multivariate forecasts. The weighted scores allow 
+particular outcomes of interest to be emphasised during forecast evaluation.
+Threshold-weighted and outcome-weighted versions of three multivariate scores are 
+available: the energy score, a score based on a Gaussian kernel (\link{mmds_sample}, 
+see details below) and the variogram score of order \eqn{p}.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample
