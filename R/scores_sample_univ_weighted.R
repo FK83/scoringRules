@@ -76,8 +76,8 @@
 #' and \code{weight_func} arguments to \code{\link{twcrps_sample}} and \code{\link{owcrps_sample}},
 #' respectively. Computation of the threshold-weighted CRPS for samples from a predictive distribution 
 #' requires a chaining function rather than a weight function. This is why a chaining 
-#' function is an input for \code{twcrps_sample} whereas a weight function is an 
-#' input for \code{owcrps_sample}. Since \code{\link{clogs_sample}} requires 
+#' function is an input for \code{\link{twcrps_sample}} whereas a weight function is an 
+#' input for \code{\link{owcrps_sample}}. Since \code{\link{clogs_sample}} requires 
 #' kernel density estimation to approximate the forecast density, it cannot readily
 #' be calculated for arbitrary weight functions, and is thus only available for 
 #' the canonical weight function \code{w(z) = 1{a < z < b}}.

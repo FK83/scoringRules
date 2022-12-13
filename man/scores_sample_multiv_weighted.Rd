@@ -85,6 +85,48 @@ In the input matrix \code{dat} each column is expected to represent a sample
 from the multivariate forecast distribution, the number of rows of \code{dat}
 thus has to match the length of the observation vector \code{y}, and the
 number of columns of \code{dat} is the number of simulated samples.
+
+The threshold-weighted scores (\code{\link{twes_sample}}, \code{\link{twmmds_sample}}, 
+\code{\link{twvs_sample}}) transform \code{y} and \code{dat} using the chaining
+function \code{chain_func} and then call the relevant unweighted score function
+(\code{\link{es_sample}}, \code{\link{mmds_sample}}, \code{\link{vs_sample}}). 
+The outcome-weighted scores (\code{\link{owes_sample}}, \code{\link{owmmds_sample}}, 
+\code{\link{owvs_sample}}) weight \code{y} and \code{dat} using the weight
+function \code{weight_func} and then call the relevant unweighted score function
+(\code{\link{es_sample}}, \code{\link{mmds_sample}}, \code{\link{vs_sample}}). 
+See the documentation for e.g. \code{\link{es_sample}} for further details.
+
+The default weight function used in the weighted scores is 
+\code{w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}}, which is equal to one 
+if \code{z} is in the 'box' defined by the vectors \code{a} and \code{b}, and 
+is equal to zero otherwise. This weight function emphasises outcomes between 
+the vectors \code{a} and \code{b}, and is commonly used in practical applications 
+when interest is on values above a threshold along multiple dimensions.
+
+Alternative weight functions can also be employed using the \code{chain_func} 
+and \code{weight_func} arguments. Computation of the threshold-weighted scores
+for samples from a predictive distribution requires a chaining function rather 
+than a weight function. This is why a chaining function is an input for 
+\code{\link{twes_sample}}, \code{\link{twmmds_sample}}, and \code{\link{twvs_sample}},
+whereas a weight function is an input for \code{\link{owes_sample}}, 
+\code{\link{owmmds_sample}}, and \code{\link{owvs_sample}}. 
+
+The \code{chain_func} and \code{weight_func} arguments are functions that will 
+be applied to the elements in \code{y} and \code{dat}. 
+\code{weight_func} must input a numeric vector of length d, and output a single 
+numeric value. An error will be returned if \code{weight_func} returns negative values.
+\code{chain_func} must input a numeric vector of length d, and return a numeric
+vector of length d.
+
+If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 
+\code{weight_func}, then all weighted scores are equivalent to the standard 
+unweighted scores \code{\link{es_sample}}, \code{\link{mmds_sample}}, and
+\code{\link{vs_sample}}.
+
+The \code{w} argument is also present in the unweighted scores.
+\code{w} is used to weight the draws from the predictive distribution, and does 
+not weight particular outcomes within the weighted scoring rules. This should not be
+confused with the \code{weight_func} argument.
 }
 \examples{
 \dontrun{
@@ -117,6 +159,11 @@ twvs_sample(y = obs, dat = fc_sample) # threshold-weighted variogram score
 owvs_sample(y = obs, dat = fc_sample) # outcome-weighted variogram score
 
 
+# the outcome-weighted scores are undefined if none of dat are between a and b
+# this can lead to NaNs in some of the scores calculated below, particularly
+# if the thresholds are extreme, or if the dimension is large
+
+
 # emphasise outcomes greater than 0 in all dimensions
 twes_sample(y = obs, dat = fc_sample, a = 0)
 owes_sample(y = obs, dat = fc_sample, a = 0)
@@ -124,10 +171,6 @@ twmmds_sample(y = obs, dat = fc_sample, a = 0)
 owmmds_sample(y = obs, dat = fc_sample, a = 0)
 twvs_sample(y = obs, dat = fc_sample, a = 0)
 owvs_sample(y = obs, dat = fc_sample, a = 0)
-
-# the outcome-weighted scores are not defined if none of dat are between a and b
-# this can lead to NaNs in some of the scores calculated below, particularly
-# if the thresholds are extreme, or if the dimension is large
 
 # this can also be done more explicitly by setting a = rep(0, d)
 twes_sample(y = obs, dat = fc_sample, a = rep(0, d))
@@ -169,7 +212,7 @@ twvs_sample(y = obs, dat = fc_sample, a = a, b = b)
 owvs_sample(y = obs, dat = fc_sample, a = a, b = b)
 
 
-# all values of a must be smaller than b 
+# values of a cannot be larger than the corresponding values of b
 twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(0, 0, 1))
 twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(0, 0, 0)) # error
 twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(1, 1, -1)) # error
@@ -183,7 +226,7 @@ owmmds_sample(y = obs, dat = fc_sample, a = c(0, 0), b = c(1, 1)) # error
 
 # Example 1: the default weight function with an alternative chaining function
 # the default weight function is 
-w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}
+# w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}
 # the default chaining function is 
 # v(z) = (min(max(z[1], a[1]), b[1]), ..., min(max(z[d], a[d]), b[d]))
 a <- -1
@@ -210,10 +253,10 @@ chain_func <- function(x){
  (x - mu)*pnorm(x, mu, diag(sigma)) + (diag(sigma)^2)*dnorm(x, mu, diag(sigma))
 }
 
-owes_sample(y = obs, dat = fc_sample, a = mu)
-owes_sample(y = obs, dat = fc_sample, weight_func = weight_func)
-twes_sample(y = obs, dat = fc_sample, a = mu)
-twes_sample(y = obs, dat = fc_sample, chain_func = chain_func)
+owvs_sample(y = obs, dat = fc_sample, a = mu)
+owvs_sample(y = obs, dat = fc_sample, weight_func = weight_func)
+twvs_sample(y = obs, dat = fc_sample, a = mu)
+twvs_sample(y = obs, dat = fc_sample, chain_func = chain_func)
 }
 
 }
