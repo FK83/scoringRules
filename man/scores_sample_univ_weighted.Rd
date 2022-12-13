@@ -34,7 +34,7 @@ clogs_sample(
   b = Inf,
   w = NULL,
   bw = NULL,
-  show_messages = TRUE,
+  show_messages = FALSE,
   comp = TRUE
 )
 }
@@ -57,14 +57,15 @@ Note that these weights are not used in the weighted scoring rules; see details.
 \item{show_messages}{logical; display of messages (does not affect
 warnings and errors).}
 
-\item{weight_func}{function used to target particular outcomes in the observation-weighted CRPS; 
+\item{weight_func}{function used to target particular outcomes in the outcome-weighted CRPS; 
 the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.}
 
 \item{bw}{optional; vector (matching \code{y}) of bandwidths for kernel density
 estimation for \code{\link{clogs_sample}}; see details.}
 
-\item{comp}{logical; if TRUE, the outcome-weighted scores are complemented with 
-a proper scoring rule for binary outcomes; see details.}
+\item{comp}{logical; if TRUE, \code{\link{clogs_sample}} returns the censored
+likelihood score; if FALSE, \code{\link{clogs_sample}} returns the conditional
+likelihood score.}
 }
 \value{
 Value of the score. \emph{A lower score indicates a better forecast.}
@@ -96,7 +97,10 @@ and \code{weight_func} arguments to \code{\link{twcrps_sample}} and \code{\link{
 respectively. Computation of the threshold-weighted CRPS for samples from a predictive distribution 
 requires a chaining function rather than a weight function. This is why a chaining 
 function is an input for \code{twcrps_sample} whereas a weight function is an 
-input for \code{owcrps_sample.}
+input for \code{owcrps_sample}. Since \code{\link{clogs_sample}} requires 
+kernel density estimation to approximate the forecast density, it cannot readily
+be calculated for arbitrary weight functions, and is thus only available for 
+the canonical weight function \code{w(z) = 1{a < z < b}}.
 
 The \code{chain_func} and \code{weight_func} arguments are functions that will 
 be applied to the elements in \code{y} and \code{dat}. They must both input 
@@ -106,7 +110,8 @@ not increasing.
 
 If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 
 \code{weight_func}, then both \code{\link{twcrps_sample}} and \code{\link{owcrps_sample}} 
-are equivalent to the standard unweighted \code{\link{crps_sample}}.
+are equivalent to the standard unweighted \code{\link{crps_sample}}, and 
+\code{\link{clogs_sample}} is equivalent to \code{\link{logs_sample}}. 
 
 The \code{w} argument is also present in the unweighted scores (e.g. \code{\link{crps_sample}}).
 \code{w} is used to weight the draws from the predictive distribution, and does 
@@ -122,22 +127,31 @@ crps_sample(y = y, dat = sample)
 twcrps_sample(y = y, dat = sample)
 owcrps_sample(y = y, dat = sample)
 
+logs_sample(y = y, dat = sample)
+clogs_sample(y = y, dat = sample)
+clogs_sample(y = y, dat = sample, comp = FALSE)
+
 # emphasise outcomes above 0
 twcrps_sample(y = y, dat = sample, a = 0)
 owcrps_sample(y = y, dat = sample, a = 0)
+clogs_sample(y = y, dat = sample, a = 0)
+clogs_sample(y = y, dat = sample, a = 0, comp = FALSE)
 
 # emphasise outcomes below 0
 twcrps_sample(y = y, dat = sample, b = 0)
 owcrps_sample(y = y, dat = sample, b = 0)
+clogs_sample(y = y, dat = sample, b = 0) 
 
 # emphasise outcomes between -1 and 1
 twcrps_sample(y = y, dat = sample, a = -1, b = 1)
 owcrps_sample(y = y, dat = sample, a = -1, b = 1)
+clogs_sample(y = y, dat = sample, a = -1, b = 1)
 
 
 # a must be smaller than b 
 twcrps_sample(y = y, dat = sample, a = 1, b = -1) # error
 owcrps_sample(y = y, dat = sample, a = 0, b = 0) # error
+clogs_sample(y = y, dat = sample, a = 10, b = 9) # error
 
 # a and b must be single numeric values (not vectors)
 twcrps_sample(y = y, dat = sample, a = rnorm(10)) # error

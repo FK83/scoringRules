@@ -11,7 +11,7 @@
 #' @param b numeric upper bound for the indicator weight function \code{w(z) = 1{a < z < b}}.
 #' @param chain_func function used to target particular outcomes in the threshold-weighted CRPS; 
 #' the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.
-#' @param weight_func function used to target particular outcomes in the observation-weighted CRPS; 
+#' @param weight_func function used to target particular outcomes in the outcome-weighted CRPS; 
 #' the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.
 #' @param w optional; vector or matrix (matching \code{dat}) of ensemble weights. 
 #'  Note that these weights are not used in the weighted scoring rules; see details.
@@ -19,8 +19,9 @@
 #' estimation for \code{\link{clogs_sample}}; see details.
 #' @param show_messages logical; display of messages (does not affect
 #'  warnings and errors).
-#' @param comp logical; if TRUE, the outcome-weighted scores are complemented with 
-#'  a proper scoring rule for binary outcomes; see details.
+#' @param comp logical; if TRUE, \code{\link{clogs_sample}} returns the censored
+#'  likelihood score; if FALSE, \code{\link{clogs_sample}} returns the conditional
+#'  likelihood score.
 #'  
 #' @return
 #' Value of the score. \emph{A lower score indicates a better forecast.}
@@ -76,7 +77,10 @@
 #' respectively. Computation of the threshold-weighted CRPS for samples from a predictive distribution 
 #' requires a chaining function rather than a weight function. This is why a chaining 
 #' function is an input for \code{twcrps_sample} whereas a weight function is an 
-#' input for \code{owcrps_sample.}
+#' input for \code{owcrps_sample}. Since \code{\link{clogs_sample}} requires 
+#' kernel density estimation to approximate the forecast density, it cannot readily
+#' be calculated for arbitrary weight functions, and is thus only available for 
+#' the canonical weight function \code{w(z) = 1{a < z < b}}.
 #' 
 #' The \code{chain_func} and \code{weight_func} arguments are functions that will 
 #' be applied to the elements in \code{y} and \code{dat}. They must both input 
@@ -86,7 +90,8 @@
 #' 
 #' If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 
 #' \code{weight_func}, then both \code{\link{twcrps_sample}} and \code{\link{owcrps_sample}} 
-#' are equivalent to the standard unweighted \code{\link{crps_sample}}.
+#' are equivalent to the standard unweighted \code{\link{crps_sample}}, and 
+#' \code{\link{clogs_sample}} is equivalent to \code{\link{logs_sample}}. 
 #' 
 #' The \code{w} argument is also present in the unweighted scores (e.g. \code{\link{crps_sample}}).
 #' \code{w} is used to weight the draws from the predictive distribution, and does 
@@ -102,22 +107,31 @@
 #' twcrps_sample(y = y, dat = sample)
 #' owcrps_sample(y = y, dat = sample)
 #' 
+#' logs_sample(y = y, dat = sample)
+#' clogs_sample(y = y, dat = sample)
+#' clogs_sample(y = y, dat = sample, comp = FALSE)
+#' 
 #' # emphasise outcomes above 0
 #' twcrps_sample(y = y, dat = sample, a = 0)
 #' owcrps_sample(y = y, dat = sample, a = 0)
+#' clogs_sample(y = y, dat = sample, a = 0)
+#' clogs_sample(y = y, dat = sample, a = 0, comp = FALSE)
 #' 
 #' # emphasise outcomes below 0
 #' twcrps_sample(y = y, dat = sample, b = 0)
 #' owcrps_sample(y = y, dat = sample, b = 0)
+#' clogs_sample(y = y, dat = sample, b = 0) 
 #' 
 #' # emphasise outcomes between -1 and 1
 #' twcrps_sample(y = y, dat = sample, a = -1, b = 1)
 #' owcrps_sample(y = y, dat = sample, a = -1, b = 1)
+#' clogs_sample(y = y, dat = sample, a = -1, b = 1)
 #' 
 #' 
 #' # a must be smaller than b 
 #' twcrps_sample(y = y, dat = sample, a = 1, b = -1) # error
 #' owcrps_sample(y = y, dat = sample, a = 0, b = 0) # error
+#' clogs_sample(y = y, dat = sample, a = 10, b = 9) # error
 #' 
 #' # a and b must be single numeric values (not vectors)
 #' twcrps_sample(y = y, dat = sample, a = rnorm(10)) # error
@@ -183,6 +197,9 @@
 #' @name scores_sample_univ_weighted
 NULL
 
+################################################################################
+# threshold-weighted CRPS
+
 #' @rdname scores_sample_univ_weighted
 #' @export
 twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, show_messages = TRUE) {
@@ -200,7 +217,8 @@ twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NUL
   crps_sample(y = v_y, dat = v_dat, method = "edf", w = w, show_messages = show_messages)
 }
 
-
+################################################################################
+# outcome-weighted CRPS
 #' @rdname scores_sample_univ_weighted
 #' @export
 owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, show_messages = TRUE) {
@@ -227,10 +245,13 @@ owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NU
   crps_sample(y, dat, method = "edf", w = w, show_messages = show_messages)*w_y
 }
 
-
+################################################################################
+# conditional and censored likelihood scores
 #' @rdname scores_sample_univ_weighted
 #' @export
-clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_messages = TRUE, comp = TRUE) {
+clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_messages = FALSE, comp = TRUE) {
+  input <- list(lower = a, upper = b)
+  check_weight(input)
   input <- list(y = y, dat = dat)
   input$bw <- bw
   if (show_messages)
@@ -252,15 +273,15 @@ clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_m
     ls <- sapply(seq_along(y), function(i) lsmixnC(w, dat[i, ], s[i, ], y[i]))
   }
   w_y <- as.numeric(y > a & y < b)
-  score <- w_y*(ls + log(int_wf))
+  score <- w_y*ls + log(int_wf^w_y)
   if (comp) {
-    score <- score - w_y*log(int_wf) - (1 - w_y)*log(1 - int_wf)
+    score <- score - log(int_wf^w_y) - log((1 - int_wf)^(1 - w_y))
   }
   return (score)
 }
 
-
-#### checks on the weight and chaining functions for weighted scoring rules ####
+################################################################################
+# checks for the weight and chaining functions in the weighted scoring rules
 check_weight <- function(input) {
   a <- input$lower
   b <- input$upper
@@ -305,6 +326,5 @@ check_weight <- function(input) {
       message("The chaining function is not increasing.")
     }
   }
-  
   
 }
