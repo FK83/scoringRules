@@ -32,10 +32,9 @@ clogs_sample(
   dat,
   a = -Inf,
   b = Inf,
-  w = NULL,
   bw = NULL,
   show_messages = FALSE,
-  comp = TRUE
+  cens = TRUE
 )
 }
 \arguments{
@@ -63,7 +62,7 @@ the default corresponds to the weight function \code{w(z) = 1{a < z < b}}.}
 \item{bw}{optional; vector (matching \code{y}) of bandwidths for kernel density
 estimation for \code{\link{clogs_sample}}; see details.}
 
-\item{comp}{logical; if TRUE, \code{\link{clogs_sample}} returns the censored
+\item{cens}{logical; if TRUE, \code{\link{clogs_sample}} returns the censored
 likelihood score; if FALSE, \code{\link{clogs_sample}} returns the conditional
 likelihood score.}
 }

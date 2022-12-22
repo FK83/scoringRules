@@ -19,7 +19,7 @@
 #' estimation for \code{\link{clogs_sample}}; see details.
 #' @param show_messages logical; display of messages (does not affect
 #'  warnings and errors).
-#' @param comp logical; if TRUE, \code{\link{clogs_sample}} returns the censored
+#' @param cens logical; if TRUE, \code{\link{clogs_sample}} returns the censored
 #'  likelihood score; if FALSE, \code{\link{clogs_sample}} returns the conditional
 #'  likelihood score.
 #'  
@@ -213,7 +213,7 @@ twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NUL
   if (is.vector(dat)) {
     v_dat <- sapply(dat, chain_func)
   } else {
-    v_dat <- array(sapply(dat, chain_func), dim(dat))
+    v_dat <- apply(dat, 2, chain_func)
   }
   crps_sample(y = v_y, dat = v_dat, method = "edf", w = w, show_messages = show_messages)
 }
@@ -232,12 +232,12 @@ owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NU
   if (is.vector(dat)) {
     w_dat <- sapply(dat, weight_func)
   } else {
-    w_dat <- array(sapply(dat, weight_func), dim(dat))
+    w_dat <- apply(dat, 2, weight_func)
   }
   if (is.null(w)) {
     w <- w_dat
   }else {
-    if (dim(w) == dim(dat)) {
+    if (identical(dim(w), dim(dat))) {
       w <- w*w_dat
     }else {
       stop("The dimensions of w do not match the dimensions of dat.")
@@ -250,7 +250,7 @@ owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NU
 # conditional and censored likelihood scores
 #' @rdname scores_sample_univ_weighted
 #' @export
-clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_messages = FALSE, comp = TRUE) {
+clogs_sample <- function (y, dat, a = -Inf, b = Inf, bw = NULL, show_messages = FALSE, cens = TRUE) {
   input <- list(lower = a, upper = b)
   check_weight(input)
   input <- list(y = y, dat = dat)
@@ -275,7 +275,7 @@ clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_m
   }
   w_y <- as.numeric(y > a & y < b)
   score <- w_y*ls + log(int_wf^w_y)
-  if (comp) {
+  if (cens) {
     score <- score - log(int_wf^w_y) - log((1 - int_wf)^(1 - w_y))
   }
   return (score)
@@ -283,7 +283,7 @@ clogs_sample <- function (y, dat, a = -Inf, b = Inf, w = NULL, bw = NULL, show_m
 
 ################################################################################
 # checks for the weight and chaining functions in the weighted scoring rules
-check_weight <- function(input) {
+check_weight <- function(input, tol = 1e-15) {
   a <- input$lower
   b <- input$upper
   w <- input$w
@@ -323,7 +323,7 @@ check_weight <- function(input) {
       stop("The chaining function does not return a numeric vector.")
     }else if (length(v_y) != length(y)) {
       stop("The chaining function does not return a numeric vector of the same length as y.")
-    } else if (any(diff(v_y) < 0)) {
+    } else if (any(diff(v_y) < -tol)) {
       message("The chaining function is not increasing.")
     }
   }
