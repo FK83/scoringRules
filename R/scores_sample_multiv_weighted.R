@@ -235,10 +235,10 @@ NULL
 #' @rdname scores_sample_multiv_weighted
 #' @export
 twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) {
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, v = chain_func, y = y)
@@ -247,7 +247,7 @@ twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) 
     chain_func <- function(x) pmin(pmax(x, a), b) 
   }
   v_y <- chain_func(y)
-  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
+  v_dat <- apply(dat, 2, chain_func)
   score <- es_sample(y = v_y, dat = v_dat, w)
   return(score)
 }
@@ -257,10 +257,10 @@ twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) 
 #' @rdname scores_sample_multiv_weighted
 #' @export
 owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, w = weight_func, y = y)
@@ -269,7 +269,7 @@ owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
     weight_func <- function(x) as.numeric(all(x > a & x < b))
   }
   w_y <- weight_func(y)
-  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
     w <- w_dat
   }else {
@@ -285,10 +285,10 @@ owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
 #' @rdname scores_sample_multiv_weighted
 #' @export
 twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) {
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, v = chain_func, y = y)
@@ -297,7 +297,7 @@ twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL
     chain_func <- function(x) pmin(pmax(x, a), b) 
   }
   v_y <- chain_func(y)
-  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
+  v_dat <- apply(dat, 2, chain_func)
   score <- mmds_sample(y = v_y, dat = v_dat, w)
   return(score)
 }
@@ -307,10 +307,10 @@ twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL
 #' @rdname scores_sample_multiv_weighted
 #' @export
 owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, w = weight_func, y = y)
@@ -319,7 +319,7 @@ owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NUL
     weight_func <- function(x) as.numeric(all(x > a & x < b))
   }
   w_y <- weight_func(y)
-  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
     w <- w_dat
   }else {
@@ -335,10 +335,10 @@ owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NUL
 #' @rdname scores_sample_multiv_weighted
 #' @export
 twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, w_vs = NULL, p = 0.5){
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, v = chain_func, y = y)
@@ -347,7 +347,7 @@ twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, 
     chain_func <- function(x) pmin(pmax(x, a), b) 
   }
   v_y <- chain_func(y)
-  v_dat <- sapply(1:ncol(dat), function(m) chain_func(dat[, m]))
+  v_dat <- apply(dat, 2, chain_func)
   score <- vs_sample(y = v_y, dat = v_dat, w = w, w_vs = w_vs, p = p)
   return(score)
 }
@@ -357,10 +357,10 @@ twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, 
 #' @rdname scores_sample_multiv_weighted
 #' @export
 owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, w_vs = NULL, p = 0.5) {
-  if (length(a) == 1) {
+  if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
-  if (length(b) == 1) {
+  if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
   input <- list(lower = a, upper = b, w = weight_func, y = y)
@@ -369,7 +369,7 @@ owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL,
     weight_func <- function(x) as.numeric(all(x > a & x < b))
   }
   w_y <- weight_func(y)
-  w_dat <- sapply(1:ncol(dat), function(m) weight_func(dat[, m]))
+  w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
     w <- w_dat
   }else {
