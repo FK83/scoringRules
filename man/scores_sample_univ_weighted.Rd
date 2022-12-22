@@ -12,7 +12,7 @@ twcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  chain_func = NULL,
+  chain_func = function(x) pmin(pmax(x, a), b),
   w = NULL,
   show_messages = TRUE
 )
@@ -22,7 +22,7 @@ owcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  weight_func = NULL,
+  weight_func = function(x) as.numeric(x > a & x < b),
   w = NULL,
   show_messages = TRUE
 )
@@ -102,9 +102,12 @@ be calculated for arbitrary weight functions, and is thus only available for
 the canonical weight function \code{w(z) = 1{a < z < b}}.
 
 The \code{chain_func} and \code{weight_func} arguments are functions that will 
-be applied to the elements in \code{y} and \code{dat}. They must both input 
-and output a single numeric value. An error will be returned if \code{weight_func} 
-returns negative values, and a warning messages will appear if \code{chain_func} is 
+be applied to the vector \code{y} and the columns of \code{dat}. It is assumed
+that these functions are vectorised. Both functions must take a vector as an input
+and output a vector of the same length, containing the weight (for \code{weight_func}) 
+or transformed value (for \code{chain_func}) corresponding to each element in the 
+input vector. An error will be returned if \code{weight_func} returns
+negative values, and a warning message will appear if \code{chain_func} is 
 not increasing. 
 
 If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 

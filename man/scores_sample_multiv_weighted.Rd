@@ -10,20 +10,48 @@
 \alias{owvs_sample}
 \title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions}
 \usage{
-twes_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
+twes_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  chain_func = function(x) pmin(pmax(x, a), b),
+  w = NULL
+)
 
-owes_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
+owes_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  weight_func = function(x) as.numeric(all(x > a & x < b)),
+  w = NULL
+)
 
-twmmds_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
+twmmds_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  chain_func = function(x) pmin(pmax(x, a), b),
+  w = NULL
+)
 
-owmmds_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
+owmmds_sample(
+  y,
+  dat,
+  a = -Inf,
+  b = Inf,
+  weight_func = function(x) as.numeric(all(x > a & x < b)),
+  w = NULL
+)
 
 twvs_sample(
   y,
   dat,
   a = -Inf,
   b = Inf,
-  chain_func = NULL,
+  chain_func = function(x) pmin(pmax(x, a), b),
   w = NULL,
   w_vs = NULL,
   p = 0.5
@@ -34,7 +62,7 @@ owvs_sample(
   dat,
   a = -Inf,
   b = Inf,
-  weight_func = NULL,
+  weight_func = function(x) as.numeric(all(x > a & x < b)),
   w = NULL,
   w_vs = NULL,
   p = 0.5

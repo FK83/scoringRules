@@ -83,9 +83,12 @@
 #' the canonical weight function \code{w(z) = 1{a < z < b}}.
 #' 
 #' The \code{chain_func} and \code{weight_func} arguments are functions that will 
-#' be applied to the elements in \code{y} and \code{dat}. They must both input 
-#' and output a single numeric value. An error will be returned if \code{weight_func} 
-#' returns negative values, and a warning messages will appear if \code{chain_func} is 
+#' be applied to the vector \code{y} and the columns of \code{dat}. It is assumed
+#' that these functions are vectorised. Both functions must take a vector as an input
+#' and output a vector of the same length, containing the weight (for \code{weight_func}) 
+#' or transformed value (for \code{chain_func}) corresponding to each element in the 
+#' input vector. An error will be returned if \code{weight_func} returns
+#' negative values, and a warning message will appear if \code{chain_func} is 
 #' not increasing. 
 #' 
 #' If no custom argument is given for \code{a}, \code{b}, \code{chain_func} or 
@@ -203,13 +206,11 @@ NULL
 
 #' @rdname scores_sample_univ_weighted
 #' @export
-twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, show_messages = TRUE) {
+twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin(pmax(x, a), b),
+                           w = NULL, show_messages = TRUE) {
   input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_weight(input)
-  if (is.null(chain_func)) {
-    chain_func <- function(x) pmin(pmax(x, a), b) 
-  }
-  v_y <- sapply(y, chain_func)
+  v_y <- chain_func(y)
   if (is.vector(dat)) {
     v_dat <- sapply(dat, chain_func)
   } else {
@@ -222,13 +223,11 @@ twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NUL
 # outcome-weighted CRPS
 #' @rdname scores_sample_univ_weighted
 #' @export
-owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, show_messages = TRUE) {
+owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = function(x) as.numeric(x > a & x < b),
+                           w = NULL, show_messages = TRUE) {
   input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_weight(input)
-  if (is.null(weight_func)) {
-    weight_func <- function(x) as.numeric(x > a & x < b)
-  }
-  w_y <- sapply(y, weight_func)
+  w_y <- weight_func(y)
   if (is.vector(dat)) {
     w_dat <- sapply(dat, weight_func)
   } else {
