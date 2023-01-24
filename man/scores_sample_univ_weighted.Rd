@@ -124,48 +124,48 @@ confused with the \code{weight_func} argument, which is used within the weighted
 \dontrun{
 
 y <- rnorm(10)
-sample <- matrix(rnorm(100), nrow = 10)
+sample_fc <- matrix(rnorm(100), nrow = 10)
 
-crps_sample(y = y, dat = sample)
-twcrps_sample(y = y, dat = sample)
-owcrps_sample(y = y, dat = sample)
+crps_sample(y = y, dat = sample_fc)
+twcrps_sample(y = y, dat = sample_fc)
+owcrps_sample(y = y, dat = sample_fc)
 
-logs_sample(y = y, dat = sample)
-clogs_sample(y = y, dat = sample)
-clogs_sample(y = y, dat = sample, comp = FALSE)
+logs_sample(y = y, dat = sample_fc)
+clogs_sample(y = y, dat = sample_fc)
+clogs_sample(y = y, dat = sample_fc, cens = FALSE)
 
 # emphasise outcomes above 0
-twcrps_sample(y = y, dat = sample, a = 0)
-owcrps_sample(y = y, dat = sample, a = 0)
-clogs_sample(y = y, dat = sample, a = 0)
-clogs_sample(y = y, dat = sample, a = 0, comp = FALSE)
+twcrps_sample(y = y, dat = sample_fc, a = 0)
+owcrps_sample(y = y, dat = sample_fc, a = 0)
+clogs_sample(y = y, dat = sample_fc, a = 0)
+clogs_sample(y = y, dat = sample_fc, a = 0, cens = FALSE)
 
 # emphasise outcomes below 0
-twcrps_sample(y = y, dat = sample, b = 0)
-owcrps_sample(y = y, dat = sample, b = 0)
-clogs_sample(y = y, dat = sample, b = 0) 
+twcrps_sample(y = y, dat = sample_fc, b = 0)
+owcrps_sample(y = y, dat = sample_fc, b = 0)
+clogs_sample(y = y, dat = sample_fc, b = 0) 
 
 # emphasise outcomes between -1 and 1
-twcrps_sample(y = y, dat = sample, a = -1, b = 1)
-owcrps_sample(y = y, dat = sample, a = -1, b = 1)
-clogs_sample(y = y, dat = sample, a = -1, b = 1)
+twcrps_sample(y = y, dat = sample_fc, a = -1, b = 1)
+owcrps_sample(y = y, dat = sample_fc, a = -1, b = 1)
+clogs_sample(y = y, dat = sample_fc, a = -1, b = 1)
 
 
 # a must be smaller than b 
-twcrps_sample(y = y, dat = sample, a = 1, b = -1) # error
-owcrps_sample(y = y, dat = sample, a = 0, b = 0) # error
-clogs_sample(y = y, dat = sample, a = 10, b = 9) # error
+twcrps_sample(y = y, dat = sample_fc, a = 1, b = -1) # error
+owcrps_sample(y = y, dat = sample_fc, a = 0, b = 0) # error
+clogs_sample(y = y, dat = sample_fc, a = 10, b = 9) # error
 
 # a and b must be single numeric values (not vectors)
-twcrps_sample(y = y, dat = sample, a = rnorm(10)) # error
+twcrps_sample(y = y, dat = sample_fc, a = rnorm(10)) # error
 
 
-# the owCRPS is not defined if none of dat are between a and b
+# the owCRPS is not well-defined if none of dat are between a and b
 y <- rnorm(10)
-sample <- matrix(runif(100, -5, 1), nrow = 10)
-owcrps_sample(y = y, dat = sample, a = 1)
+sample_fc <- matrix(runif(100, -5, 1), nrow = 10)
+owcrps_sample(y = y, dat = sample_fc, a = 1)
 # the twCRPS is zero if none of y and dat are between a and b
-twcrps_sample(y = y, dat = sample, a = 1) 
+twcrps_sample(y = y, dat = sample_fc, a = 1) 
 
 
 # alternative custom weight and chaining functions can also be used
@@ -174,17 +174,17 @@ twcrps_sample(y = y, dat = sample, a = 1)
 mu <- 0
 sigma <- 0.5
 weight_func <- function(x) pnorm(x, mu, sigma)
-# the corresponding chaining function is
+# a corresponding chaining function is
 chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
 
 x <- seq(-2, 2, 0.01)
 plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
 plot(x, chain_func(x), type = "l") 
 
-owcrps_sample(y = y, dat = sample, a = mu)
-owcrps_sample(y = y, dat = sample, weight_func = weight_func)
-twcrps_sample(y = y, dat = sample, a = mu)
-twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+owcrps_sample(y = y, dat = sample_fc, a = mu)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, a = mu)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
 
 
 # Example 2: a sigmoid (or logistic) weight function with location mu and scale sigma
@@ -195,26 +195,26 @@ x <- seq(-2, 2, 0.01)
 plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
 plot(x, chain_func(x), type = "l") 
 
-owcrps_sample(y = y, dat = sample, a = mu)
-owcrps_sample(y = y, dat = sample, weight_func = weight_func)
-twcrps_sample(y = y, dat = sample, a = mu)
-twcrps_sample(y = y, dat = sample, chain_func = chain_func)
+owcrps_sample(y = y, dat = sample_fc, a = mu)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, a = mu)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
 
 
 # Example 3: the weight function w(z) = 1{z < a or z > b}
 a <- -1
 b <- 1
-weight_func <- function(x) as.numeric(x < a || x > b)
+weight_func <- function(x) as.numeric(x < a | x > b)
 chain_func <- function(x) (x < a)*(x - a) + (x > b)*(x - b) + a
 
 x <- seq(-2, 2, 0.01)
 plot(x, weight_func(x), type = "l")
 plot(x, chain_func(x), type = "l")
 
-owcrps_sample(y = y, dat = sample, weight_func = weight_func)
-twcrps_sample(y = y, dat = sample, chain_func = chain_func)
-twcrps_sample(y = y, dat = sample, b = -1) + twcrps_sample(y = y, dat = sample, a = 1)
-crps_sample(y = y, dat = sample) - twcrps_sample(y = y, dat = sample, a = -1, b = 1)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
+twcrps_sample(y = y, dat = sample_fc, b = -1) + twcrps_sample(y = y, dat = sample_fc, a = 1)
+crps_sample(y = y, dat = sample_fc) - twcrps_sample(y = y, dat = sample_fc, a = -1, b = 1)
 }
 
 }

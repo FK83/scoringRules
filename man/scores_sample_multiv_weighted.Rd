@@ -170,21 +170,21 @@ S[S==0] <- 0.1
 
 # generate samples from multivariate normal distributions
 obs <- drop(mu0 + rnorm(d) \%*\% chol(S0))
-fc_sample <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
+sample_fc <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
 
 # if no additional parameters are provided, the weighted scores are the same as
 # the unweighted scores:
-es_sample(y = obs, dat = fc_sample) # energy score
-twes_sample(y = obs, dat = fc_sample) # threshold-weighted energy score
-owes_sample(y = obs, dat = fc_sample) # outcome-weighted energy score
+es_sample(y = obs, dat = sample_fc) # energy score
+twes_sample(y = obs, dat = sample_fc) # threshold-weighted energy score
+owes_sample(y = obs, dat = sample_fc) # outcome-weighted energy score
 
-mmds_sample(y = obs, dat = fc_sample) # Gaussian kernel score
-twmmds_sample(y = obs, dat = fc_sample) # threshold-weighted Gaussian kernel score
-owmmds_sample(y = obs, dat = fc_sample) # outcome-weighted Gaussian kernel score
+mmds_sample(y = obs, dat = sample_fc) # Gaussian kernel score
+twmmds_sample(y = obs, dat = sample_fc) # threshold-weighted Gaussian kernel score
+owmmds_sample(y = obs, dat = sample_fc) # outcome-weighted Gaussian kernel score
 
-vs_sample(y = obs, dat = fc_sample) # variogram score
-twvs_sample(y = obs, dat = fc_sample) # threshold-weighted variogram score
-owvs_sample(y = obs, dat = fc_sample) # outcome-weighted variogram score
+vs_sample(y = obs, dat = sample_fc) # variogram score
+twvs_sample(y = obs, dat = sample_fc) # threshold-weighted variogram score
+owvs_sample(y = obs, dat = sample_fc) # outcome-weighted variogram score
 
 
 # the outcome-weighted scores are undefined if none of dat are between a and b
@@ -193,61 +193,61 @@ owvs_sample(y = obs, dat = fc_sample) # outcome-weighted variogram score
 
 
 # emphasise outcomes greater than 0 in all dimensions
-twes_sample(y = obs, dat = fc_sample, a = 0)
-owes_sample(y = obs, dat = fc_sample, a = 0)
-twmmds_sample(y = obs, dat = fc_sample, a = 0)
-owmmds_sample(y = obs, dat = fc_sample, a = 0)
-twvs_sample(y = obs, dat = fc_sample, a = 0)
-owvs_sample(y = obs, dat = fc_sample, a = 0)
+twes_sample(y = obs, dat = sample_fc, a = 0)
+owes_sample(y = obs, dat = sample_fc, a = 0)
+twmmds_sample(y = obs, dat = sample_fc, a = 0)
+owmmds_sample(y = obs, dat = sample_fc, a = 0)
+twvs_sample(y = obs, dat = sample_fc, a = 0)
+owvs_sample(y = obs, dat = sample_fc, a = 0)
 
 # this can also be done more explicitly by setting a = rep(0, d)
-twes_sample(y = obs, dat = fc_sample, a = rep(0, d))
-owes_sample(y = obs, dat = fc_sample, a = rep(0, d))
+twes_sample(y = obs, dat = sample_fc, a = rep(0, d))
+owes_sample(y = obs, dat = sample_fc, a = rep(0, d))
 
 # a should also be specified fully if the threshold changes in each dimension
 a <- rnorm(d)
-twes_sample(y = obs, dat = fc_sample, a = a)
-owes_sample(y = obs, dat = fc_sample, a = a)
-twmmds_sample(y = obs, dat = fc_sample, a = a)
-owmmds_sample(y = obs, dat = fc_sample, a = a)
-twvs_sample(y = obs, dat = fc_sample, a = a)
-owvs_sample(y = obs, dat = fc_sample, a = a)
+twes_sample(y = obs, dat = sample_fc, a = a)
+owes_sample(y = obs, dat = sample_fc, a = a)
+twmmds_sample(y = obs, dat = sample_fc, a = a)
+owmmds_sample(y = obs, dat = sample_fc, a = a)
+twvs_sample(y = obs, dat = sample_fc, a = a)
+owvs_sample(y = obs, dat = sample_fc, a = a)
 
 # emphasise outcomes smaller than 0 in all dimensions
-twes_sample(y = obs, dat = fc_sample, b = 0)
-owes_sample(y = obs, dat = fc_sample, b = 0)
-twmmds_sample(y = obs, dat = fc_sample, b = 0)
-owmmds_sample(y = obs, dat = fc_sample, b = 0)
-twvs_sample(y = obs, dat = fc_sample, b = 0)
-owvs_sample(y = obs, dat = fc_sample, b = 0)
+twes_sample(y = obs, dat = sample_fc, b = 0)
+owes_sample(y = obs, dat = sample_fc, b = 0)
+twmmds_sample(y = obs, dat = sample_fc, b = 0)
+owmmds_sample(y = obs, dat = sample_fc, b = 0)
+twvs_sample(y = obs, dat = sample_fc, b = 0)
+owvs_sample(y = obs, dat = sample_fc, b = 0)
 
 # emphasise outcomes between (-1, -1, -1) and (1, 1, 1)
-twes_sample(y = obs, dat = fc_sample, a = -1, b = 1)
-owes_sample(y = obs, dat = fc_sample, a = -1, b = 1)
-twmmds_sample(y = obs, dat = fc_sample, a = -1, b = 1)
-owmmds_sample(y = obs, dat = fc_sample, a = -1, b = 1)
-twvs_sample(y = obs, dat = fc_sample, a = -1, b = 1)
-owvs_sample(y = obs, dat = fc_sample, a = -1, b = 1)
+twes_sample(y = obs, dat = sample_fc, a = -1, b = 1)
+owes_sample(y = obs, dat = sample_fc, a = -1, b = 1)
+twmmds_sample(y = obs, dat = sample_fc, a = -1, b = 1)
+owmmds_sample(y = obs, dat = sample_fc, a = -1, b = 1)
+twvs_sample(y = obs, dat = sample_fc, a = -1, b = 1)
+owvs_sample(y = obs, dat = sample_fc, a = -1, b = 1)
 
 # emphasise outcomes between (-2, 0, -1) and (0, 2, 1)
 a <- c(-2, 0, -1)
 b <- c(0, 2, 1)
-twes_sample(y = obs, dat = fc_sample, a = a, b = b)
-owes_sample(y = obs, dat = fc_sample, a = a, b = b)
-twmmds_sample(y = obs, dat = fc_sample, a = a, b = b)
-owmmds_sample(y = obs, dat = fc_sample, a = a, b = b)
-twvs_sample(y = obs, dat = fc_sample, a = a, b = b)
-owvs_sample(y = obs, dat = fc_sample, a = a, b = b)
+twes_sample(y = obs, dat = sample_fc, a = a, b = b)
+owes_sample(y = obs, dat = sample_fc, a = a, b = b)
+twmmds_sample(y = obs, dat = sample_fc, a = a, b = b)
+owmmds_sample(y = obs, dat = sample_fc, a = a, b = b)
+twvs_sample(y = obs, dat = sample_fc, a = a, b = b)
+owvs_sample(y = obs, dat = sample_fc, a = a, b = b)
 
 
 # values of a cannot be larger than the corresponding values of b
-twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(0, 0, 1))
-twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(0, 0, 0)) # error
-twes_sample(y = obs, dat = fc_sample, a = c(0, 0, 0), b = c(1, 1, -1)) # error
+twes_sample(y = obs, dat = sample_fc, a = c(0, 0, 0), b = c(0, 0, 1))
+twes_sample(y = obs, dat = sample_fc, a = c(0, 0, 0), b = c(0, 0, 0)) # error
+twes_sample(y = obs, dat = sample_fc, a = c(0, 0, 0), b = c(1, 1, -1)) # error
 
 # a and b must be of the same length (and of the same length as y)
-owmmds_sample(y = obs, dat = fc_sample, a = c(0, 0), b = 1) # error
-owmmds_sample(y = obs, dat = fc_sample, a = c(0, 0), b = c(1, 1)) # error
+owmmds_sample(y = obs, dat = sample_fc, a = c(0, 0), b = 1) # error
+owmmds_sample(y = obs, dat = sample_fc, a = c(0, 0), b = c(1, 1)) # error
 
 
 # alternative custom weight and chaining functions can also be used
@@ -257,18 +257,18 @@ owmmds_sample(y = obs, dat = fc_sample, a = c(0, 0), b = c(1, 1)) # error
 # w(z) = 1{a[1] < z[1] < b[1], ..., a[d] < z[d] < b[d]}
 # the default chaining function is 
 # v(z) = (min(max(z[1], a[1]), b[1]), ..., min(max(z[d], a[d]), b[d]))
-a <- -1
-b <- 1
+a <- -2
+b <- 2
 weight_func <- function(x) as.numeric(all(x > a & x < b))
 chain_func <- function(x) pmin(pmax(x, a), b)
-owes_sample(y = obs, dat = fc_sample, a = a, b = b)
-owes_sample(y = obs, dat = fc_sample, weight_func = weight_func)
-twes_sample(y = obs, dat = fc_sample, a = a, b = b)
-twes_sample(y = obs, dat = fc_sample, chain_func = chain_func)
+owes_sample(y = obs, dat = sample_fc, a = a, b = b)
+owes_sample(y = obs, dat = sample_fc, weight_func = weight_func)
+twes_sample(y = obs, dat = sample_fc, a = a, b = b)
+twes_sample(y = obs, dat = sample_fc, chain_func = chain_func)
 
 # consider an alternative chaining function: v(z) = z if w(z) = 1, else v(z) = 0
 chain_func <- function(x) x*weight_func(x)
-twes_sample(y = obs, dat = fc_sample, chain_func = chain_func)
+twes_sample(y = obs, dat = sample_fc, chain_func = chain_func)
 
 
 # Example 2: a mulivariate Gaussian weight function with mean vector mu and 
@@ -281,10 +281,10 @@ chain_func <- function(x){
  (x - mu)*pnorm(x, mu, diag(sigma)) + (diag(sigma)^2)*dnorm(x, mu, diag(sigma))
 }
 
-owvs_sample(y = obs, dat = fc_sample, a = mu)
-owvs_sample(y = obs, dat = fc_sample, weight_func = weight_func)
-twvs_sample(y = obs, dat = fc_sample, a = mu)
-twvs_sample(y = obs, dat = fc_sample, chain_func = chain_func)
+owvs_sample(y = obs, dat = sample_fc, a = mu)
+owvs_sample(y = obs, dat = sample_fc, weight_func = weight_func)
+twvs_sample(y = obs, dat = sample_fc, a = mu)
+twvs_sample(y = obs, dat = sample_fc, chain_func = chain_func)
 }
 
 }
