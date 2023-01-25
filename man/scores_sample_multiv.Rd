@@ -11,7 +11,7 @@ es_sample(y, dat, w = NULL)
 
 mmds_sample(y, dat, w = NULL)
 
-vs_sample(y, dat, w_vs = NULL, p = 0.5)
+vs_sample(y, dat, w = NULL, w_vs = NULL, p = 0.5)
 }
 \arguments{
 \item{y}{realized values (numeric vector of length d).}

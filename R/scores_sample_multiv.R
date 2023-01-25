@@ -151,7 +151,7 @@ mmds_sample <- function(y, dat, w = NULL) {
 # variogram score of order p
 #' @rdname scores_sample_multiv
 #' @export
-vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
+vs_sample <- function(y, dat, w = NULL, w_vs = NULL, p = 0.5) {
   input <- list(y = y, dat = dat)
   check.multivsample(input)
   d <- length(y)
@@ -176,10 +176,16 @@ vs_sample <- function(y, dat, w_vs = NULL, p = 0.5) {
     stop("Order 'p' must be positive")
   }
   # Compute score 
-  if (is.null(w_vs)){
-    out <- vsC(y, dat, p)
+  if (is.null(w)) {
+    if (is.null(w_vs)) {
+      out <- vsC(y, dat, p)
+    } else {
+      out <- vsC_w_vs(y, dat, w_vs, p)
+    }
   } else {
-    out <- vsC_w_vs(y, dat, w_vs, p)
+    w_vs <- matrix(1, nrow = length(y), ncol = length(y))
+    w <- w.helper.multiv(dat, w)
+    out <- vsC_w(y, dat, w_vs, w, p)
   }
   return(out)
 }
