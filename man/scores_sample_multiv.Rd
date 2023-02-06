@@ -136,6 +136,9 @@ Scheuerer, M. and T.M. Hamill (2015):
 multivariate quantities',
 Monthly Weather Review, 143, 1321-1334. \doi{10.1175/mwr-d-14-00269.1}
 }
+\seealso{
+\code{\link{?scores_sample_multiv_weighted}} for weighted analogues of the scoring rules documented here.
+}
 \author{
 Maximiliane Graeter, Sebastian Lerch, Fabian Krueger
 }
