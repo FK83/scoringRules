@@ -80,7 +80,7 @@
 #' 
 #' @author Maximiliane Graeter, Sebastian Lerch, Fabian Krueger
 #' 
-#' @seealso \code{\link{?scores_sample_multiv_weighted}} for weighted analogues of the scoring rules documented here.
+#' @seealso \code{\link{scores_sample_multiv_weighted}} for weighted versions of the scoring rules documented here.
 #' 
 #' @examples
 #' d <- 10  # number of dimensions

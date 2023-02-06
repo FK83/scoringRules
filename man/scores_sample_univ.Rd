@@ -101,7 +101,7 @@ hydrological variables',
 Hydrology and Earth System Sciences, 11, 1267-1277. \doi{10.5194/hess-11-1267-2007}
 }
 \seealso{
-\code{\link{?scores_sample_univ_weighted}} for weighted analogues of the scoring rules documented here.
+\code{\link{scores_sample_univ_weighted}} for weighted versions of the scoring rules documented here.
 }
 \author{
 Alexander Jordan, Fabian Krueger, Sebastian Lerch

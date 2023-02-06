@@ -32,7 +32,7 @@
 #'  
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #'  
-#' @seealso \code{\link{?scores_sample_univ_weighted}} for weighted analogues of the scoring rules documented here.
+#' @seealso \code{\link{scores_sample_univ_weighted}} for weighted versions of the scoring rules documented here.
 #'  
 #' @details 
 #' For a vector \code{y} of length n, \code{dat} should be given as a matrix
