@@ -4,10 +4,10 @@ Title: Scoring Rules for Parametric and Simulated Distribution Forecasts
 Version: 1.1.0
 Date: 2023-02-06
 Authors@R: c(person(given = c("Alexander", "I."), family = "Jordan", role = "aut",
-                    comment = c(ORCID = 0000-0001-7423-1352)), 
-             person(given = "Fabian", family = "Krüger", 
+                    comment = c(ORCID = "0000-0001-7423-1352")), 
+             person(given = "Fabian", family = "Krueger", 
                     role = c("aut", "cre"), 
-                    email = "fabian.krueger83@gmail.com",
+                    email = "Fabian.Krueger83@gmail.com",
                     comment = c(ORCID = "0000-0002-5112-9037")),
              person(given = "Sebastian", family = "Lerch", role = "aut",
                     comment = c(ORCID = "0000-0002-3467-4375")), 

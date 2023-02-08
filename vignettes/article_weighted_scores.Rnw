@@ -563,23 +563,29 @@ Data from January 2000 to November 2004 is used to train the statistical post-pr
 These three post-processing models can then be evaluated and compared using scoring rules. \cite{JordanEtAl2018} demonstrate how the CRPS can be used for this purpose.
 
 <<Computing-scores-Gauss>>=
-gauss_crps <- crps_cnorm(y = obs, location = gauss_mu, scale = gauss_sc, 
-                         lower = 0, upper = Inf)
+if (use_crch){
+  gauss_crps <- crps_cnorm(y = obs, location = gauss_mu, scale = gauss_sc, 
+                           lower = 0, upper = Inf)
+}
 @
 <<Computing-scores-logis-stud, echo=FALSE>>=
-ens_crps <- crps_sample(obs, dat = as.matrix(ens_fc))
-logis_crps <- crps_clogis(obs, location = logis_mu, scale = logis_sc, 
-                          lower = 0, upper = Inf)
-stud_crps <- crps_ct(obs, df = stud_df, location = stud_mu, scale = stud_sc, 
-                     lower = 0, upper = Inf)
+if (use_crch){
+  ens_crps <- crps_sample(obs, dat = as.matrix(ens_fc))
+  logis_crps <- crps_clogis(obs, location = logis_mu, scale = logis_sc, 
+                            lower = 0, upper = Inf)
+  stud_crps <- crps_ct(obs, df = stud_df, location = stud_mu, scale = stud_sc, 
+                       lower = 0, upper = Inf)
+}
 @
 
 The result is a vector of scores corresponding to each forecast case in the test data set, and the competing forecast strategies can then be compared using their average scores.
 
 <<Calculating-average-scores>>=
-scores <- data.frame(Logistic = logis_crps, Gaussian = gauss_crps,
-                     Students_t = stud_crps, Ensemble = ens_crps)
-sapply(scores, mean)
+if (use_crch){
+  scores <- data.frame(Logistic = logis_crps, Gaussian = gauss_crps,
+                       Students_t = stud_crps, Ensemble = ens_crps)
+  sapply(scores, mean)
+}
 @
 
 The mean CRPS values indicate that all post-processing models substantially improve upon the raw ensemble forecasts, and there are only small differences between the post-processing models. Of course, in a formal study, we should accompany these scores with measures of uncertainty, or perform statistical tests that clarify whether the differences between the scores are significant.
@@ -587,10 +593,12 @@ The mean CRPS values indicate that all post-processing models substantially impr
 While the CRPS assesses overall forecast performance, the three post-processing models could also be compared with respect to their predictions of particular outcomes. This can be achieved here using weighted versions of the CRPS. As discussed, weighted scoring rules are only available in \pkg{scoringRules} for forecasts in the form of a predictive sample. Hence, to evaluate the post-processed forecast distributions, we must first sample from the predictive distributions, and use this sample to estimate the score for the parametric forecasts. Here, we sample 1000 observations from the predictive distributions, which should provide a reasonable approximation of the score for the continuous forecast distribution \citep[Figure 2]{JordanEtAl2018}.
 
 <<Post-processing-sample>>=
-ens_size <- 1000
-n <- length(obs)
-gauss_sample <- replicate(ens_size, rnorm(n, gauss_mu, gauss_sc))
-gauss_sample[gauss_sample < 0] <- 0
+if (use_crch){
+  ens_size <- 1000
+  n <- length(obs)
+  gauss_sample <- replicate(ens_size, rnorm(n, gauss_mu, gauss_sc))
+  gauss_sample[gauss_sample < 0] <- 0
+}
 @
 
 An obvious question concerns which weight function to employ within the weighted scores. Weight and chaining functions should be chosen such that the outcomes that are of most interest to the practitioners are emphasised. As discussed, this will likely change on a case-by-case basis, and more than one weight function could be employed to gain a more complete understanding of the forecast performance; summarising plots such as Figure \ref{fig:score_vs_t} are particularly useful.
@@ -601,25 +609,31 @@ For the rainfall forecasts considered here, we firstly employ this latter weight
 
 
 <<Post-processing-twcrps-Gauss>>=
-t <- sqrt(30)
-gauss_twcrps <- twcrps_sample(y = obs, dat = gauss_sample, a = t)
+if (use_crch){
+  t <- sqrt(30)
+  gauss_twcrps <- twcrps_sample(y = obs, dat = gauss_sample, a = t)
+}
 @
 <<Post-processing-twcrps-logis-stud, echo=FALSE>>=
-ens_twcrps <- twcrps_sample(obs, dat = as.matrix(ens_fc), a = t)
-logis_sample <- replicate(ens_size, rlogis(n, logis_mu, logis_sc))
-logis_sample[logis_sample < 0] <- 0
-logis_twcrps <- twcrps_sample(obs, dat = logis_sample, a = t)
-stud_sample <- replicate(ens_size, rt(n, df = stud_df)*stud_sc + stud_mu)
-stud_sample[stud_sample < 0] <- 0
-stud_twcrps <- twcrps_sample(obs, dat = stud_sample, a = t)
+if (use_crch){
+  ens_twcrps <- twcrps_sample(obs, dat = as.matrix(ens_fc), a = t)
+  logis_sample <- replicate(ens_size, rlogis(n, logis_mu, logis_sc))
+  logis_sample[logis_sample < 0] <- 0
+  logis_twcrps <- twcrps_sample(obs, dat = logis_sample, a = t)
+  stud_sample <- replicate(ens_size, rt(n, df = stud_df)*stud_sc + stud_mu)
+  stud_sample[stud_sample < 0] <- 0
+  stud_twcrps <- twcrps_sample(obs, dat = stud_sample, a = t)
+}
 @
 
 Having repeated this for the logistic and Student's $t$ forecast distributions, we can then compare the three post-processing models using their average threshold-weighted CRPS.
 
 <<Calculating-average-weighted-scores>>=
-scores <- data.frame(Logistic = logis_twcrps, Gaussian = gauss_twcrps,
-                     Students_t = stud_twcrps, Ensemble = ens_twcrps)
-sapply(scores, mean)
+if (use_crch){
+  scores <- data.frame(Logistic = logis_twcrps, Gaussian = gauss_twcrps,
+                       Students_t = stud_twcrps, Ensemble = ens_twcrps)
+  sapply(scores, mean)
+}
 @
 
 These threshold-weighted CRPS values illustrate that, while the three post-processing methods are again almost indistinguishable, the relative improvement of the post-processed forecasts upon the raw ensemble forecasts has increased. This suggests that post-processing is particularly beneficial when predicting more extreme precipitation accumulations.  
@@ -630,21 +644,27 @@ Alternatively, the Gaussian distribution function could also be used to emphasis
 The results largely agree with those observed for the previous weight function. 
 
 <<Post-processing-twcrps-custom-Gauss>>=
-sigma <- 1
-weight_func <- function(x) pnorm(x, mean = t, sd = sigma)
-chain_func <- function(x) (x - t)*pnorm(x, mean = t, sd = sigma) + 
-  (sigma^2)*dnorm(x, mean = t, sd = sigma)
-gauss_twcrps <- twcrps_sample(obs, gauss_sample, chain_func = chain_func)
+if (use_crch){
+  sigma <- 1
+  weight_func <- function(x) pnorm(x, mean = t, sd = sigma)
+  chain_func <- function(x) (x - t)*pnorm(x, mean = t, sd = sigma) + 
+    (sigma^2)*dnorm(x, mean = t, sd = sigma)
+  gauss_twcrps <- twcrps_sample(obs, gauss_sample, chain_func = chain_func)
+}
 @
 <<Post-processing-twcrps-custom-logis-stud, echo=FALSE>>=
-ens_twcrps <- twcrps_sample(obs, dat = as.matrix(ens_fc), chain_func = chain_func)
-logis_twcrps <- twcrps_sample(obs, dat = logis_sample, chain_func = chain_func)
-stud_twcrps <- twcrps_sample(obs, dat = stud_sample, chain_func = chain_func)
+if (use_crch){
+  ens_twcrps <- twcrps_sample(obs, dat = as.matrix(ens_fc), chain_func = chain_func)
+  logis_twcrps <- twcrps_sample(obs, dat = logis_sample, chain_func = chain_func)
+  stud_twcrps <- twcrps_sample(obs, dat = stud_sample, chain_func = chain_func)
+}
 @
 <<Calculating-average-weighted-scores-custom>>=
-scores <- data.frame(CRCHlogis = logis_twcrps, CRCHgauss = gauss_twcrps,
-                     CRCHstud = stud_twcrps, Ensemble = ens_twcrps)
-sapply(scores, mean)
+if (use_crch){
+  scores <- data.frame(CRCHlogis = logis_twcrps, CRCHgauss = gauss_twcrps,
+                       CRCHstud = stud_twcrps, Ensemble = ens_twcrps)
+  sapply(scores, mean)
+}
 @
 
 The choice of \code{sigma} above is somewhat arbitrary, and depends on how quickly the weight function should tend to zero or one. If \code{sigma} is equal to zero, then, in theory, we should recover the indicator weight function employed above.
