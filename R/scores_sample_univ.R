@@ -32,6 +32,8 @@
 #'  
 #' @author Alexander Jordan, Fabian Krueger, Sebastian Lerch
 #'  
+#' @seealso \code{\link{scores_sample_univ_weighted}} for weighted versions of the scoring rules documented here.
+#'  
 #' @details 
 #' For a vector \code{y} of length n, \code{dat} should be given as a matrix
 #' with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
