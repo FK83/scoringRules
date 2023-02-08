@@ -56,8 +56,18 @@ set.seed(42)
 
 # Required packages
 library(scoringRules)
-library(ggplot2)
-library(crch)
+if (requireNamespace("crch", quietly = TRUE)) {
+  use_crch <- TRUE
+  library(crch)
+  } else {
+  use_crch <- FALSE
+}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  use_ggplot <- TRUE
+  library(ggplot2)
+  } else {
+  use_ggplot <- FALSE
+}
 @
 
 
@@ -110,7 +120,7 @@ In the following section, we review the existing theory of weighted scoring rule
 
 \section{Theoretical background}\label{sec:theory}
 
-\subsection{Proper scoring rules}
+\subsection{Proper scoring rules}\label{sec:proper_scores}
 
 Suppose we are interested in predicting a random variable $Y$ that takes values in a set $\Omega$, and that our forecasts are in the form of probability distributions over $\Omega$. Let $\cF$ denote a set of such forecasts. A scoring rule is a function
 \begin{equation*}
@@ -155,7 +165,7 @@ Both the energy score and the variogram score belong to the very general class o
 \end{equation}
 where $\bX, \bX^{\prime} \sim F$ are independent.
 
-To facilitate the implementation of these popular scoring rules in practice, the \pkg{scoringRules} package provides analytical expressions of the LogS and CRPS for forecasts that correspond to several familiar parametric distributions. It is also often the case that only a sample from the forecast distribution is available; this is common, for example, when considering ensemble forecasts issued by numerical weather and climate models, or output from Markov chain Monte Carlo (MCMC) algorithms \citep{KruegerEtAl2016}. The \pkg{scoringRules} package therefore additionally contains versions of the LogS, CRPS, ES, VS, and MMDS that can be used to evaluate forecasts in the form of a predictive sample. This can be achieved by replacing the expectations in Equations \ref{eq:crps}-\ref{eq:mmds} with sample means (see Appendix \ref{app:sampleformulas} for details). For the LogS, kernel density estimation is used to estimate the predictive density from the sample, prior to calculating the score.
+To facilitate the implementation of these popular scoring rules in practice, the \pkg{scoringRules} package provides analytical expressions of the LogS and CRPS for forecasts that correspond to several familiar parametric distributions. It is also often the case that only a sample from the forecast distribution is available; this is common, for example, when considering ensemble forecasts issued by numerical weather and climate models, or output from Markov chain Monte Carlo (MCMC) algorithms \citep{KruegerEtAl2021}. The \pkg{scoringRules} package therefore additionally contains versions of the LogS, CRPS, ES, VS, and MMDS that can be used to evaluate forecasts in the form of a predictive sample. This can be achieved by replacing the expectations in Equations \ref{eq:crps}-\ref{eq:mmds} with sample means (see Appendix \ref{app:sampleformulas} for details). For the LogS, kernel density estimation is used to estimate the predictive density from the sample, prior to calculating the score.
 
 
 \subsection{Weighted scoring rules}
@@ -221,10 +231,15 @@ where $\bX, \bX^{\prime} \sim F$ are independent random variables taking values 
 
 In contrast to the outcome-weighted scoring rules, threshold-weighted scoring rules transform the forecasts and observations according to a chaining function $v$ prior to employing the unweighted version of the scores. The chaining function can therefore be chosen to focus the scoring rules on particular outcomes. While there exists a canonical way to obtain a chaining function from a given weight function in the univariate case, no such relationship exists when evaluating multivariate forecasts. This is discussed further in the following section.
 
-\newpage
+
 \subsection{Weight and chaining functions}\label{sec:weight_chaining}
 
-These weighted scoring rules provide attractive ways to target particular outcomes of interest when evaluating forecast performance, both in the univariate and multivariate case. In this section, we discuss possible weight and chaining functions that can be used within these weighted scoring rules.
+These weighted scoring rules provide attractive ways to target particular outcomes of interest when evaluating forecast performance, both in the univariate and multivariate case. In this section, we discuss possible weight and chaining functions that can be used within these weighted scoring rules. Certain choices can result in weighted scoring rules that are not proper, and these weight and chaining functions must therefore be chosen with care, to ensure that forecasters are not evaluated using an improper scoring rule. 
+
+If both a weighted and unweighted version of a scoring rule are proper, then they will both be minimised on average by the same forecast distribution: the true distribution of the outcome. However, for two imperfect forecasts, the ranking of these forecasts may change depending on whether a weighted or unweighted scoring rule is employed. Weighted scoring rules may be less powerful than conventional scoring rules when discriminating between two forecast distributions, but they should be more discriminative when comparing forecasts made for particular outcomes. Put differently, if weighted scoring rules detect a difference between two forecast systems, then it is generally easier to interpret this difference than if it were detected using an unweighted scoring rule.
+
+Readers are referred to \cite{GneitingRanjan2011}, \cite{LerchEtAl2017}, and \cite{AllenEtAl2022} for further details regarding what weight and chaining functions preserve the (strict) propriety of scoring rules. The weight and chaining functions that we consider here all result in weighted scoring rules that are themselves proper (though not necessarily strictly proper). 
+
 
 \subsubsection{Weight functions}
 
@@ -288,28 +303,28 @@ which is essentially a component-wise extension of the chaining function for the
 
 \begin{figure}
 <<Chaining-func-example, echo=FALSE, dev='pdf', fig.width=2.5, fig.height=2.5, fig.align="center">>=
-
-a1 <- a2 <- 2.5
-b1 <- b2 <- 7.5
-
-x <- pmin(pmax(rnorm(10, 5, 1.5), 0.5), 9.5)
-y <- pmin(pmax(rnorm(10, 5, 1.5), 0.5), 9.5)
-w_ind <- (x < a1) | (x > b1) | (y < a2) | (y > b2)
-v_x <- pmin(pmax(x, a1), b1)
-v_y <- pmin(pmax(y, a2), b2)
-
-ggplot() + geom_rect(aes(xmin = a1, xmax = b1, ymin = a2, ymax = b2), fill = "lightblue") + 
-  scale_x_continuous(expand = c(0, 0), limits = c(0, 10), breaks = c(a1, b1), 
-                     labels = c(expression(a[1]), expression(b[1])), name = expression(z[1])) + 
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 10), breaks = c(a2, b2), 
-                     labels = c(expression(a[2]), expression(b[2])), name = expression(z[2])) +
-  theme_bw() + theme(panel.grid = element_blank()) +
-  geom_segment(aes(x = x[w_ind], y = y[w_ind], xend = v_x[w_ind], yend = v_y[w_ind]),
-               lineend = "round", linejoin = "round", linewidth = 1,
-               arrow = arrow(length = unit(0.1, "cm")), col = "red") +
-  geom_point(aes(x = x, y = y), size = 2) +
-  geom_point(aes(x = v_x, y = v_y), size = 2, shape = 4)
-
+if (use_ggplot) {
+  a1 <- a2 <- 2.5
+  b1 <- b2 <- 7.5
+  
+  x <- pmin(pmax(rnorm(10, 5, 1.5), 0.5), 9.5)
+  y <- pmin(pmax(rnorm(10, 5, 1.5), 0.5), 9.5)
+  w_ind <- (x < a1) | (x > b1) | (y < a2) | (y > b2)
+  v_x <- pmin(pmax(x, a1), b1)
+  v_y <- pmin(pmax(y, a2), b2)
+  
+  ggplot() + geom_rect(aes(xmin = a1, xmax = b1, ymin = a2, ymax = b2), fill = "lightblue") + 
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 10), breaks = c(a1, b1), 
+                       labels = c(expression(a[1]), expression(b[1])), name = expression(z[1])) + 
+    scale_y_continuous(expand = c(0, 0), limits = c(0, 10), breaks = c(a2, b2), 
+                       labels = c(expression(a[2]), expression(b[2])), name = expression(z[2])) +
+    theme_bw() + theme(panel.grid = element_blank()) +
+    geom_segment(aes(x = x[w_ind], y = y[w_ind], xend = v_x[w_ind], yend = v_y[w_ind]),
+                 lineend = "round", linejoin = "round", linewidth = 1,
+                 arrow = arrow(length = unit(0.1, "cm")), col = "red") +
+    geom_point(aes(x = x, y = y), size = 2) +
+    geom_point(aes(x = v_x, y = v_y), size = 2, shape = 4)
+}
 @
 \caption{Example of the weight function in Equation \ref{eq:mv_thr_weight} and the chaining function in Equation \ref{eq:default_v}. Ten two-dimensional observations are shown before (points) and after (crosses) applying the chaining function. The shaded region is the area specified by the weight function. Points in this region are unchanged after applying the chaining function, whereas points outside of this region are mapped onto the region's border, as indicated by the red arrows.}
 \label{fig:chain_func}
@@ -320,8 +335,7 @@ Similarly, for the smooth weight functions based on multivariate Gaussian distri
 Although the weight and chaining functions presented in this section are simple examples that are frequently used in practice, the weighted scoring rules discussed herein can be employed with arbitrary such functions, permitting very flexible, user-oriented forecast evaluation. In the remainder of this paper, we will discuss how these weighted scoring rules have been integrated into the \pkg{scoringRules} package, facilitating their use in practical applications. 
 
 
-\section{Package functionality}
-\label{sec:functionality}
+\section{Package functionality}\label{sec:functionality}
 
 \subsection{Univariate weighted scoring rules}\label{sec:func_weighted_univ}
 
@@ -344,9 +358,11 @@ twcrps_sample(y, dat, a = -Inf, b = Inf,
 clogs_sample(y, dat, a = -Inf, b = Inf, bw = NULL, 
              show_messages = FALSE, cens = TRUE)
 \end{Code}
-Note that the \code{cens} argument in \code{clogs_sample} specifies whether the conditional likelihood score or the censored likelihood score should be returned. The default is \code{cens = TRUE}, in which case the CeLS is calculated.
+The \code{cens} argument in \code{clogs_sample} specifies whether the conditional likelihood score or the censored likelihood score should be returned; the default is \code{cens = TRUE}, in which case the CeLS is calculated. 
 
-In addition to observations and forecast samples, these functions have arguments that allow particular outcomes to be targeted when calculating the weighted scores. By default, the weighted scoring rules employ the weight function $w(z) = \ind\{a < z < b\}$, which, as discussed in the previous section, is most commonly applied in practice. The arguments \code{a} and \code{b} are single numeric values representing the lower and upper bounds in this weight function, respectively. If these arguments are not specified, then their default values are \code{a = -Inf} and \code{b = Inf}, resulting in a weight function that is always one, and thus recovering the unweighted scoring rules.
+As discussed in Section \ref{sec:proper_scores}, the LogS takes a predictive density as input, and hence cannot readily be applied to predictive samples. To circumvent this, \code{logs_sample} employs kernel density estimation to estimate a predictive density from the sample, and then calculates the LogS from the estimated density function. However, \cite{KruegerEtAl2021} demonstrate that the resulting score is sensitive to the bandwidth parameter \code{bw} of the kernel density estimation, and the authors therefore recommended using the CRPS instead of the LogS, particularly when the sample size $m$ is small. Similarly, the conditional and censored likelihood scores also require a predictive density as inputs, and kernel density estimation is used to estimate this from the predictive sample prior to calculating the weighted scores. We anticipate that these weighted scores will be yet more sensitive to the kernel density estimation parameters, especially when a weight function is used that targets more extreme outcomes. As such, when the forecast is in the form of a predictive sample, we similarly recommend employing weighted versions of the CRPS, rather than the conditional or censored likelihood score.
+
+In addition to observations and forecast samples, the functions listed above have arguments that allow particular outcomes to be targeted when calculating the weighted scores. By default, the weighted scoring rules employ the weight function $w(z) = \ind\{a < z < b\}$, which, as discussed in the previous section, is most commonly applied in practice. The arguments \code{a} and \code{b} are single numeric values representing the lower and upper bounds in this weight function, respectively. If these arguments are not specified, then their default values are \code{a = -Inf} and \code{b = Inf}, resulting in a weight function that is always one, and thus recovering the unweighted scoring rules.
 
 <<Univ-weighted-score-example-1>>=
 obs <- rnorm(5)
@@ -412,8 +428,8 @@ legend("top", bty = "n", legend = c("twCRPS", "owCRPS", "Normal", "Logistic"),
 Similarly to the LogS and CRPS, \pkg{scoringRules} contains functions to calculate the ES, VS, and MMDS for multivariate forecast distributions in the form of predictive samples.
 \begin{Code}
 es_sample(y, dat, w = NULL)
-mmds_sample(y, dat, w = NULL)
 vs_sample(y, dat, w = NULL, w_vs = NULL, p = 0.5)
+mmds_sample(y, dat, w = NULL)
 \end{Code}
 
 These multivariate scoring rule functions can only evaluate a single multivariate forecast at a time. Hence, the observation argument \code{y} is a vector of length $d$, representing an element in $\R^{d}$, the forecast argument \code{dat} is a $d \times m$ matrix, with the columns representing the simulated samples (or ensemble members) from the multivariate forecast distribution, and the output is a single value. These functions can then be sequentially applied to multiple forecast cases using the \fct{apply} functions or \code{for} loops \citep[see Appendix B of][]{JordanEtAl2018}.
@@ -452,9 +468,7 @@ Finally, note that the functions to calculate the multivariate weighted scores a
 
 \subsection{Custom weight and chaining functions}\label{sec:custom_weight}
 
-The functions to calculate the weighted scoring rules use a default weight function that assumes emphasis is to be placed on a particular region of the outcome space. Although this weight function is frequently applied in practice, it may be the case that another weight function is desired. 
-
-As discussed, the motivation for considering only forecasts in the form of a predictive sample is that it is straightforward to calculate the resulting scores for arbitrary weight and chaining functions. The weighted scoring rule functions in \pkg{scoringRules} therefore additionally contain an argument that allows for a custom weight or chaining function to be used.
+The functions to calculate the weighted scoring rules use a default weight function that assumes emphasis is to be placed on a particular region of the outcome space. Although this weight function is frequently applied in practice, it may be the case that another weight function is desired. As discussed, the motivation for considering only forecasts in the form of a predictive sample is that it is straightforward to calculate the resulting scores for arbitrary weight and chaining functions. The weighted scoring rule functions in \pkg{scoringRules} therefore additionally contain an argument that allows for a custom weight or chaining function to be used.
 
 The \code{weight_func} argument can be used to incorporate a custom weight function into the outcome-weighted scoring rules. This argument must be a function that takes a vector as an input, and outputs either a vector of the same length as the input (if a univariate scoring rule is being used), or a single numeric value (if a multivariate scoring rule is used). An error is returned if the weight function is found to return negative weights, or if the output is not of the correct format.
 
@@ -495,7 +509,7 @@ Weighted versions of the other scoring rules discussed herein can be calculated 
 
 It is challenging to construct general analytical formulae for weighted scoring rules corresponding to parametric forecast distributions and arbitrary weight functions. Similarly, since the CoLS and CeLS require kernel density estimation to estimate the predictive density given the sample, these scores cannot be readily implemented with arbitrary weight functions. Hence, \code{clogs_samples} does not take custom weight or chaining functions as arguments, so that only the default weight function is available for these scores.
 
-\newpage
+
 \section{Usage examples}\label{sec:examples}
 
 \cite{JordanEtAl2018} present two practical applications in which the \pkg{scoringRules} functionality is used to evaluate probabilistic forecasts. In this section, we revisit these applications, and illustrate how the weighted scoring rules available in \pkg{scoringRules} allow particular outcomes to be targeted during forecast evaluation. In both examples, the data and probabilistic models are as described in \cite{JordanEtAl2018}, and further details can be found therein.
@@ -508,38 +522,40 @@ However, operational ensemble forecasts tend to exhibit systematic errors when p
 Three alternative parametric distributions are then compared within this framework: a logistic, Gaussian, and Student's $t$ distribution. These three parametric distributions are censored below at zero, resulting in a forecast distribution that assigns zero probability to negative precipitation accumulations, and a non-negligible probability to zero precipitation. Further details about the statistical post-processing methods are available in \cite{JordanEtAl2018} and references therein.
 
 <<Prepare-post-processing-example, echo=FALSE>>=
-# load data
-data("RainIbk", package = "crch")
-RainIbk <- sqrt(RainIbk)
-ensfc <- RainIbk[, grep('^rainfc', names(RainIbk))]
-RainIbk$ensmean <- apply(ensfc, 1, mean)
-RainIbk$enssd <- apply(ensfc, 1, sd)
-RainIbk <- subset(RainIbk, enssd > 0)  
-
-# split into training and test data
-data_train <- subset(RainIbk, as.Date(rownames(RainIbk)) <= "2004-11-30")
-data_eval <- subset(RainIbk, as.Date(rownames(RainIbk)) >= "2005-01-01")  
-
-# fit post-processing models
-CRCHgauss <- crch(rain ~ ensmean | log(enssd), data = data_train,
-                  left = 0, dist = "gaussian")
-gauss_mu <- predict(CRCHgauss, data_eval, type = "location")
-gauss_sc <- predict(CRCHgauss, data_eval, type = "scale")
-
-CRCHlogis <- crch(rain ~ ensmean | log(enssd), data = data_train, 
-                  left = 0, dist = "logistic")
-logis_mu <- predict(CRCHlogis, data_eval, type = "location")
-logis_sc <- predict(CRCHlogis, data_eval, type = "scale")
-
-CRCHstud <- crch(rain ~ ensmean | log(enssd), data = data_train, 
-                 left = 0, dist = "student")
-stud_mu <- predict(CRCHstud, data_eval, type = "location")
-stud_sc <- predict(CRCHstud, data_eval, type = "scale")
-stud_df <- CRCHstud$df
-
-# get raw ensemble forecast
-ens_fc <- data_eval[, grep('^rainfc', names(RainIbk))] 
-obs <- data_eval$rain
+if (use_crch) {
+  # load data
+  data("RainIbk", package = "crch")
+  RainIbk <- sqrt(RainIbk)
+  ensfc <- RainIbk[, grep('^rainfc', names(RainIbk))]
+  RainIbk$ensmean <- apply(ensfc, 1, mean)
+  RainIbk$enssd <- apply(ensfc, 1, sd)
+  RainIbk <- subset(RainIbk, enssd > 0)  
+  
+  # split into training and test data
+  data_train <- subset(RainIbk, as.Date(rownames(RainIbk)) <= "2004-11-30")
+  data_eval <- subset(RainIbk, as.Date(rownames(RainIbk)) >= "2005-01-01")  
+  
+  # fit post-processing models
+  CRCHgauss <- crch(rain ~ ensmean | log(enssd), data = data_train,
+                    left = 0, dist = "gaussian")
+  gauss_mu <- predict(CRCHgauss, data_eval, type = "location")
+  gauss_sc <- predict(CRCHgauss, data_eval, type = "scale")
+  
+  CRCHlogis <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+                    left = 0, dist = "logistic")
+  logis_mu <- predict(CRCHlogis, data_eval, type = "location")
+  logis_sc <- predict(CRCHlogis, data_eval, type = "scale")
+  
+  CRCHstud <- crch(rain ~ ensmean | log(enssd), data = data_train, 
+                   left = 0, dist = "student")
+  stud_mu <- predict(CRCHstud, data_eval, type = "location")
+  stud_sc <- predict(CRCHstud, data_eval, type = "scale")
+  stud_df <- CRCHstud$df
+  
+  # get raw ensemble forecast
+  ens_fc <- data_eval[, grep('^rainfc', names(RainIbk))] 
+  obs <- data_eval$rain
+}
 @
 
 Data from January 2000 to November 2004 is used to train the statistical post-processing models, and the resulting forecasts are then evaluated out-of-sample using the data from January 2005 to September 2013. The models are fit to the training data using maximum likelihood estimation via the \pkg{crch} package. Applying these models to the ensemble forecasts in the test data set returns predictive location and scale parameters for each model and each forecast case. For concision, we only show the code used to evaluate the Gaussian forecast distributions; this can easily be extended to the other models. In this case, the vectors \code{gauss_mu} and \code{gauss_sc} contain the estimated location and scale parameters that characterise the predictive distributions in the test data, while \code{obs} represents the time series of the corresponding observed precipitation accumulations. 
@@ -568,9 +584,7 @@ sapply(scores, mean)
 
 The mean CRPS values indicate that all post-processing models substantially improve upon the raw ensemble forecasts, and there are only small differences between the post-processing models. Of course, in a formal study, we should accompany these scores with measures of uncertainty, or perform statistical tests that clarify whether the differences between the scores are significant.
 
-While the CRPS assesses overall forecast performance, the three post-processing models could also be compared with respect to their predictions of high precipitation accumulations. Of course, high precipitation accumulations are of particular relevance since they often lead to flooding, which can have a significantly negative impact on society. To evaluate forecasts for these high accumulation events, we can employ weighted versions of the CRPS. 
-
-As discussed, these weighted scoring rules are only available in \pkg{scoringRules} for forecasts in the form of a predictive sample. Hence, to evaluate the post-processed forecast distributions, we must first sample from the predictive distributions, and use this sample to estimate the score for the parametric forecasts. Here, we sample 1000 observations from the predictive distributions, which should provide a reasonable approximation of the score for the continuous forecast distribution \citep[Figure 2]{JordanEtAl2018}.
+While the CRPS assesses overall forecast performance, the three post-processing models could also be compared with respect to their predictions of particular outcomes. This can be achieved here using weighted versions of the CRPS. As discussed, weighted scoring rules are only available in \pkg{scoringRules} for forecasts in the form of a predictive sample. Hence, to evaluate the post-processed forecast distributions, we must first sample from the predictive distributions, and use this sample to estimate the score for the parametric forecasts. Here, we sample 1000 observations from the predictive distributions, which should provide a reasonable approximation of the score for the continuous forecast distribution \citep[Figure 2]{JordanEtAl2018}.
 
 <<Post-processing-sample>>=
 ens_size <- 1000
@@ -579,7 +593,12 @@ gauss_sample <- replicate(ens_size, rnorm(n, gauss_mu, gauss_sc))
 gauss_sample[gauss_sample < 0] <- 0
 @
 
-Firstly, consider a weight function that emphasises values above a threshold of interest $t$, i.e. $w(z) = \ind\{ z > t \}$. This weight function can be employed in \pkg{scoringRules} by setting the arguments \code{a = t} and \code{b = Inf} in the weighted scoring rule functions. We take $t=\sqrt{30}$mm, which is roughly equal to the 95th percentile of the square root-transformed precipitation values in the training data.
+An obvious question concerns which weight function to employ within the weighted scores. Weight and chaining functions should be chosen such that the outcomes that are of most interest to the practitioners are emphasised. As discussed, this will likely change on a case-by-case basis, and more than one weight function could be employed to gain a more complete understanding of the forecast performance; summarising plots such as Figure \ref{fig:score_vs_t} are particularly useful.
+
+In a weather forecasting context, the relationship between weather conditions and socio-economical impacts is relatively well-understood. Hence, an obvious choice of the weight function is one that reflects the costs associated with each possible outcome. Outcomes that correspond to higher impacts would therefore be emphasised in the weighted scores, and forecasters would be encouraged to issue more accurate forecasts for these high-impact events. Alternatively, to reduce the impact of these events, national weather centres issue warnings to the general public. These warnings typically correspond to relevant thresholds of the outcome variable, determined from climatological records and thorough analyses of the risks of weather to infrastructure and public health. A simple alternative weight function would thus use an indicator weight function (e.g. Equation \ref{eq:uv_thr_weight}), with the parameters in this weight function defined by the warning thresholds.
+
+For the rainfall forecasts considered here, we firstly employ this latter weight function to emphasise values above a threshold of interest $t$, i.e. $w(z) = \ind\{ z > t \}$. This weight function can be employed in \pkg{scoringRules} by setting the arguments \code{a = t} and \code{b = Inf} in the weighted scoring rule functions. In doing so, the weighted scoring rules will assess the forecasts in their ability to predict high precipitation accumulations, which are of particular relevance since they often lead to flooding. As a threshold, we choose $t=\sqrt{30}$mm. This choice was made since $30$mm is commonly chosen as a threshold in rainfall warning systems, and $\sqrt{30}$ is roughly equal to the 95th percentile of the square root-transformed precipitation values in the training data considered here.
+
 
 <<Post-processing-twcrps-Gauss>>=
 t <- sqrt(30)
@@ -595,7 +614,7 @@ stud_sample[stud_sample < 0] <- 0
 stud_twcrps <- twcrps_sample(obs, dat = stud_sample, a = t)
 @
 
-Having repeated this for the logistic and Student's $t$ forecast distributions, we can then compared the three post-processing models using their average threshold-weighted CRPS.
+Having repeated this for the logistic and Student's $t$ forecast distributions, we can then compare the three post-processing models using their average threshold-weighted CRPS.
 
 <<Calculating-average-weighted-scores>>=
 scores <- data.frame(Logistic = logis_twcrps, Gaussian = gauss_twcrps,
@@ -634,7 +653,7 @@ In general, the performance of the forecasts will change depending on the weight
 
 \subsection{Bayesian forecasts of US GDP growth}
 
-The second case study considers an example from economics. It is standard for national banks to issue forecasts for the country's gross domestic product (GDP) growth in the coming quarters. In this example, probabilistic forecasts of US GDP growth (in \%) are obtained using a Markov switching autoregressive model, with exact details given in \cite{KruegerEtAl2016}. This model is used to derive forecasts of quarterly US GDP growth for the following year, i.e. the next four quarters.
+The second case study considers an example from economics. It is standard for national banks to issue forecasts for the country's gross domestic product (GDP) growth in the coming quarters. In this example, probabilistic forecasts of US GDP growth (in \%) are obtained using a Markov switching autoregressive model, with exact details given in \cite{KruegerEtAl2021}. This model is used to derive forecasts of quarterly US GDP growth for the following year, i.e. the next four quarters.
 
 The data used in this example is available from the data set \code{gdp} in \pkg{scoringRules}, which contains observed US GDP growth for 271 quarters between 1947 and 2014. We use the data prior to 2014 as training data to estimate the Markov switching autoregressive model, which is then used to forecast the GDP growth in the four quarters of 2014. 
 
@@ -666,7 +685,7 @@ scores_logs <- logs_sample(obs, X)
 print(cbind(scores_crps, scores_logs))
 @
 
-As in the previous example, weighted versions of these scoring rules can again be used to target particular outcomes when quantifying forecast performance. When forecasting GDP growth, it is particularly important to accurately predict when growth rates will be negative, since this suggests a decline in the country's economy. To emphasise negative growth rates within weighted scoring rules, a canonical weight function is $w(z) = \ind\{z < 0 \}$. Outcome-weighted and threshold-weighted CRPS values, as well as conditional and censored likelihood scores, are shown below for the Markov switching autoregressive forecasts considered here.
+As in the previous example, weighted versions of these scoring rules can again be used to target particular outcomes when quantifying forecast performance. The choice of weight function will again depend on what information is most relevant for practitioners. When forecasting GDP growth, it is particularly important to accurately predict when growth rates will be negative, since this suggests a decline in the country's economy. To emphasise negative growth rates within weighted scoring rules, a canonical weight function is $w(z) = \ind\{z < 0 \}$. Outcome-weighted and threshold-weighted CRPS values, as well as conditional and censored likelihood scores, are shown below for the Markov switching autoregressive forecasts considered here.
 
 <<Weighted-univ-scores-MCMC-example>>=
 t <- 0
@@ -723,7 +742,7 @@ While the \pkg{scoringRules} package contains analytical expressions for the Log
 
 \section*{Acknowledgements}
 
-Sam Allen was funded by the Swiss Federal Office for Meteorology and Climatology (MeteoSwiss) and the Oeschger Centre for Climate Change Research. The authors thank Jonas Bhend and Jos{\'e} Carlos Araujo Acu{\~n}a for fruitful discussions.
+Sam Allen was funded by the Swiss Federal Office for Meteorology and Climatology (MeteoSwiss) and the Oeschger Centre for Climate Change Research. Jonas Bhend and Jos{\'e} Carlos Araujo Acu{\~n}a are thanked for fruitful discussions.
 
 
 \bibliography{bibliography_weighted}
