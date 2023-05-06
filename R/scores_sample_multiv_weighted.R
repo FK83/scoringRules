@@ -29,7 +29,7 @@
 #' @param p order of variogram score. Standard choices include \eqn{p = 1} and
 #' \eqn{p = 0.5}.
 #' 
-#' @seealso \link{scores_sample_multiv} for standard (un-weighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
+#' @seealso \link{scores_sample_multiv} for standard (unweighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
 #' 
 #' @details
 #' In the input matrix \code{dat} each column is expected to represent a sample

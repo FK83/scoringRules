@@ -56,7 +56,7 @@
 #'  
 #' @author Sam Allen
 #' 
-#' @seealso \link{scores_sample_univ} for standard (un-weighted) scores based on simulated forecast distributions. \link{scores_sample_multiv_weighted} for weighted scores based on simulated multivariate forecast distributions.
+#' @seealso \link{scores_sample_univ} for standard (unweighted) scores based on simulated forecast distributions. \link{scores_sample_multiv_weighted} for weighted scores based on simulated multivariate forecast distributions.
 #' 
 #' @details 
 #' For a vector \code{y} of length n, \code{dat} should be given as a matrix
