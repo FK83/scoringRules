@@ -1,4 +1,4 @@
-#' Weighted Multivariate Scoring Rules for Simulated Forecast Distributions
+#' Weighted Multivariate Scoring Rules for Simulated Forecast Distributions (experimental)
 #' 
 #' Compute weighted versions of multivariate scores \eqn{S(y, dat)}, where \eqn{S} is a
 #' proper scoring rule, \eqn{y} is a d-dimensional realization vector and 
@@ -6,7 +6,9 @@
 #' particular outcomes of interest to be emphasised during forecast evaluation.
 #' Threshold-weighted and outcome-weighted versions of three multivariate scores are 
 #' available: the energy score, a score based on a Gaussian kernel (\link{mmds_sample}, 
-#' see details below) and the variogram score of order \eqn{p}.
+#' see details below) and the variogram score of order \eqn{p}. Note that the functions 
+#' documented here are a new experimental feature of the package, 
+#' and feedback is highly welcome.
 #' 
 #' @param y realized values (numeric vector of length d).
 #' @param dat numeric matrix of data
@@ -27,6 +29,7 @@
 #' @param p order of variogram score. Standard choices include \eqn{p = 1} and
 #' \eqn{p = 0.5}.
 #' 
+#' @seealso \link{scores_sample_multiv} for standard (un-weighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
 #' 
 #' @details
 #' In the input matrix \code{dat} each column is expected to represent a sample

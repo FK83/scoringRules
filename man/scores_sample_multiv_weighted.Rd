@@ -8,7 +8,7 @@
 \alias{owmmds_sample}
 \alias{twvs_sample}
 \alias{owvs_sample}
-\title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions}
+\title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions (experimental)}
 \usage{
 twes_sample(
   y,
@@ -106,7 +106,9 @@ proper scoring rule, \eqn{y} is a d-dimensional realization vector and
 particular outcomes of interest to be emphasised during forecast evaluation.
 Threshold-weighted and outcome-weighted versions of three multivariate scores are 
 available: the energy score, a score based on a Gaussian kernel (\link{mmds_sample}, 
-see details below) and the variogram score of order \eqn{p}.
+see details below) and the variogram score of order \eqn{p}. Note that the functions 
+documented here are a new experimental feature of the package, 
+and feedback is highly welcome.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample
@@ -302,6 +304,9 @@ Holzmann, H. and B. Klar (2017):
 `Focusing on regions of interest in forecast evaluation',
 \emph{Annals of Applied Statistics} 11, 2404-2431. 
 \doi{10.1214/17-AOAS1088}
+}
+\seealso{
+\link{scores_sample_multiv} for standard (un-weighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
 }
 \author{
 Sam Allen
