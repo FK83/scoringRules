@@ -683,7 +683,7 @@ data_train <- subset(gdp, vint == "2014Q1")
 data_eval <- subset(gdp, vint == "2015Q1" & grepl("2014", dt))
 
 h <- 4
-m <- 2000 # use modest number of MCMC iterations for computational simplicity
+m <- 5000 # use modest number of MCMC iterations for computational simplicity
 fc_params <- ar_ms(data_train$val, forecast_periods = h, n_rep = m)
 
 mu <- t(fc_params$fcMeans)

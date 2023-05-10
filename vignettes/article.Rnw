@@ -645,10 +645,10 @@ As is typical for MCMC-based analysis, the model's forecast distribution $F_0$ i
 		\item draw $X_i\sim F_c(\cdot|\theta_i)$, where $F_c$ denotes the conditional distribution given the parameter values.
 	\end{itemize}
 \end{itemize}
-We use the function \arms{} to fit the model and produce forecasts for the four quarters of 2014 based on the information available at the end of year 2013, i.e., a single prediction case where the forecast horizon extends from one to four quarters ahead. Here, the conditional distribution $F_c$ is Gaussian. For illustration, we run the chain for 2\,000 iterations. (A larger number of iterations, say at least 20\,000, is advisable in empirical analyses.)
+We use the function \arms{} to fit the model and produce forecasts for the four quarters of 2014 based on the information available at the end of year 2013, i.e., a single prediction case where the forecast horizon extends from one to four quarters ahead. Here, the conditional distribution $F_c$ is Gaussian. For illustration, we run the chain for 5\,000 iterations. (A larger number of iterations, say at least 20\,000, is advisable in empirical analyses.)
 <<Sampling-MCMC-forecast-parameters>>=
 h <- 4
-m <- 2000
+m <- 5000
 fc_params <- ar_ms(data_train$val, forecast_periods = h, n_rep = m)
 @
 This function call yields a simulated sample corresponding to $\{\theta_1, \ldots, \theta_m\}$, where we obtain matrices of parameters for the mean and standard deviation. We transpose these matrices to have the rows correspond to the observations, and columns represent the position in the Markov chain:
@@ -721,7 +721,7 @@ crps_ecdf <- crps_sample(obs, X)
 logs_kde <- logs_sample(obs, X)
 print(cbind(crps_mpe, crps_ecdf, logs_mpe, logs_kde))
 @
-The score values are quite similar for both estimators, which seems natural given the large number of $20\,000$ MCMC draws. For the logarithmic score in particular, the MPE should be preferred over the KDE based estimator on theoretical grounds, see \citet{KruegerEtAl2016}.
+Note that for the logarithmic score, the MPE is generally preferable to the KDE based estimator on theoretical grounds, see \citet{KruegerEtAl2016}.
 
 The algorithm and approximation methods just sketched are not idiosyncratic to our example, but arise whenever a Bayesian model is used for forecasting. For illustrative \proglang{R} implementations of other Bayesian models, see, e.g., the packages \pkg{bayesgarch} \citep{ArdiaHoogerheide2010} and \pkg{stochvol} \citep{Kastner2016}.
 
