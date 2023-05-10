@@ -5,7 +5,7 @@
 %% packages
 \usepackage{thumbpdf,lmodern}
 \usepackage{amsfonts,amsmath,amssymb,amsthm}
-\usepackage{bbm,booktabs,setspace,longtable}
+\usepackage{booktabs,setspace,longtable}
 \usepackage[T1]{fontenc}
 
 %% custom commands
@@ -17,7 +17,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\by}{\mathbf{y}}
 \newcommand{\bX}{\mathbf{X}}
-\newcommand{\ind}{\mathbbm{1}}
+\newcommand{\ind}{\mathbf{1}}
 
 \newcommand{\crpssample}{\fct{crps\char`_sample}}
 \newcommand{\logssample}{\fct{logs\char`_sample}}
@@ -366,9 +366,9 @@ sample_nm <- matrix(rnorm(3e4, mean = 2, sd = 3), nrow = 3)
 crps_sample(obs_n, dat = sample_nm)
 logs_sample(obs_n, dat = sample_nm)
 @
-When \code{y} has length one then \code{dat} may also be a vector. Random sampling from the forecast distribution can be seen as an option to approximate the values of the proper scoring rules. To empirically assess the quality of this approximation and to illustrate the use of the score functions, consider the following Gaussian toy example, where we examine the performance of forecasts given as samples of size up to $5\,000$. The approximation experiment is independently repeated $500$ times:
+When \code{y} has length one then \code{dat} may also be a vector. Random sampling from the forecast distribution can be seen as an option to approximate the values of the proper scoring rules. To empirically assess the quality of this approximation and to illustrate the use of the score functions, consider the following Gaussian toy example, where we examine the performance of forecasts given as samples of size up to $5\,000$. The approximation experiment is independently repeated $200$ times:
 <<Simulated-score-example-2>>=
-R <- 500
+R <- 200
 M <- 5e3
 mgrid <- exp(seq(log(50), log(M), length.out = 51))
 crps_approx <- matrix(NA, nrow = R, ncol = length(mgrid))
@@ -428,7 +428,7 @@ lines(mgrid, apply(logs_approx, 2, mean), col = "darkgrey", lwd = 2)
 abline(h = logs_true, lty = 2)
 lines(mgrid, logs_approx[1, ], col = "purple", lwd = 2)
 @
-\caption{\label{fig:score_approx} The scores of a Gaussian forecast distribution with mean 2 and standard deviation 3 when a value of 0 is observed, estimated from an independent sample from the predictive distribution, and shown as a function of the size of the (expanding) sample. The horizontal dashed line represents the analytically calculated score. The gray area indicates empirical 90\% confidence intervals for each sample size computed from 500 independent replications of the simulation experiment, and the gray line shows the corresponding mean value over all repetitions.}
+\caption{\label{fig:score_approx} The scores of a Gaussian forecast distribution with mean 2 and standard deviation 3 when a value of 0 is observed, estimated from an independent sample from the predictive distribution, and shown as a function of the size of the (expanding) sample. The horizontal dashed line represents the analytically calculated score. The gray area indicates empirical 90\% confidence intervals for each sample size computed from 200 independent replications of the simulation experiment, and the gray line shows the corresponding mean value over all repetitions.}
 \end{figure}
 In this case, the true CRPS and LogS values can be computed using the \fct{crps} and \fct{logs} functions. Figure~\ref{fig:score_approx} graphically illustrates how the scores based on sampling approximations become more accurate as the sample size increases.
 
@@ -645,10 +645,10 @@ As is typical for MCMC-based analysis, the model's forecast distribution $F_0$ i
 		\item draw $X_i\sim F_c(\cdot|\theta_i)$, where $F_c$ denotes the conditional distribution given the parameter values.
 	\end{itemize}
 \end{itemize}
-We use the function \arms{} to fit the model and produce forecasts for the four quarters of 2014 based on the information available at the end of year 2013, i.e., a single prediction case where the forecast horizon extends from one to four quarters ahead. Here, the conditional distribution $F_c$ is Gaussian, and we run the chain for 20\,000 iterations.
+We use the function \arms{} to fit the model and produce forecasts for the four quarters of 2014 based on the information available at the end of year 2013, i.e., a single prediction case where the forecast horizon extends from one to four quarters ahead. Here, the conditional distribution $F_c$ is Gaussian. For illustration, we run the chain for 2\,000 iterations. (A larger number of iterations, say at least 20\,000, is advisable in empirical analyses.)
 <<Sampling-MCMC-forecast-parameters>>=
 h <- 4
-m <- 20000
+m <- 2000
 fc_params <- ar_ms(data_train$val, forecast_periods = h, n_rep = m)
 @
 This function call yields a simulated sample corresponding to $\{\theta_1, \ldots, \theta_m\}$, where we obtain matrices of parameters for the mean and standard deviation. We transpose these matrices to have the rows correspond to the observations, and columns represent the position in the Markov chain:

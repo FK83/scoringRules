@@ -5,7 +5,7 @@
 %% packages
 \usepackage{thumbpdf,lmodern}
 \usepackage{amsfonts,amsmath,amssymb,amsthm}
-\usepackage{bbm,booktabs,setspace,longtable}
+\usepackage{booktabs,setspace,longtable}
 \usepackage[T1]{fontenc}
 
 %% custom commands
@@ -19,7 +19,7 @@
 \newcommand{\by}{\mathbf{y}}
 \newcommand{\bx}{\mathbf{x}}
 \newcommand{\bX}{\mathbf{X}}
-\newcommand{\ind}{\mathbbm{1}}
+\newcommand{\ind}{\mathbf{1}}
 \newcommand{\dd}{\hspace{0.1cm} \mathrm{d}}
 
 
@@ -683,7 +683,7 @@ data_train <- subset(gdp, vint == "2014Q1")
 data_eval <- subset(gdp, vint == "2015Q1" & grepl("2014", dt))
 
 h <- 4
-m <- 20000
+m <- 2000 # use modest number of MCMC iterations for computational simplicity
 fc_params <- ar_ms(data_train$val, forecast_periods = h, n_rep = m)
 
 mu <- t(fc_params$fcMeans)
