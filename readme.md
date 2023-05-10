@@ -32,7 +32,7 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
   - Parametric distributions like normal, t, and gamma. For example, most weather forecasts (which apply statistical postprocessing to physical models) take such a form. 
   - Distributions that are not known analytically, but are indirectly described through a sample of simulaton draws. For example, Bayesian forecasts produced via Markov Chain Monte Carlo (MCMC) take this form. 
 
-The scoring rules we cover are the continuous ranked probability score (CRPS; Matheson and Winkler, *Management Science*, 1976) and the logarithmic score (Good, *Journal of the Royal Statistical Society (Series B)*, 1952). The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
+We cover various scoring rules, including the continuous ranked probability score (CRPS; Matheson and Winkler, *Management Science*, 1976) and the logarithmic score (Good, *Journal of the Royal Statistical Society (Series B)*, 1952). The package further provides functions to compute the multivariate energy and variogram scores for forecast distributions given by discrete samples.
 
 ## History
   - May 2023: Version 1.1, including threshold and outcome weighted scoring rules
