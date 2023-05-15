@@ -21,3 +21,16 @@ bibentry(bibtype = "Article",
   header       = "To cite scoringRules in publications use:"
 )
 
+bibentry(bibtype = "unpublished",
+  title        = "Weighted scoringRules: Emphasising particular outcomes when evaluating probabilistic forecasts",
+  author       = person(given = "Sam", family = "Allen"),
+  note      = "Preprint, arXiv:2305.07312",
+  year         = "2023",
+  textVersion  =
+  paste("Sam Allen (2023).",
+        "Weighted scoringRules: Emphasising particular outcomes when evaluating probabilistic forecasts.",
+        "Preprint, arXiv:2305.07312"),
+
+  header       = "If you use weighted scores (see ?scores_sample_univ_weighted and ?scores_sample_multiv_weighted), please also cite:"
+)
+
