@@ -125,7 +125,7 @@ Gretton, A., Borgwardt, K. M., Rasch, M. J., Schölkopf, B. and
 A. Smola (2012): `A kernel two-sample test', Journal of` Machine 
 Learning Research, 13, 723-773.
 
-Karatzoglou, A., Smola, A., Hornik, K. and Zeileis A. (2004). 
+Karatzoglou, A., Smola, A., Hornik, K. and A. Zeileis (2004). 
 kernlab - An S4 Package for Kernel Methods in R. Journal of Statistical 
 Software 11, 1-20. \doi{10.18637/jss.v011.i09} 
 

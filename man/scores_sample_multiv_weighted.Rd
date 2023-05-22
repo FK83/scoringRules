@@ -306,7 +306,7 @@ Holzmann, H. and B. Klar (2017):
 \doi{10.1214/17-AOAS1088}
 }
 \seealso{
-\link{scores_sample_multiv} for standard (un-weighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
+\link{scores_sample_multiv} for standard (unweighted) scores based on simulated multivariate forecast distributions. \link{scores_sample_univ_weighted} for weighted scores based on simulated univariate forecast distributions
 }
 \author{
 Sam Allen

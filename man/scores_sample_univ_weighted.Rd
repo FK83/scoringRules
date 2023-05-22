@@ -247,7 +247,7 @@ Diks, C., Panchenko, V. and D. Van Dijk (2011):
 \doi{10.1016/j.jeconom.2011.04.001}
 }
 \seealso{
-\link{scores_sample_univ} for standard (un-weighted) scores based on simulated forecast distributions. \link{scores_sample_multiv_weighted} for weighted scores based on simulated multivariate forecast distributions.
+\link{scores_sample_univ} for standard (unweighted) scores based on simulated forecast distributions. \link{scores_sample_multiv_weighted} for weighted scores based on simulated multivariate forecast distributions.
 }
 \author{
 Sam Allen
