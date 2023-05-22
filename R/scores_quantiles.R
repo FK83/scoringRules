@@ -14,9 +14,8 @@
 #' `Strictly proper scoring rules, prediction and estimation',
 #' Journal of the American Statistical Association 102, 359-378. \doi{10.1198/016214506000001437}
 #' @examples
-#' qs(y = 1, x = qnorm(.1), alpha = .1)
-#' qs(y = 1, x = qnorm(.9), alpha = .9)
 #' # Interval score is proportional to sum of two quantile scores
+#' 10*(qs(y = 1, x = qnorm(.1), alpha = .1) + qs(y = 1, x = qnorm(.9), alpha = .9))
 #' ints(y = 1, x_lower = qnorm(.1), x_upper = qnorm(.9), target_coverage = .8)
 #' @name scores_quantiles
 #' @export

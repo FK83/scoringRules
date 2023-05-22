@@ -31,9 +31,8 @@ Quantile and interval scores
 interval score
 }
 \examples{
-qs(y = 1, x = qnorm(.1), alpha = .1)
-qs(y = 1, x = qnorm(.9), alpha = .9)
 # Interval score is proportional to sum of two quantile scores
+10*(qs(y = 1, x = qnorm(.1), alpha = .1) + qs(y = 1, x = qnorm(.9), alpha = .9))
 ints(y = 1, x_lower = qnorm(.1), x_upper = qnorm(.9), target_coverage = .8)
 }
 \references{
