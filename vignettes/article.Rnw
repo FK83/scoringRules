@@ -111,7 +111,7 @@ if (requireNamespace("crch", quietly = TRUE)) {
 
 \section*{Preface}
 
-This vignette corresponds to an article of the same name in the \emph{Journal of Statistical Software} \citep{JordanEtAl2018}. The two articles are close to identical at the time of this writing (September 12, 2022).
+This vignette corresponds to an article of the same name in the \emph{Journal of Statistical Software} \citep{JordanEtAl2018}. The two articles are close to identical at the time of this writing (May 23, 2023). Starting with version 1.1.1 (relased on CRAN in May 2023),  \pkg{scoringRules} also covers threshold and outcome weighted scoring rules. The latter are described in a further vignette called 'Weighted scoringRules' and a corresponding \emph{arXiv} preprint \citep{Allen2023}.
 
 \section{Introduction: Forecast evaluation} \label{sec:intro}
 
