@@ -34,7 +34,7 @@ Scoring rules are functions S(F, y) which evaluate the accuracy of a forecast di
 
 We cover various scoring rules, including 
 
-  - the continuous ranked probability score and the logarithmic score   - the energy and variogram scores for multivariate forecast distributions given by discrete samples
+  - the continuous ranked probability score and the logarithmic score     - the energy and variogram scores for multivariate forecast distributions given by discrete samples
   - weighted scoring rules for (univariate or multivariate) forecast distributions given by discrete samples
   
 Please refer to the package vignettes 'Evaluating Probabilistic Forecasts with scoringRules' and 'Weighted scoringRules' for details and references.   
