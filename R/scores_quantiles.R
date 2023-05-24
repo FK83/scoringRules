@@ -46,7 +46,7 @@ ints <- function(y, x_lower, x_upper, target_coverage){
   } else if (target_coverage <= 0 || target_coverage >= 1) {
     stop("target_coverage must satisfy 0 < target_coverage < 1")
   }
-  if (any(input$x_lower > input$x_upper)){
+  if (any(x_lower > x_upper)){
     stop("'x_lower' contains values greater than corresponding values in 'x_upper'.")  
   }
   # get interval score as sum of two quantile scores
