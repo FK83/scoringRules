@@ -57,7 +57,7 @@ decomposition of the CRPS (Laio and Tamea, 2007) when using
 estimation using a Gaussian kernel. The logarithmic score always uses kernel density estimation.
 
 The bandwidth (\code{bw}) for kernel density estimation can be
-specified manually, in which case it must be a positive number. If
+specified manually, in which case it must be a vector (matching \code{y}) of positive numbers. If
 \code{bw == NULL}, the bandwidth is selected using the core function
 \code{\link{bw.nrd}}. Numerical integration may speed up computation for
 \code{\link{crps_sample}} in case of large samples \code{dat}.
