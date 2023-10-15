@@ -188,7 +188,7 @@ dss_edf <- function(y, dat, w = NULL) {
     if (!identical(length(dat), length(w)) || any(w < 0, na.rm = TRUE)) {
       return(rep(NaN, length(y)))
     }
-    W <- sum(W)
+    W <- sum(w)
     m <- sum(w * dat) / W
     v <- sum(w * dat^2) / W - m^2
   }
