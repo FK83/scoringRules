@@ -27,8 +27,6 @@ the interval score refers to the central prediction interval at level \code{targ
 }
 \description{
 Quantile and interval scores
-
-interval score
 }
 \examples{
 # Interval score is proportional to sum of two quantile scores

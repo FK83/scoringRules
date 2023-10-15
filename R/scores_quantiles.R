@@ -33,7 +33,7 @@ qs <- function(y, x, alpha){
   ((y < x)-alpha)*(x-y)
 }
 
-#' interval score
+# interval score
 #' @export
 #' @rdname scores_quantiles
 ints <- function(y, x_lower, x_upper, target_coverage){
