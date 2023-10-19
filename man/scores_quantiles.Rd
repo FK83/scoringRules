@@ -4,11 +4,17 @@
 \alias{scores_quantiles}
 \alias{qs}
 \alias{ints}
+\alias{qs_sample}
+\alias{ints_sample}
 \title{Quantile and interval scores}
 \usage{
 qs(y, x, alpha)
 
 ints(y, x_lower, x_upper, target_coverage)
+
+qs_sample(y, dat, alpha, w = NULL, type = 7, show_messages = TRUE)
+
+ints_sample(y, dat, target_coverage, w = NULL, type = 7, show_messages = TRUE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -20,6 +26,12 @@ ints(y, x_lower, x_upper, target_coverage)
 \item{x_lower, x_upper}{vector of quantile predictions (lower and upper endpoints of prediction intervals)}
 
 \item{target_coverage}{target (i.e., nominal) coverage level of prediction interval}
+
+\item{dat}{vector or matrix (depending on \code{y}; see details)
+of simulation draws from forecast distribution.}
+
+\item{type}{integer between 1 and 9 that is passed on to stats function \link[stats]{quantile} (specifies algorithm for 
+empirical quantile estimation; defaults to 7)}
 }
 \value{
 A vector of score values. Smaller values indicate better forecasts. Note that 
@@ -28,10 +40,17 @@ the interval score refers to the central prediction interval at level \code{targ
 \description{
 Quantile and interval scores
 }
+\details{
+For a vector \code{y} of length n, \code{dat} should be given as a matrix
+with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
+}
 \examples{
 # Interval score is proportional to sum of two quantile scores
 10*(qs(y = 1, x = qnorm(.1), alpha = .1) + qs(y = 1, x = qnorm(.9), alpha = .9))
 ints(y = 1, x_lower = qnorm(.1), x_upper = qnorm(.9), target_coverage = .8)
+# Compare exact to simulated quantile forecast from standard normal distribution
+qs(y = 1, x = qnorm(.1), alpha = .1)
+qs_sample(y = 1, dat = rnorm(500), alpha = .1)
 }
 \references{
 Quantile score:
@@ -40,4 +59,7 @@ Interval score:
 Gneiting, T. and A.E. Raftery (2007):
 `Strictly proper scoring rules, prediction and estimation',
 Journal of the American Statistical Association 102, 359-378. \doi{10.1198/016214506000001437}
+}
+\seealso{
+The syntax of \code{\link{qs_sample}} and \code{\link{ints_sample}} is analogous to the functions documented on \code{\link{scores_sample_univ}}.
 }
