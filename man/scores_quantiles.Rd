@@ -2,15 +2,15 @@
 % Please edit documentation in R/scores_quantiles.R
 \name{scores_quantiles}
 \alias{scores_quantiles}
-\alias{qs}
-\alias{ints}
+\alias{qs_quantiles}
+\alias{ints_quantiles}
 \alias{qs_sample}
 \alias{ints_sample}
 \title{Quantile and interval scores}
 \usage{
-qs(y, x, alpha)
+qs_quantiles(y, x, alpha)
 
-ints(y, x_lower, x_upper, target_coverage)
+ints_quantiles(y, x_lower, x_upper, target_coverage)
 
 qs_sample(y, dat, alpha, w = NULL, type = 7, show_messages = TRUE)
 
@@ -30,15 +30,20 @@ ints_sample(y, dat, target_coverage, w = NULL, type = 7, show_messages = TRUE)
 \item{dat}{vector or matrix (depending on \code{y}; see details)
 of simulation draws from forecast distribution.}
 
+\item{w}{vector of observation weights (currently ignored)}
+
 \item{type}{integer between 1 and 9 that is passed on to stats function \link[stats]{quantile} (specifies algorithm for 
 empirical quantile estimation; defaults to 7)}
+
+\item{show_messages}{logical; display of messages (does not affect warnings and errors).}
 }
 \value{
 A vector of score values. Smaller values indicate better forecasts. Note that 
 the interval score refers to the central prediction interval at level \code{target_coverage}.
 }
 \description{
-Quantile and interval scores
+Compute quantile and interval scores, for  
+given quantile predictions
 }
 \details{
 For a vector \code{y} of length n, \code{dat} should be given as a matrix
@@ -46,10 +51,18 @@ with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
 }
 \examples{
 # Interval score is proportional to sum of two quantile scores
-10*(qs(y = 1, x = qnorm(.1), alpha = .1) + qs(y = 1, x = qnorm(.9), alpha = .9))
-ints(y = 1, x_lower = qnorm(.1), x_upper = qnorm(.9), target_coverage = .8)
+target_coverage <- .8
+# corresponding quantile levels
+alpha_1 <- .5*(1-target_coverage)
+alpha_2 <- 1-.5*(1-target_coverage)
+# compute intervalsscore
+ints_quantiles(y = 1, x_lower = qnorm(alpha_1), 
+x_upper = qnorm(alpha_2), target_coverage = target_coverage)
+# compute sum of quantile scores (scaled by 2/(1-target_coverage))
+(2/(1-target_coverage))*(qs_quantiles(y = 1, x = qnorm(alpha_1), alpha = alpha_1) + 
+qs_quantiles(y = 1, x = qnorm(alpha_2), alpha = alpha_2))
 # Compare exact to simulated quantile forecast from standard normal distribution
-qs(y = 1, x = qnorm(.1), alpha = .1)
+qs_quantiles(y = 1, x = qnorm(.1), alpha = .1)
 qs_sample(y = 1, dat = rnorm(500), alpha = .1)
 }
 \references{

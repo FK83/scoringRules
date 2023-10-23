@@ -48,7 +48,7 @@ Value of the score. \emph{A lower score indicates a better forecast.}
 Calculate scores (CRPS, LogS, DSS) given observations and draws from the predictive distributions.
 }
 \details{
-For a vector \code{y} of length n, \code{dat} should be given as a matrix
+For a vector \code{y} of length n >= 2, \code{dat} should be given as a matrix
 with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
 
 \code{\link{crps_sample}} employs an empirical version of the quantile
