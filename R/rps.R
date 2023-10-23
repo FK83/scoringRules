@@ -57,15 +57,15 @@ check_p0 <- function(y, x){
     msg1 <- "Number of outcome categories K must be >= 2"
     err <- err + 1
   }
-  if (!(y %in% 1:K)){
+  if (isFALSE(y %in% 1:K)){
     msg2 <- "Unexpected input for y (should be integer between 1 and K, where K is the number of categories)"
     err <- err + 1
   } 
-  if (any(x < 0) || (sum(x) > 1)){
+  if (isTRUE(any(x < 0)) || isTRUE(sum(x) > 1)){
     msg3 <- "Probabilities in x must be positive and sum to one"
     err <- err + 1
   }
-  if (err > 0){
+  if (isTRUE(err > 0)){
     stop(paste(msg1, msg2, msg3))
   }
 }
