@@ -147,6 +147,50 @@ checkMatrix <- function(input) {
   }
 }
 
+check_sizes_VecMat <- function(input, types) {
+  stopifnot(all(types %in% c("vec", "mat")))
+  stopifnot(identical(length(input), length(types)))
+  
+  input_isvector <- sapply(input[types == "vec"], is.vector)
+  input_ismatrix <- sapply(input[types == "mat"], is.matrix)
+  input_dim1 <- sapply(input, function(x) {
+    if (is.vector(x)) length(x) else dim(x)[1L]
+  })
+  input_dim2 <- sapply(input[types == "mat"], function(x) {
+    if (is.matrix(x)) dim(x)[2L]
+  })
+  
+  if (!all(input_isvector) ||
+      !all(input_ismatrix) ||
+      !identical(length(unique(input_dim1)), 1L) ||
+      !identical(length(unique(input_dim2)), 1L)) {
+    
+    reference_formats <- ifelse(types == "vec", "vector[1:n]", "matrix[1:n, 1:m]")
+    
+    input_formats <- sapply(input, function(x) {
+      if (is.vector(x)) {
+        sprintf("vector[1:%i]", length(x))
+      } else if (is.matrix(x)) {
+        sprintf("matrix[1:%i, 1:%i]", dim(x)[1L], dim(x)[2L])
+      } else {
+        "unidentified"
+      }
+    })
+    stop(
+      paste(
+        "Incompatible input objects.",
+        sprintf("Expected input for (%s): %s.",
+                paste(names(input), collapse = ", "),
+                paste(reference_formats, collapse = ", ")),
+        sprintf("   Given input for (%s): %s.",
+                paste(names(input), collapse = ", "),
+                paste(input_formats, collapse = ", ")),
+        sep = "\n"
+      )
+    )
+  }
+}
+
 #### legacy checks ####
 
 ### logistic
