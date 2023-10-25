@@ -28,9 +28,11 @@
 #' Uncertainty in Survey Expectations', International Journal of Forecasting, forthcoming, \doi{j.ijforecast.2023.06.001}.
 #' @export
 rps_probs <- function(y, x){
-  input <- list(y = y, dat = x)
+  input <- list(y = y, x = x)
+  checkNumeric(input)
+  
   if (identical(length(y), 1L) && is.vector(x)) {
-    check_p1(input)
+    check_p0(y, x)
     rps0(y = y, x = x)
   } else {
     check_p2(input)
@@ -40,44 +42,31 @@ rps_probs <- function(y, x){
 }
 
 rps0 <- function(y, x){
-  P <- cumsum(x)
-  K <- length(x)
-  if (y == 1){
-    sum((1-P)^2)
-  } else {
-    ( sum(P[1:(y-1)]^2) + sum((1-P[y:K])^2) )
-  }  
+  Px <- cumsum(x) # non-exceedance probabilities by category
+  Py <- as.numeric(y <= seq_along(x)) # non-exceedance events by category
+  sum((Px - Py)^2) # sum of Brier scores over categories
 }
 
 check_p0 <- function(y, x){
-  msg1 <- msg2 <- msg3 <- ""
+  msg <- character(0)
   K <- length(x)
-  err <- 0
   if (K < 2){
-    msg1 <- "Number of outcome categories K must be >= 2"
-    err <- err + 1
+    msg <- c(msg, "Number of outcome categories K must be >= 2")
   }
   if (isFALSE(y %in% 1:K)){
-    msg2 <- "Unexpected input for y (should be integer between 1 and K, where K is the number of categories)"
-    err <- err + 1
+    msg <- c(msg, "Unexpected input for y (should be integer between 1 and K, where K is the number of categories)")
   } 
-  if (isTRUE(any(x < 0)) || isTRUE(sum(x) > 1)){
-    msg3 <- "Probabilities in x must be positive and sum to one"
-    err <- err + 1
+  if (isTRUE(any(x < 0)) || isTRUE(abs(sum(x) - 1) > .Machine$double.eps)){
+    msg <- c(msg, "Probabilities in x must be nonnegative and sum to one")
   }
-  if (isTRUE(err > 0)){
-    stop(paste(msg1, msg2, msg3))
+  if (length(msg) > 0){
+    stop(paste(msg, collapse = "\n"))
   }
-}
-
-check_p1 <- function(input){
-  check_sample(input)
-  check_p0(y = input$y, x = input$dat)
 }
 
 check_p2 <- function(input){
-  check_sample2(input)
+  check_sizes_VecMat(input, c(y = "vec", x = "mat"))
   sapply(seq_along(input$y),
          function(i) check_p0(y = input$y[i], 
-                              x = input$dat[i, ]))
+                              x = input$x[i, ]))
 }
