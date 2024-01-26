@@ -3,6 +3,6 @@
 #' @importFrom knitr kable
 #' @importFrom methods is
 #' @importFrom stats bw.nrd dbeta dexp dgamma dlnorm dlogis dnbinom dnorm dpois dt dunif integrate
-#' @importFrom stats pbeta pexp pgamma plnorm plogis pnbinom pnorm ppois pt punif
+#' @importFrom stats pbeta pexp pgamma plnorm plogis pnbinom pnorm ppois pt punif quantile
 #' @useDynLib scoringRules, .registration = TRUE
 NULL

@@ -35,7 +35,7 @@
 #' @seealso \code{\link{scores_sample_univ_weighted}} for weighted versions of the scoring rules documented here.
 #'  
 #' @details 
-#' For a vector \code{y} of length n, \code{dat} should be given as a matrix
+#' For a vector \code{y} of length n >= 2, \code{dat} should be given as a matrix
 #' with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
 #' 
 #' \code{\link{crps_sample}} employs an empirical version of the quantile
@@ -44,7 +44,7 @@
 #' estimation using a Gaussian kernel. The logarithmic score always uses kernel density estimation.
 #' 
 #' The bandwidth (\code{bw}) for kernel density estimation can be
-#' specified manually, in which case it must be a positive number. If
+#' specified manually, in which case it must be a vector (matching \code{y}) of positive numbers. If
 #' \code{bw == NULL}, the bandwidth is selected using the core function
 #' \code{\link{bw.nrd}}. Numerical integration may speed up computation for
 #' \code{\link{crps_sample}} in case of large samples \code{dat}.
@@ -86,7 +86,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
   if (method == "edf") {
     if (show_messages) {
       if (!is.null(bw)) message("Parameter 'bw' is ignored for edf method.")
-      if (num_int) message("Parameter 'num_int' is ignored for edf method.")
+      if (isTRUE(num_int)) message("Parameter 'num_int' is ignored for edf method.")
     }
     if (!is.null(w)) input$w <- w
     if (identical(length(y), 1L) && is.vector(dat)) {
@@ -100,7 +100,7 @@ crps_sample <- function(y, dat, method = "edf", w = NULL, bw = NULL,
   } else if (method == "kde") {
     if (show_messages) {
       if (!is.null(w)) message("Parameter 'w' is ignored for kde method.")
-      if (num_int) message("Used numerical integration for CRPS computation (tolerance = 1e-6).")
+      if (isTRUE(num_int)) message("Used numerical integration for CRPS computation (tolerance = 1e-6).")
     }
     if (!is.null(bw)) input$bw <- bw
     if (identical(length(y), 1L) && is.vector(dat)) {
@@ -122,7 +122,7 @@ logs_sample <- function(y, dat, bw = NULL, show_messages = FALSE) {
   input <- list(y = y, dat = dat)
   input$bw <- bw
   
-  if (show_messages)
+  if (isTRUE(show_messages))
     message("Using the log score with kernel density estimation tends to be fragile -- see KLTG (2021) for details.")
   if (identical(length(y), 1L) && is.vector(dat)) {
     check_sample(input)
@@ -188,7 +188,7 @@ dss_edf <- function(y, dat, w = NULL) {
     if (!identical(length(dat), length(w)) || any(w < 0, na.rm = TRUE)) {
       return(rep(NaN, length(y)))
     }
-    W <- sum(W)
+    W <- sum(w)
     m <- sum(w * dat) / W
     v <- sum(w * dat^2) / W - m^2
   }
@@ -203,10 +203,12 @@ crps_kdens <- function(y, dat, bw = NULL, num_int = FALSE) {
     dim(dat) <- c(1L, n)
     s <- matrix(bw,  nrow = 1L, ncol = n)
     w <- matrix(1/n, nrow = 1L, ncol = n)
-    if (num_int == FALSE) {
+    if (isFALSE(num_int)) {
       sapply(y, function(x) crps_mixnorm(x, dat, s, w))
-    } else {
+    } else if (isTRUE(num_int)) {
       sapply(y, function(x) crps_mixnorm_int(x, dat, s, w))
+    } else {
+      stop("Unsupported choice for 'num_int' - should be TRUE or FALSE.")
     }
   } else if (is.matrix(dat)) {
     n1 <- dim(dat)[1L]
@@ -214,10 +216,12 @@ crps_kdens <- function(y, dat, bw = NULL, num_int = FALSE) {
     if (is.null(bw)) bw <- apply(dat, 1L, bw.nrd)
     s <- matrix(bw,   nrow = n1, ncol = n2)
     w <- matrix(1/n2, nrow = n1, ncol = n2)
-    if (num_int == FALSE) {
+    if (isFALSE(num_int)) {
       crps_mixnorm(y, dat, s, w)
-    } else {
+    } else if (isTRUE(num_int)) {
       crps_mixnorm_int(y, dat, s, w)
+    } else {
+      stop("Unsupported choice for 'num_int' - should be TRUE or FALSE.")
     }
   } else {
     stop("Invalid data type for 'dat'.")
@@ -257,7 +261,7 @@ check_sample <- function(input) {
     }
   }
   if (!is.null(input$bw)) {
-    if (input$bw < 0) {
+    if (isTRUE(input$bw < 0)) {
       stop("Bandwidth parameter 'bw' is negative.")
     }
   }
@@ -315,8 +319,8 @@ check_sample2 <- function(input) {
     }
   }
   if (!is.null(input$bw)) {
-    if (input$bw < 0) {
-      stop("Bandwidth parameter 'bw' is negative.")
+    if (any(input$bw < 0)) {
+      stop("Bandwidth parameter 'bw' contains negative values.")
     }
   }
 }
