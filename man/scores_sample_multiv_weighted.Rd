@@ -293,10 +293,10 @@ twvs_sample(y = obs, dat = sample_fc, chain_func = chain_func)
 \references{
 \emph{Threshold-weighted scores}
 
-Allen, S., Ginsbourger, D. and J. Ziegel (2022):
-`Evaluating forecasts for high-impact events using transformed kernel scores',
-arXiv preprint arXiv:2202.12732. 
-\doi{10.48550/arXiv.2202.12732}
+Allen, S., Ginsbourger, D. and J. Ziegel (2023): 
+`Evaluating forecasts for high-impact events using transformed kernel scores', 
+\emph{SIAM/ASA Journal on Uncertainty Quantification} 11, 906-940.
+\doi{10.1137/22M1532184}
 
 \emph{Outcome-weighted scores:}
  

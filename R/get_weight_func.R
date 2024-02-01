@@ -20,10 +20,10 @@
 #' \emph{Journal of Business & Economic Statistics} 29, 411-422. 
 #' \doi{10.1198/jbes.2010.08110}
 #' 
-#' Allen, S., Ginsbourger, D. and J. Ziegel (2022): 
+#' Allen, S., Ginsbourger, D. and J. Ziegel (2023): 
 #' `Evaluating forecasts for high-impact events using transformed kernel scores', 
-#' \emph{arXiv preprint} arXiv:2202.12732.
-#' \doi{10.48550/arXiv.2202.12732}
+#' \emph{SIAM/ASA Journal on Uncertainty Quantification} 11, 906-940.
+#' \doi{10.1137/22M1532184}
 #'  
 #' @author Sam Allen
 #' 
@@ -80,8 +80,8 @@ get_weight_func <- function (name = c("norm_cdf", "norm_surv", "norm_pdf", "logi
     }
     return(chain_func)
   }
-
 }
+
 
 ################################################################################
 # checks for the input to get_weight_func
