@@ -158,8 +158,10 @@
 #' mu <- 0
 #' sigma <- 0.5
 #' weight_func <- function(x) pnorm(x, mu, sigma)
+#' # or weight_func <- get_weight_func("norm_cdf", mu, sigma)
 #' # a corresponding chaining function is
 #' chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
+#' # or chain_func <- get_weight_func("norm_cdf", mu, sigma, weight = FALSE)
 #' 
 #' x <- seq(-2, 2, 0.01)
 #' plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
@@ -173,7 +175,9 @@
 #' 
 #' # Example 2: a sigmoid (or logistic) weight function with location mu and scale sigma
 #' weight_func <- function(x) plogis(x, mu, sigma)
+#' # or weight_func <- get_weight_func("logis_cdf", mu, sigma)
 #' chain_func <- function(x) sigma*log(exp((x - mu)/sigma) + 1)
+#' # or chain_func <- get_weight_func("logis_cdf", mu, sigma, weight = FALSE)
 #' 
 #' x <- seq(-2, 2, 0.01)
 #' plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
@@ -209,10 +213,12 @@ NULL
 
 #' @rdname scores_sample_univ_weighted
 #' @export
-twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin(pmax(x, a), b),
-                           w = NULL, show_messages = TRUE) {
+twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, show_messages = TRUE) {
   input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_weight(input)
+  
+  if (is.null(chain_func)) chain_func <- function(x) pmin(pmax(x, a), b)
+  
   v_y <- chain_func(y)
   if (is.vector(dat)) {
     v_dat <- sapply(dat, chain_func)
@@ -226,10 +232,12 @@ twcrps_sample <- function (y, dat, a = -Inf, b = Inf, chain_func = function(x) p
 # outcome-weighted CRPS
 #' @rdname scores_sample_univ_weighted
 #' @export
-owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = function(x) as.numeric(x > a & x < b),
-                           w = NULL, show_messages = TRUE) {
+owcrps_sample <- function (y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, show_messages = TRUE) {
   input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_weight(input)
+  
+  if (is.null(weight_func)) weight_func <- function(x) as.numeric(x > a & x < b)
+  
   w_y <- weight_func(y)
   if (is.vector(dat)) {
     w_dat <- sapply(dat, weight_func)
@@ -301,6 +309,9 @@ check_weight <- function(input, tol = 1e-15) {
   }
   
   if (!is.null(w)) {
+    if (!(is.infinite(a) && is.infinite(b))) {
+      warning("The arguments 'a' and/or 'b' have been given as well as a custom weight function. 'a' and 'b' will be ignored.")
+    }
     if (!is.function(w)) {
       stop("The weight function must be of type 'function'.")
     } else {

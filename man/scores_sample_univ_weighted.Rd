@@ -12,7 +12,7 @@ twcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  chain_func = function(x) pmin(pmax(x, a), b),
+  chain_func = NULL,
   w = NULL,
   show_messages = TRUE
 )
@@ -22,7 +22,7 @@ owcrps_sample(
   dat,
   a = -Inf,
   b = Inf,
-  weight_func = function(x) as.numeric(x > a & x < b),
+  weight_func = NULL,
   w = NULL,
   show_messages = TRUE
 )
@@ -175,8 +175,10 @@ twcrps_sample(y = y, dat = sample_fc, a = 1)
 mu <- 0
 sigma <- 0.5
 weight_func <- function(x) pnorm(x, mu, sigma)
+# or weight_func <- get_weight_func("norm_cdf", mu, sigma)
 # a corresponding chaining function is
 chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
+# or chain_func <- get_weight_func("norm_cdf", mu, sigma, weight = FALSE)
 
 x <- seq(-2, 2, 0.01)
 plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight
@@ -190,7 +192,9 @@ twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
 
 # Example 2: a sigmoid (or logistic) weight function with location mu and scale sigma
 weight_func <- function(x) plogis(x, mu, sigma)
+# or weight_func <- get_weight_func("logis_cdf", mu, sigma)
 chain_func <- function(x) sigma*log(exp((x - mu)/sigma) + 1)
+# or chain_func <- get_weight_func("logis_cdf", mu, sigma, weight = FALSE)
 
 x <- seq(-2, 2, 0.01)
 plot(x, weight_func(x), type = "l") # positive outcomes are given higher weight

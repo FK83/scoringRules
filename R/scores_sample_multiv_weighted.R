@@ -237,15 +237,19 @@ NULL
 # threshold-weighted energy score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin(pmax(x, a), b) , w = NULL) {
+twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL , w = NULL) {
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(chain_func)) chain_func <- function(x) pmin(pmax(x, a), b)
+  
   v_y <- chain_func(y)
   v_dat <- apply(dat, 2, chain_func)
   score <- es_sample(y = v_y, dat = v_dat, w)
@@ -256,15 +260,19 @@ twes_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin
 # outcome-weighted energy score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = function(x) as.numeric(all(x > a & x < b)), w = NULL) {
+owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(weight_func)) weight_func <- function(x) as.numeric(all(x > a & x < b))
+  
   w_y <- weight_func(y)
   w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
@@ -285,15 +293,19 @@ owes_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = function(x) as.
 # threshold-weighted MMD score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin(pmax(x, a), b) , w = NULL) {
+twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL) {
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(chain_func)) chain_func <- function(x) pmin(pmax(x, a), b)
+  
   v_y <- chain_func(y)
   v_dat <- apply(dat, 2, chain_func)
   score <- mmds_sample(y = v_y, dat = v_dat, w)
@@ -304,15 +316,19 @@ twmmds_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pm
 # outcome-weighted MMD score
 #' @rdname scores_sample_multiv_weighted
 #' @export
-owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = function(x) as.numeric(all(x > a & x < b)), w = NULL) {
+owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL) {
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(weight_func)) weight_func <- function(x) as.numeric(all(x > a & x < b))
+  
   w_y <- weight_func(y)
   w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
@@ -333,15 +349,19 @@ owmmds_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = function(x) a
 # threshold-weighted variogram score of order p
 #' @rdname scores_sample_multiv_weighted
 #' @export
-twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin(pmax(x, a), b) , w = NULL, w_vs = NULL, p = 0.5){
+twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL, w_vs = NULL, p = 0.5){
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, v = chain_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(chain_func)) chain_func <- function(x) pmin(pmax(x, a), b)
+  
   v_y <- chain_func(y)
   v_dat <- apply(dat, 2, chain_func)
   score <- vs_sample(y = v_y, dat = v_dat, w = w, w_vs = w_vs, p = p)
@@ -352,16 +372,19 @@ twvs_sample <- function(y, dat, a = -Inf, b = Inf, chain_func = function(x) pmin
 # outcome-weighted variogram score of order p
 #' @rdname scores_sample_multiv_weighted
 #' @export
-owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = function(x) as.numeric(all(x > a & x < b)), 
-                        w = NULL, w_vs = NULL, p = 0.5) {
+owvs_sample <- function(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL, w_vs = NULL, p = 0.5) {
   if (identical(length(a), 1L)) {
     a <- rep(a, length(y))
   }
   if (identical(length(b), 1L)) {
     b <- rep(b, length(y))
   }
+  
   input <- list(lower = a, upper = b, w = weight_func, y = y)
   check_mv_weight(input)
+  
+  if (is.null(weight_func)) weight_func <- function(x) as.numeric(all(x > a & x < b))
+  
   w_y <- weight_func(y)
   w_dat <- apply(dat, 2, weight_func)
   if (is.null(w)) {
@@ -398,6 +421,9 @@ check_mv_weight <- function(input) {
   }
   
   if (!is.null(w)) {
+    if (!(all(is.infinite(a)) && all(is.infinite(b)))) {
+      warning("The arguments 'a' and/or 'b' have been given in addition to a custom weight function. 'a' and 'b' will be ignored.")
+    }
     if (!is.function(w)) {
       stop("The weight function must be of type 'function'.")
     } else {

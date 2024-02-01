@@ -46,7 +46,8 @@ The normal weight and chaining functions are applicable in both the univariate a
 In the univariate case, \code{mu} and \code{sigma} should be single numeric values. In the multivariate case, 
 \code{'norm_cdf'} and \code{'norm_pdf'} represent the cdf and pdf of the multivariate normal distribution, 
 with mean vector \code{mu} and covariance matrix \code{diag(sigma)}. Here, \code{mu} and \code{sigma} are
-vectors with length equal to the dimension of the multivariate outcomes.
+vectors with length equal to the dimension of the multivariate outcomes. \code{'norm_surv'} is one minus
+\code{'norm_cdf'}.
 
 Note that \code{get_weight_func()} can currently only return multivariate weight and chaining 
 functions corresponding to the multivariate normal distribution with a diagonal covariance matrix.
