@@ -14,9 +14,9 @@ get_weight_func(
 \arguments{
 \item{name}{name of the weight function to extract.}
 
-\item{mu}{location parameter of the normal or logistic distribution.}
+\item{mu}{location parameter(s) of the normal or logistic distribution.}
 
-\item{sigma}{scale parameter of the normal or logistic distribution.}
+\item{sigma}{scale parameter(s) of the normal or logistic distribution.}
 
 \item{weight}{logical specifying whether to return a weight function (\code{weight = TRUE})
 or chaining function (\code{weight = FALSE}).}
@@ -34,7 +34,71 @@ Details will be added here
 }
 \examples{
 \dontrun{
-Examples will be added here
+
+## univariate
+# generate data
+y <- rnorm(10)
+sample_fc <- matrix(rnorm(100), nrow = 10)
+
+# normal cdf
+mu <- 1
+sigma <- 1
+
+weight_func <- get_weight_func("norm_cdf", mu = mu, sigma = sigma)
+chain_func <- get_weight_func("norm_cdf", mu = mu, sigma = sigma, weight = FALSE)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
+
+# results are the same if the weight function is input manually
+weight_func <- function(x) pnorm(x, mu, sigma)
+chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + (sigma^2)*dnorm(x, mu, sigma)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
+
+
+# logistic pdf
+mu <- 0
+sigma <- 1
+
+weight_func <- get_weight_func("logis_pdf", mu = mu, sigma = sigma)
+chain_func <- get_weight_func("logis_pdf", mu = mu, sigma = sigma, weight = FALSE)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
+
+
+# normal survival function 
+mu <- -1
+sigma <- 1
+
+weight_func <- get_weight_func("norm_surv", mu = mu, sigma = sigma)
+chain_func <- get_weight_func("norm_surv", mu = mu, sigma = sigma, weight = FALSE)
+owcrps_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twcrps_sample(y = y, dat = sample_fc, chain_func = chain_func)
+
+
+## multivariate
+d <- 3  # number of dimensions
+m <- 10  # number of samples from multivariate forecast distribution
+
+# generate samples from multivariate normal distributions
+mu0 <- rep(0, d)
+mu <- rep(1, d)
+S0 <- S <- diag(d)
+S0[S0==0] <- 0.2
+S[S==0] <- 0.1
+
+y <- drop(mu0 + rnorm(d) \%*\% chol(S0))
+sample_fc <- replicate(m, drop(mu + rnorm(d) \%*\% chol(S)))
+
+# component-wise normal cdf
+mu <- rep(1, d)
+sigma <- rep(1, d)
+
+weight_func <- get_weight_func("norm_cdf", mu = mu, sigma = sigma)
+chain_func <- get_weight_func("norm_cdf", mu = mu, sigma = sigma, weight = FALSE)
+owes_sample(y = y, dat = sample_fc, weight_func = weight_func)
+twes_sample(y = y, dat = sample_fc, chain_func = chain_func)
+
 }
 
 }
