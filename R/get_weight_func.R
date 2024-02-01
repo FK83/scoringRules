@@ -30,7 +30,32 @@
 #' @seealso \link{scores_sample_univ_weighted} and \link{scores_sample_multiv_weighted} for weighted scoring rules.
 #' 
 #' @details 
-#' Details will be added here
+#' The weighted scoring rules in \link{scores_sample_univ_weighted} and \link{scores_sample_multiv_weighted}
+#' require a weight or chaining function argument (\code{weight_func} or \code{chain_func}) to target
+#' particular outcomes. \code{get_weight_func()} can be used to obtain the relevant R function 
+#' corresponding to commonly-used weight and chaining functions.
+#'
+#' These commonly-used weight and chaining functions correspond to cumulative distribution functions (cdf's),
+#' probability density function (pdf's) and survival functions of the normal and logistic distributions.
+#' The \code{name} argument specifies the desired weight or chaining function. This must be one of \code{'norm_cdf'},
+#' \code{'norm_pdf'}, \code{'norm_surv'}, \code{'logis_cdf'}, \code{'logis_pdf'} and \code{'logis_surv'}, 
+#' corresponding to the cdf, pdf and survival functions of the normal and logistic distribution, respectively.
+#' 
+#' \code{mu} and \code{sigma} represent the location and scale parameters of the normal or logistic distribution.
+#' 
+#' \code{weight} is a logical that specifies whether a weight or chaining function should be returned: 
+#' if \code{weight = TRUE} (the default) the weight function is returned, and if \code{weight = FALSE}
+#' the chaining function is returned.
+#' 
+#' The normal weight and chaining functions are applicable in both the univariate and multivariate setting.
+#' In the univariate case, \code{mu} and \code{sigma} should be single numeric values. In the multivariate case, 
+#' \code{'norm_cdf'} and \code{'norm_pdf'} represent the cdf and pdf of the multivariate normal distribution, 
+#' with mean vector \code{mu} and covariance matrix \code{diag(sigma)}. Here, \code{mu} and \code{sigma} are
+#' vectors with length equal to the dimension of the multivariate outcomes.
+#' 
+#' Note that \code{get_weight_func()} can currently only return multivariate weight and chaining 
+#' functions corresponding to the multivariate normal distribution with a diagonal covariance matrix.
+#' 
 #' 
 #' @examples
 #' \dontrun{
@@ -106,8 +131,7 @@ NULL
 
 #' @rdname get_weight_func
 #' @export
-get_weight_func <- function (name = c("norm_cdf", "norm_surv", "norm_pdf", "logis_cdf", "logis_surv", "logis_pdf"),
-                             mu = 0, sigma = 1, weight = TRUE) {
+get_weight_func <- function (name = "norm_cdf", mu = 0, sigma = 1, weight = TRUE) {
   input <- list(name = name, mu = mu, sigma = sigma, weight = weight)
   check_gwf_input(input)
   
@@ -177,4 +201,9 @@ check_gwf_input <- function(input) {
   if (any(sigma <= 0)) stop("sigma must only contain positive values.")
   
   if (!is.logical(weight)) stop("weight must be a logical.")
+  
+  if (!(identical(length(mu), 1L) && identical(length(sigma), 1L)) && 
+      name %in% c('logis_cdf', 'logis_surv', 'logis_pdf')) {
+    stop("Logistic weight functions are not available for multivariate forecasts. Use instead one of 'norm_cdf', 'norm_surv' and 'norm_pdf'.")
+  }
 }
