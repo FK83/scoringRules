@@ -51,8 +51,7 @@
 #' In the univariate case, \code{mu} and \code{sigma} should be single numeric values. In the multivariate case, 
 #' \code{'norm_cdf'} and \code{'norm_pdf'} represent the cdf and pdf of the multivariate normal distribution, 
 #' with mean vector \code{mu} and covariance matrix \code{diag(sigma)}. Here, \code{mu} and \code{sigma} are
-#' vectors with length equal to the dimension of the multivariate outcomes. \code{'norm_surv'} is one minus
-#' \code{'norm_cdf'}.
+#' vectors with length equal to the dimension of the multivariate outcomes.
 #' 
 #' Note that \code{get_weight_func()} can currently only return multivariate weight and chaining 
 #' functions corresponding to the multivariate normal distribution with a diagonal covariance matrix.
@@ -155,7 +154,7 @@ get_weight_func <- function (name = "norm_cdf", mu = 0, sigma = 1, weight = TRUE
       if (name == "norm_cdf") {
         weight_func <- function(x) prod(pnorm(x, mean = mu, sd = sigma))
       } else if (name == "norm_surv") {
-        weight_func <- function(x) 1 - prod(pnorm(x, mean = mu, sd = sigma))
+        weight_func <- function(x) prod(1 - pnorm(x, mean = mu, sd = sigma))
       } else if (name == "norm_pdf") {
         weight_func <- function(x) prod(dnorm(x, mean = mu, sd = sigma))
       }
