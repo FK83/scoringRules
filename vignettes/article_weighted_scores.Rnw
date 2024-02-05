@@ -104,7 +104,7 @@ and describe how they can readily be implemented in practice using \pkg{scoringR
 
 \section*{Preface}
 
-This vignette corresponds to an \emph{arXiv} pre-print of the same name \citep{Allen2023}. The two articles are close to identical at the time of writing (May 15, 2023).
+This vignette corresponds to an \emph{arXiv} pre-print of the same name \citep{Allen2023}. The two articles are close to identical at the time of writing (January 30$^{\text{th}}$, 2024).
 
 \section{Introduction: Weighted scoring rules}\label{sec:intro}
 
@@ -114,11 +114,11 @@ To assess probabilistic forecasts in practice, the \pkg{scoringRules} package \c
 
 The scoring rules listed above assess forecasts made for all outcomes. While this is clearly desirable when assessing overall forecast performance, it is often the case that certain outcomes are of more interest than others. For example, one could argue that it is particularly important to issue accurate forecasts for outcomes that have a high impact on the forecast users. To emphasise particular outcomes during forecast evaluation, weighted scoring rules generalise conventional scoring rules by incorporating a weight function into the score. The weight function can be chosen such that a higher weight is assigned to outcomes that are of more interest. Weighted scoring rules therefore allow competing forecast systems to be ranked and compared when predicting particular outcomes, facilitating very flexible, user-oriented forecast evaluation.
 
-Well known examples of weighted scoring rules include the conditional and censored likelihood scores proposed by \cite{DiksEtAl2011}, and the threshold-weighted CRPS introduced by \cite{MathesonWinkler1976} and \cite{GneitingRanjan2011}. However, the theory underlying weighted scoring rules extends beyond these examples: \cite{HolzmannKlar2017} demonstrate that the conditional and censored likelihood scores can be generalised to construct weighted versions of any proper scoring rule, while \cite{AllenEtAl2022} introduce a broad generalisation of the threshold-weighted CRPS that can be applied, for example, to probabilistic forecasts for multivariate outcomes.
+Well known examples of weighted scoring rules include the conditional and censored likelihood scores proposed by \cite{DiksEtAl2011}, and the threshold-weighted CRPS introduced by \cite{MathesonWinkler1976} and \cite{GneitingRanjan2011}. However, the theory underlying weighted scoring rules extends beyond these examples: \cite{HolzmannKlar2017} demonstrate that the conditional and censored likelihood scores can be generalised to construct weighted versions of any proper scoring rule, while \cite{AllenEtAl2023} introduce a broad generalisation of the threshold-weighted CRPS that can be applied, for example, to probabilistic forecasts for multivariate outcomes.
 
 In this paper, we describe how the \pkg{scoringRules} package has been extended to additionally permit the implementation of popular weighted scoring rules. While several alternative software packages exist to calculate particular scoring rules in certain situations \citep[see][for an overview]{JordanEtAl2018}, the development of weighted scoring rules is more recent. Until recently, for example, efficient application of popular weighted scoring rules was limited by theoretical considerations, leading to ad hoc implementations in practice \citep{SharpeEtAl2018}. Hence, to our knowledge, no other packages exist that provide a comprehensive collection of weighted scoring rules. We therefore hope that this extension to \pkg{scoringRules} will greatly facilitate the successful implementation of weighted scoring rules in practical applications.
 
-In the following section, we review the existing theory of weighted scoring rules, and introduce examples of weighted versions of several popular scores, such as the LogS, the CRPS, and the energy score. The remainder of the paper then illustrates how these weighted scoring rules can be implemented in practice using the \pkg{scoringRules} package. Section \ref{sec:functionality} outlines the functionality of the package when calculating weighted scoring rules, and discusses implementation options. Section \ref{sec:examples} then presents two case studies in which these weighted scoring rules are used to target particular outcomes when evaluating probabilistic forecasts in practice. These case studies include applications in weather forecasting and economic forecasting, building on the examples presented in \cite{JordanEtAl2018}. A summary of the paper is presented in Section \ref{sec:summary}.
+In the following section, we review the existing theory of weighted scoring rules, and introduce examples of weighted versions of several popular scores, such as the LogS, the CRPS, and the energy score. The remainder of the paper then illustrates how these weighted scoring rules can be implemented in practice using the \pkg{scoringRules} package. Section \ref{sec:functionality} outlines the functionality of the package when calculating weighted scoring rules, and discusses implementation options; functionality is currently available for probabilistic forecasts in the form of predictive samples, for which the weighted scoring rules are easy to implement with arbitrary weight functions. Section \ref{sec:examples} then presents two case studies in which these weighted scoring rules are used to target particular outcomes when evaluating probabilistic forecasts in practice. These case studies include applications in weather forecasting and economic forecasting, building on the examples presented in \cite{JordanEtAl2018}. The paper is summarised in Section \ref{sec:summary}.
 
 
 \section{Theoretical background}\label{sec:theory}
@@ -134,6 +134,8 @@ which takes a forecast $F \in \cF$ and an observation $y \in \Omega$ as inputs, 
 	\E_{Y \sim G} S(G, Y) \leq \E_{Y \sim G} S(F, Y)
 \end{equation*}
 for all $F, G \in \cF$. If the above inequality is strict, then $S$ is strictly proper with respect to $\cF$.
+
+Proper scoring rules allow two forecasters to be compared by the average score assigned to them over a set of forecast cases. Statistical hypothesis tests, such as a t-test or Diebold-Mariano test \citep{DieboldMariano1995}, can then be employed to check whether the difference in two mean scores is significantly different from zero, which would suggest that one forecast significantly outperforms the other. However, the results of the comparison may change depending on what scoring rule is used to evaluate forecast performance. Different scoring rules assess different aspects of probabilistic forecast performance, and it is therefore important that the chosen scoring rule(s) reflect the subjective preferences of the forecast users.
 
 When the outcome variable is real-valued ($\Omega \subseteq \R$), probabilistic forecasts are typically evaluated using either the logarithmic score (LogS) or the continuous ranked probability score (CRPS). The LogS is defined as
 \begin{equation}\label{eq:logs}
@@ -162,7 +164,7 @@ An alternative to the energy score is the variogram score \citep[VS;][]{Scheuere
 \end{equation}
 where $\bX = \left( X_{1}, \dots, X_{d} \right) \sim F$, $\by = \left( y_{1}, \dots, y_{d} \right) \in \Omega$, and $h_{i,j}$ are non-negative scaling parameters that control how much emphasis is given to a pair of dimensions. Following recommendations from \cite{ScheuererHamill2015}, the order of the score, $p$, is often chosen to be 0.5.
 
-Both the energy score and the variogram score belong to the very general class of kernel scores \citep{GneitingRaftery2007}. Kernel scores are scoring rules that are constructed using conditionally negative definite kernels, and the kernel score framework has also been leveraged to introduce alternative multivariate scoring rules. \cite{AllenEtAl2022}, for example, introduced a multivariate scoring rule based on the inverse multiquadric kernel, while the so-called maximum mean discrepancy score (MMDS) is the kernel score corresponding to the Gaussian kernel:
+Both the energy score and the variogram score belong to the very general class of kernel scores \citep{GneitingRaftery2007}. Kernel scores are scoring rules that are constructed using conditionally negative definite kernels, and the kernel score framework has also been leveraged to introduce alternative multivariate scoring rules. \cite{AllenEtAl2023}, for example, introduced a multivariate scoring rule based on the inverse multiquadric kernel, while the so-called maximum mean discrepancy score (MMDS) is the kernel score corresponding to the Gaussian kernel:
 \begin{equation}\label{eq:mmds}
 	\mathrm{MMDS}(F, \by) = \frac{1}{2} \E_{F} \left[\mathrm{exp}\left\{ - \frac{1}{2} \| \bX - \bX^{\prime} \|^{2} \right\} \right] - \E_{F} \left[ \mathrm{exp}\left\{ - \frac{1}{2} \| \bX - \by \| ^{2} \right\} \right],
 \end{equation}
@@ -185,7 +187,7 @@ while the censored likelihood score (CeLS) is
 \begin{equation*}
 	\mathrm{CeLS}(F, y) = -w(y)\mathrm{log} f(y) - (1 - w(y)) \mathrm{log} \left(1 - \int_{\R} w(z) f(z) \dd z \right).
 \end{equation*}
-To understand how these weighted logarithmic scores behave, consider a weight function of the form $w(z) = \ind\{z \in \cA\}$, meaning only forecasts for outcomes in the set $ \cA \subseteq \R$ are of interest. In this example, if the observation $y \notin \cA$, then the CoLS is equal to zero, so that only the forecasts issued when $y \in \cA$ contribute to the score. If $y \in \cA$, then the CoLS is equivalent to the LogS applied to the conditional forecast distribution given that the observation is in $\cA$; forecast distributions are therefore assessed only via their restriction to the set $\cA$. The CeLS then extends the CoLS by additionally rewarding forecast distributions that can correctly predict when an outcome of interest will or will not occur. Note that if $\cA = \R$, then the weight function is always one, and both weighted scoring rules revert to the unweighted LogS.
+To understand how these weighted logarithmic scores behave, consider a weight function of the form $w(z) = \ind\{z \in \cA\}$, meaning only forecasts for outcomes in the set $ \cA \subseteq \Omega$ are of interest. In this example, if the observation $y \notin \cA$, then the CoLS is equal to zero. If $y \in \cA$, then the CoLS is equivalent to the LogS applied to the conditional forecast distribution given that the observation is in $\cA$; forecast distributions are therefore assessed only via their restriction to the set $\cA$. The CeLS then extends the CoLS by additionally rewarding forecast distributions that can correctly predict when an outcome of interest will or will not occur. Note that if $\cA = \Omega$, then the weight function is always one, and both weighted scoring rules revert to the unweighted LogS.
 
 \cite{HolzmannKlar2017} later generalised the CoLS and CeLS by demonstrating that this framework can readily be applied to any proper scoring rule. The resulting scoring rules, which we call outcome-weighted scoring rules, target particular outcomes by introducing a weighted version of the forecast distribution, and evaluating $F$ via its weighted representation. For the weight function $w(z) = \ind\{z \in \cA\}$, this weighted representation is simply the conditional distribution given that the outcome is in $\cA$, as discussed above for the CoLS and CeLS. Further details can be found in \cite{HolzmannKlar2017}.
 
@@ -208,7 +210,7 @@ Note that in the multivariate case, the weight function takes a vector as an arg
 
 The premise behind this class of weighted scoring rules is that, if attention is only on a particular set of outcomes, then the forecasts are only evaluated when these outcomes occur. When these outcomes do occur, the forecast distributions are evaluated using the conditional distribution given that the outcome of interest has occurred. In considering the conditional distribution given that an outcome of interest has occurred, the score does not consider the predicted probability that this outcome will occur. The CeLS extends the CoLS to address this, and suitable adaptations of the larger class of outcome-weighted scoring rules also exist, though these are not considered here \citep[see][]{HolzmannKlar2017}. 
 
-Moreover, these scores are clearly not well-defined if the conditional distribution does not exist. This is equivalent to $\bar{w}_{F}$ being equal to zero, which could occur, for example, if $w(z) = \ind\{ z \in \cA \}$ and the forecast distribution assigns zero probability to the region $\cA$. The use of these outcome-weighted scoring rules is therefore only recommended when the weight function is strictly positive, or when interest is on events that are not rare, such that $\bar{w}_{F}$ is non-zero \citep{AllenEtAl2023}.
+Moreover, these scores are clearly not well-defined if the conditional distribution does not exist. This is equivalent to $\bar{w}_{F}$ being equal to zero, which could occur, for example, if $w(z) = \ind\{ z \in \cA \}$ and the forecast distribution assigns zero probability to the region $\cA$. The use of these outcome-weighted scoring rules is therefore only recommended when the weight function is strictly positive, or when interest is on events that are not rare, such that $\bar{w}_{F}$ is non-zero \citep{AllenEtAl2023b}.
 
 
 \subsubsection{Threshold-weighted scoring rules}
@@ -220,9 +222,9 @@ Arguably the most well known weighted scoring rule is the threshold-weighted CRP
 	&= \E_{F}|v(X) - v(y)| - \frac{1}{2} \E_{F}|v(X) - v(X^{\prime})|, 
 \end{split}
 \end{equation*}
-where $v$ is any function such that $v(z) - v(z^\prime) = \int_{z^{\prime}}^{z} w(z) \dd z$ for all $z, z^{\prime} \in \R$ \citep{TaillardatEtAl2022,AllenEtAl2022}. We follow \cite{AllenEtAl2022} and refer to $v$ as a chaining function.
+where $v$ is any function such that $v(z) - v(z^\prime) = \int_{z^{\prime}}^{z} w(z) \dd z$ for all $z, z^{\prime} \in \R$ \citep{TaillardatEtAl2022,AllenEtAl2023}. We follow \cite{AllenEtAl2023} and refer to $v$ as a chaining function.
 
-Just as we can generate outcome-weighted versions of any proper scoring rule, \cite{AllenEtAl2022} demonstrate that the theory underlying the threshold-weighted CRPS can readily be extended to any kernel score. As discussed, the ES, VS, and MMDS are all kernel scores, allowing threshold-weighted versions of these scores to be introduced:
+Just as we can generate outcome-weighted versions of any proper scoring rule, \cite{AllenEtAl2023} demonstrate that the theory underlying the threshold-weighted CRPS can readily be extended to any kernel score. As discussed, the ES, VS, and MMDS are all kernel scores, allowing threshold-weighted versions of these scores to be introduced:
 \begin{equation}
 \begin{split}
     \mathrm{twES}(F, \by) =& \E_{F} \| v(\bX) - v(\by) \| - \frac{1}{2} \E_{F} \| v(\bX) - v(\bX^{\prime}) \|; \\
@@ -241,12 +243,12 @@ These weighted scoring rules provide attractive ways to target particular outcom
 
 If both a weighted and unweighted version of a scoring rule are proper, then they will both be minimised on average by the same forecast distribution: the true distribution of the outcome. However, for two imperfect forecasts, the ranking of these forecasts may change depending on whether a weighted or unweighted scoring rule is employed. Weighted scoring rules may be less powerful than conventional scoring rules when discriminating between two forecast distributions, but they should be more discriminative when comparing forecasts made for particular outcomes. Put differently, if weighted scoring rules detect a difference between two forecast systems, then it is generally easier to interpret this difference than if it were detected using an unweighted scoring rule.
 
-Readers are referred to \cite{GneitingRanjan2011}, \cite{LerchEtAl2017}, and \cite{AllenEtAl2022} for further details regarding what weight and chaining functions preserve the (strict) propriety of scoring rules. The weight and chaining functions that we consider here all result in weighted scoring rules that are themselves proper (though not necessarily strictly proper). 
+Readers are referred to \cite{GneitingRanjan2011}, \cite{LerchEtAl2017}, and \cite{AllenEtAl2023} for further details regarding what weight and chaining functions preserve the (strict) propriety of scoring rules. The weight and chaining functions that we consider here all result in weighted scoring rules that are themselves proper (though not necessarily strictly proper). 
 
 
 \subsubsection{Weight functions}
 
-The choice of weight and chaining function is case-specific, and should depend on what information is to be extracted from the forecasts. Most commonly, interest is on outcomes within a certain range, or above or below a predefined threshold; this range or threshold may correspond to relevant quantiles of the previously observed outcomes. A univariate weight function that restricts attention to these events is
+The choice of weight and chaining function is case-specific, and should depend on what information is to be extracted from the forecasts. Most commonly, interest is on outcomes within a certain range, or above or below a predefined threshold; this range or threshold may correspond to relevant quantiles of the previously observed outcomes, for example. A univariate weight function that restricts attention to these events is
 \begin{equation}\label{eq:uv_thr_weight}
     w(z) = \ind\{a < z < b\} \quad \text{for some} \quad - \infty \leq a < b \leq \infty,
 \end{equation}
@@ -256,7 +258,7 @@ Alternatively, certain events could be emphasised using a smoother weight functi
 \begin{equation}\label{eq:gauss_weight}
     w(z) = \Phi_{\mu, \sigma} (z),
 \end{equation}
-where $\Phi_{\mu, \sigma}$ is the Gaussian distribution function with mean $\mu$ and standard deviation $\sigma$, with these parameters controlling the location of the weight function and the rate at which it tends to zero and one \citep{GneitingRanjan2011}. 
+where $\Phi_{\mu, \sigma}$ is the Gaussian distribution function with mean $\mu$ and standard deviation $\sigma$, with these parameters controlling the location of the weight function and the rate at which it tends to zero and one \citep{GneitingRanjan2011}. The Gaussian survival function $1 - \Phi_{\mu, \sigma} (z)$ could analogously emphasise low values of $z$.
 
 Gaussian and logistic density functions could additionally be used to target outcomes that are not rare. For example, the weight function 
 \begin{equation*}
@@ -268,7 +270,7 @@ Similar weight functions can also be used in the multivariate case. For example,
 \begin{equation}\label{eq:mv_thr_weight}
     w(\mathbf{z}) = \ind\{a_{1} < z_{1} < b_{1}, \dots, a_{d} < z_{d} < b_{d} \} \quad \text{for} \quad - \infty \leq a_{i} < b_{i} \leq \infty, \quad i = 1, \dots, d.
 \end{equation}
-As in the univariate case, some values of the vectors $\mathbf{a} = (a_{1}, \dots, a_{d}) $ and $\mathbf{b} = (b_{1}, \dots, b_{d})$ can be set to $\pm \infty$ in order to focus on threshold exceedances. Multivariate Gaussian distribution and density functions could then again be used to target particular regions of multivariate space in a smoother way \citep{AllenEtAl2023}. These weight functions are listed in Table \ref{tab:weight_funcs}.
+As in the univariate case, some values of the vectors $\mathbf{a} = (a_{1}, \dots, a_{d}) $ and $\mathbf{b} = (b_{1}, \dots, b_{d})$ can be set to $\pm \infty$ in order to focus on threshold exceedances. Multivariate Gaussian distribution and density functions could then again be used to target particular regions of multivariate space in a smoother way \citep{AllenEtAl2023b}. These weight functions are listed in Table \ref{tab:weight_funcs}.
 
 \renewcommand*{\arraystretch}{1.5}
 \begin{table}
@@ -279,10 +281,15 @@ As in the univariate case, some values of the vectors $\mathbf{a} = (a_{1}, \dot
          $w(z) = 1$ & $v(z) = z$ \\
          $w(z) = \ind\{ a < z < b \}$ & $v(z) = \min(\max(z, a), b) $ \\
          $w(z) = \Phi_{\mu, \sigma} (z)$ & $v(z) = (z - \mu) \Phi_{\mu, \sigma} (z) + \sigma^{2} \phi_{\mu, \sigma} (z)$ \\
+         $w(z) = 1 - \Phi_{\mu, \sigma} (z)$ & $v(z) = z - (z - \mu) \Phi_{\mu, \sigma} (z) - \sigma^{2} \phi_{\mu, \sigma} (z)$ \\
          $w(z) = \phi_{\mu, \sigma} (z)$ & $v(z) = \Phi_{\mu, \sigma} (z)$ \\
+         $w(z) = (1 + \exp(-\frac{z - \mu}{\sigma}))^{-1}$ & $v(z) = \sigma \log(1 + \exp(\frac{z - \mu}{\sigma}))$ \\
+         $w(z) = 1 - (1 + \exp(-\frac{z - \mu}{\sigma}))^{-1}$ & $v(z) = z - \sigma \log(1 + \exp(\frac{z - \mu}{\sigma}))$ \\
+         $w(z) = \frac{1}{\sigma} \exp(-\frac{z - \mu}{\sigma}) (1 + \exp(-\frac{z - \mu}{\sigma}))^{-2}$ & $v(z) = (1 + \exp(-\frac{z - \mu}{\sigma}))^{-1}$ \\
          \hline 
          $w(\boldsymbol{z}) = \ind \left\{ a_{1} < z_{1} < b_{1}, \dots, a_{d} < z_{d} < b_{d} \right\}$ & $v(\boldsymbol{z})_{i} = \min(\max(z_{i}, a_{i}), b_{i})$ \\
          $w(\boldsymbol{z}) = \boldsymbol{\Phi_{\mu, \Sigma}} (\boldsymbol{z})$ & $v(\boldsymbol{z})_{i} = (z_{i} - \mu_{i}) \Phi_{\mu_{i}, \sigma_{i}} (z_{i}) + \sigma_{i} ^{2} \phi_{\mu_{i}, \sigma_{i}} (z_{i})$ \\
+         $w(\boldsymbol{z}) = 1 - \boldsymbol{\Phi_{\mu, \Sigma}} (\boldsymbol{z})$ & $v(\boldsymbol{z})_{i} = z_{i} - (z_{i} - \mu_{i}) \Phi_{\mu_{i}, \sigma_{i}} (z_{i}) - \sigma_{i} ^{2} \phi_{\mu_{i}, \sigma_{i}} (z_{i})$ \\
          $w(\boldsymbol{z}) = \boldsymbol{\phi_{\mu, \Sigma}} (\boldsymbol{z})$ & $v(\boldsymbol{z})_{i} = \Phi_{\mu_{i}, \sigma_{i}}(z_{i})$ \\
     \end{tabular}
     \caption{Examples of weight functions and chaining functions that could be used in weighted scoring rules. $\boldsymbol{\Phi_{\mu, \Sigma}}$ and $\boldsymbol{\phi_{\mu, \Sigma}}$ denote the multivariate Gaussian distribution and density functions with mean vector $\boldsymbol{\mu}=(\mu_{1}, \dots, \mu_{d})$ and covariance matrix $\Sigma$ with diagonal entries $\sigma_{1}, \dots, \sigma_{d}$. The multivariate chaining functions are component-wise extensions of the univariate chaining functions; hence, for concision, only the $i$-th component (for $i \in \{1, \dots, d\}$) of the multivariate chaining function is shown.} 
@@ -298,7 +305,7 @@ While the outcome-weighted scoring rules depend on a weight function, the thresh
 \end{equation}
 That is, $v$ is an anti-derivative of the chosen weight function. Table \ref{tab:weight_funcs} lists examples of chaining functions that correspond to the univariate weight functions given above.
 
-In the multivariate case, however, there is no canonical approach to derive a chaining function from a given weight function. \cite{AllenEtAl2022} discuss possible chaining functions that could be used to target certain multivariate outcomes when interest is on high-impact events. For the multivariate weight function in Equation \ref{eq:mv_thr_weight}, one possible chaining function is 
+In the multivariate case, however, there is no canonical approach to derive a chaining function from a given weight function. \cite{AllenEtAl2023} discuss possible chaining functions that could be used to target certain multivariate outcomes when interest is on high-impact events. For the multivariate weight function in Equation \ref{eq:mv_thr_weight}, one possible chaining function is 
 \begin{equation}\label{eq:default_v}
     v(z) = \left( \min(\max(z_{1}, a_{1}), b_{1}), \dots, \min(\max(z_{d}, a_{d}), b_{d}) \right),
 \end{equation}
@@ -333,12 +340,14 @@ if (use_ggplot) {
 \label{fig:chain_func}
 \end{figure}
 
-Similarly, for the smooth weight functions based on multivariate Gaussian distribution and density functions, a chaining function can be derived from a component-wise extension of the chaining functions corresponding to univariate Gaussian weight functions. Examples of such chaining functions are presented in Table \ref{tab:weight_funcs}. Note, however, that these component-wise extensions implicitly assume that the covariance matrix in the multivariate Gaussian weight function is diagonal. Readers are referred to \cite{AllenEtAl2022} for a more detailed discussion on multivariate chaining functions.
+Similarly, for the smooth weight functions based on multivariate Gaussian distribution and density functions, a chaining function can be derived from a component-wise extension of the chaining functions corresponding to univariate Gaussian weight functions. Examples of such chaining functions are presented in Table \ref{tab:weight_funcs}. Note, however, that these component-wise extensions implicitly assume that the covariance matrix in the multivariate Gaussian weight function is diagonal. Readers are referred to \cite{AllenEtAl2023} for a more detailed discussion on multivariate chaining functions.
 
-Although the weight and chaining functions presented in this section are simple examples that are frequently used in practice, the weighted scoring rules discussed herein can be employed with arbitrary such functions, permitting very flexible, user-oriented forecast evaluation. In the remainder of this paper, we will discuss how these weighted scoring rules have been integrated into the \pkg{scoringRules} package, facilitating their use in practical applications. 
+Although the weight and chaining functions presented in this section are simple examples that are frequently used in practice, the weighted scoring rules discussed herein can be employed with arbitrary such functions, permitting very flexible, user-oriented forecast evaluation. Several weight functions can be employed to evaluate forecasts with respect to different regions of the outcome space. However, it is not advisable to employ a weight function that changes adaptively on the forecast setting. Different weight functions lead to scores on different scales, and if the chosen weight function depends on the outcome, then the resulting scoring rule will generally be improper. As a result, the functions in the following sections do not allow for adaptive weight functions.
 
 
 \section{Package functionality}\label{sec:functionality}
+
+In the remainder of this paper, we will discuss how the weighted scoring rules introduced in the previous section have been integrated into the \pkg{scoringRules} package, facilitating their use in practical applications. 
 
 \subsection{Univariate weighted scoring rules}\label{sec:func_weighted_univ}
 
@@ -352,18 +361,16 @@ The output is a numeric vector containing the score for each of the $n$ forecast
 
 The same convention is adopted for the weighted scoring rules. In the univariate case, the following functions calculate the outcome-weighted and threshold-weighted CRPS, and the conditional or censored likelihood scores:
 \begin{Code}
-owcrps_sample(y, dat, a = -Inf, b = Inf, 
-              weight_func = function(x) as.numeric(x > a & x < b),
+owcrps_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, 
               w = NULL, show_messages = TRUE)
-twcrps_sample(y, dat, a = -Inf, b = Inf, 
-              chain_func = function(x) pmin(pmax(x, a), b),
+twcrps_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, 
               w = NULL, show_messages = TRUE)
 clogs_sample(y, dat, a = -Inf, b = Inf, bw = NULL, 
              show_messages = FALSE, cens = TRUE)
 \end{Code}
-The \code{cens} argument in \code{clogs_sample} specifies whether the conditional likelihood score or the censored likelihood score should be returned; the default is \code{cens = TRUE}, in which case the CeLS is calculated. 
+The \code{cens} argument in \code{clogs_sample()} specifies whether the conditional likelihood score or the censored likelihood score should be returned; the default is \code{cens = TRUE}, in which case the CeLS is calculated. 
 
-As discussed in Section \ref{sec:proper_scores}, the LogS takes a predictive density as input, and hence cannot readily be applied to predictive samples. To circumvent this, \code{logs_sample} employs kernel density estimation to estimate a predictive density from the sample, and then calculates the LogS from the estimated density function. However, \cite{KruegerEtAl2021} demonstrate that the resulting score is sensitive to the bandwidth parameter \code{bw} of the kernel density estimation, and the authors therefore recommended using the CRPS instead of the LogS, particularly when the sample size $m$ is small. Similarly, the conditional and censored likelihood scores also require a predictive density as inputs, and kernel density estimation is used to estimate this from the predictive sample prior to calculating the weighted scores. We anticipate that these weighted scores will be yet more sensitive to the kernel density estimation parameters, especially when a weight function is used that targets more extreme outcomes. As such, when the forecast is in the form of a predictive sample, we similarly recommend employing weighted versions of the CRPS, rather than the conditional or censored likelihood score.
+As discussed in Section \ref{sec:proper_scores}, the LogS takes a predictive density as input, and hence cannot readily be applied to predictive samples. To circumvent this, \code{logs_sample()} employs kernel density estimation to estimate a predictive density from the sample, and then calculates the LogS from the estimated density function. However, \cite{KruegerEtAl2021} demonstrate that the resulting score is sensitive to the bandwidth parameter \code{bw} of the kernel density estimation, and the authors therefore recommended using the CRPS instead of the LogS, particularly when the sample size $m$ is small. Similarly, the conditional and censored likelihood scores also require a predictive density as inputs, and kernel density estimation is used to estimate this from the predictive sample prior to calculating the weighted scores. We anticipate that these weighted scores will be yet more sensitive to the kernel density estimation parameters, especially when a weight function is used that targets more extreme outcomes. As such, when the forecast is in the form of a predictive sample, we similarly recommend employing weighted versions of the CRPS, rather than the conditional or censored likelihood score.
 
 In addition to observations and forecast samples, the functions listed above have arguments that allow particular outcomes to be targeted when calculating the weighted scores. By default, the weighted scoring rules employ the weight function $w(z) = \ind\{a < z < b\}$, which, as discussed in the previous section, is most commonly applied in practice. The arguments \code{a} and \code{b} are single numeric values representing the lower and upper bounds in this weight function, respectively. If these arguments are not specified, then their default values are \code{a = -Inf} and \code{b = Inf}, resulting in a weight function that is always one, and thus recovering the unweighted scoring rules.
 
@@ -439,22 +446,14 @@ These multivariate scoring rule functions can only evaluate a single multivariat
 
 Similarly, outcome-weighted and threshold-weighted versions of these multivariate scoring rules are calculated using
 \begin{Code}
-owes_sample(y, dat, a = -Inf, b = Inf,
-            weight_func = function(x) as.numeric(all(x > a & x < b)), 
-            w = NULL)
-owvs_sample(y, dat, a = -Inf, b = Inf,
-            weight_func = function(x) as.numeric(all(x > a & x < b)),
+owes_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)
+owvs_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, 
             w = NULL, w_vs = NULL, p = 0.5)
-owmmds_sample(y, dat, a = -Inf, b = Inf,
-              weight_func = function(x) as.numeric(all(x > a & x < b)), 
-              w = NULL)      
-twes_sample(y, dat, a = -Inf, b = Inf,
-            chain_func = function(x) pmin(pmax(x, a), b), w = NULL)
-twvs_sample(y, dat, a = -Inf, b = Inf,
-            chain_func = function(x) pmin(pmax(x, a), b),
+owmmds_sample(y, dat, a = -Inf, b = Inf, weight_func = NULL, w = NULL)      
+twes_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
+twvs_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, 
             w = NULL, w_vs = NULL, p = 0.5)
-twmmds_sample(y, dat, a = -Inf, b = Inf,
-              chain_func = function(x) pmin(pmax(x, a), b), w = NULL)
+twmmds_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
 \end{Code}
 
 As in the univariate case, the default weight function corresponds to Equation \ref{eq:mv_thr_weight}, where interest is on a range of values in each dimension. The default chaining function used to calculate the threshold-weighted scores is Equation \ref{eq:default_v}. Arguments \code{a} and \code{b} are again used to define the lower and upper bounds of the default weight function. In contrast to the univariate case, however, \code{a} and \code{b} are numeric vectors of length $d$, rather than single values. 
@@ -491,6 +490,23 @@ weight_func <- function(x) prod(pnorm(x, mean = mu, sd = sigma))
 owes_sample(obs, sample_m, weight_func = weight_func)
 @
 
+Since weight functions based on Gaussian and logistic distributions are also commonly employed in practice, \pkg{scoringRules} additionally exports a function \code{get_weight_func()} that can be used to obtain \proglang{R} functions corresponding to the weight and chaining functions listed in Table \ref{tab:weight_funcs}.   
+\begin{Code}
+get_weight_func(name = "norm_cdf", mu = 0, sigma = 1, weight = TRUE)
+\end{Code}
+The \code{name} argument specifies the desired weight or chaining function. This must be one of \code{`norm_cdf'}, \code{`norm_pdf'}, \code{`norm_surv'}, \code{`logis_cdf'}, \code{`logis_pdf'} and \code{`logis_surv'}, corresponding to the cumulative distribution function, probability density function, and survival function of the Gaussian and logistic distribution, respectively. \code{mu} and \code{sigma} correspond to the location and scale parameters of the Gaussian or logistic distribution, which are single numeric values in the univariate case, and numeric vectors (of the same length) in the multivariate case. In the multivariate setting, \code{mu} represents the mean vector of the multivariate distribution, and \code{sigma} the diagonal elements of the covariance matrix; functionality is currently only available for multivariate weight and chaining functions corresponding to the multivariate normal distribution with a diagonal covariance matrix. This also means \code{name} must be one of \code{`norm_cdf'}, \code{`norm_pdf'} and \code{`norm_surv'} in the multivariate case.
+
+The above examples can be simplified using \code{get_weight_func()}.
+<<Custom-weight-function-example-3>>=
+weight_func <- get_weight_func(name = "norm_cdf", mu = 0, sigma = 1)
+owcrps_sample(obs, sample_m, weight_func = weight_func)
+@
+and
+<<Custom-weight-function-example-4>>=
+weight_func <- get_weight_func(name = "norm_cdf", mu = mu, sigma = sigma)
+owes_sample(obs, sample_m, weight_func = weight_func)
+@
+
 Whereas the outcome-weighted scores depend on a weight function, the threshold-weighted scores rely on a chaining function. For the threshold-weighted CRPS, a chaining function corresponds directly to a weight function via Equation \ref{eq:univ_v}. However, computation of the threshold-weighted CRPS for a sample forecast requires the chaining function rather than a weight function, and hence functionality is not currently available to take a weight function as an argument. In this case, it is necessary to derive the chaining function corresponding to the weight. For the simple weight functions commonly used in practice, this is typically straightforward to achieve (see Table \ref{tab:weight_funcs} for popular choices).
 
 The \code{chain_func} argument can be used to incorporate a custom chaining function into the threshold-weighted scoring rules. In contrast to \code{weight_func}, the \code{chain_func} argument should be a function whose inputs and outputs are the same length as the observation input \code{y}. For example, in the multivariate case, this function should both input and output a vector of length $d$.
@@ -499,7 +515,7 @@ In the univariate case, if the chaining function satisfies Equation \ref{eq:univ
 
 Table \ref{tab:weight_funcs} contains possible chaining functions corresponding to the Gaussian weight functions employed above. These chaining functions can be implemented within \code{twcrps_sample} and \code{twes_sample} as follows
 
-<<Custom-weight-function-example-3>>=
+<<Custom-weight-function-example-5>>=
 chain_func <- function(x) (x - mu)*pnorm(x, mu, sigma) + 
   (sigma^2)*dnorm(x, mu, sigma)
 mu <- 0; sigma <- 1
@@ -508,7 +524,17 @@ twcrps_sample(obs, sample_m, chain_func = chain_func)
 mu <- rnorm(d, 0, 0.5); sigma <- runif(d, 0.5, 1.5)
 twes_sample(obs, sample_m, chain_func = chain_func)
 @
-Weighted versions of the other scoring rules discussed herein can be calculated analogously.
+Weighted versions of the other scoring rules discussed herein can be calculated analogously, and these examples can again be simplified using \code{get_weight_func()}.
+<<Custom-weight-function-example-6>>=
+chain_func <- get_weight_func("norm_cdf", mu = 0, sigma = 1, 
+                              weight = FALSE)
+twcrps_sample(obs, sample_m, chain_func = chain_func)
+
+chain_func <- get_weight_func("norm_cdf", mu = mu, sigma = sigma, 
+                              weight = FALSE)
+twes_sample(obs, sample_m, chain_func = chain_func)
+@
+The argument \code{weight = FALSE} specifies that a chaining function should be returned instead of a weight function; the default (\code{weight = TRUE}) is to return the weight function.
 
 It is challenging to construct general analytical formulae for weighted scoring rules corresponding to parametric forecast distributions and arbitrary weight functions. Similarly, since the CoLS and CeLS require kernel density estimation to estimate the predictive density given the sample, these scores cannot be readily implemented with arbitrary weight functions. Hence, \code{clogs_samples} does not take custom weight or chaining functions as arguments, so that only the default weight function is available for these scores.
 
@@ -608,7 +634,7 @@ An obvious question concerns which weight function to employ within the weighted
 
 In a weather forecasting context, the relationship between weather conditions and socio-economical impacts is relatively well-understood. Hence, an obvious choice of the weight function is one that reflects the costs associated with each possible outcome. Outcomes that correspond to higher impacts would therefore be emphasised in the weighted scores, and forecasters would be encouraged to issue more accurate forecasts for these high-impact events. Alternatively, to reduce the impact of these events, national weather centres issue warnings to the general public. These warnings typically correspond to relevant thresholds of the outcome variable, determined from climatological records and thorough analyses of the risks of weather to infrastructure and public health. A simple alternative weight function would thus use an indicator weight function (e.g. Equation \ref{eq:uv_thr_weight}), with the parameters in this weight function defined by the warning thresholds.
 
-For the rainfall forecasts considered here, we firstly employ this latter weight function to emphasise values above a threshold of interest $t$, i.e. $w(z) = \ind\{ z > t \}$. This weight function can be employed in \pkg{scoringRules} by setting the arguments \code{a = t} and \code{b = Inf} in the weighted scoring rule functions. In doing so, the weighted scoring rules will assess the forecasts in their ability to predict high precipitation accumulations, which are of particular relevance since they often lead to flooding. As a threshold, we choose $t=\sqrt{30}$mm. This choice was made since $30$mm is commonly chosen as a threshold in rainfall warning systems, and $\sqrt{30}$ is roughly equal to the 95th percentile of the square root-transformed precipitation values in the training data considered here.
+For the rainfall forecasts considered here, we firstly employ this latter weight function to emphasise values above a threshold of interest $t$, i.e. $w(z) = \ind\{ z > t \}$. This weight function can be employed in \pkg{scoringRules} by setting the arguments \code{a = t} and \code{b = Inf} in the weighted scoring rule functions. In doing so, the weighted scoring rules will assess the forecasts in their ability to predict high precipitation accumulations, which are of particular relevance since they often lead to flooding. As a threshold, we choose $t=\sqrt{30}$mm. This choice was made since $30$mm is commonly chosen as a threshold in rainfall warning systems in central Europe, and $\sqrt{30}$ is roughly equal to the 95th percentile of the square root-transformed precipitation values in the training data considered here.
 
 
 <<Post-processing-twcrps-Gauss>>=
@@ -649,9 +675,9 @@ The results largely agree with those observed for the previous weight function.
 <<Post-processing-twcrps-custom-Gauss>>=
 if (use_crch){
   sigma <- 1
-  weight_func <- function(x) pnorm(x, mean = t, sd = sigma)
-  chain_func <- function(x) (x - t)*pnorm(x, mean = t, sd = sigma) + 
-    (sigma^2)*dnorm(x, mean = t, sd = sigma)
+  weight_func <- get_weight_func("norm_cdf", mu = t, sigma = sigma)
+  chain_func <- get_weight_func("norm_cdf", mu = t, sigma = sigma,
+                                weight = FALSE)
   gauss_twcrps <- twcrps_sample(obs, gauss_sample, chain_func = chain_func)
 }
 @
@@ -758,14 +784,14 @@ Note that these weighted scoring rules consider not only the probability that a 
 
 Scoring rules are well-established when evaluating and comparing probabilistic forecasts, and the \pkg{scoringRules} package in \proglang{R} has become well-established when implementing popular scoring rules in practice. In this paper, we discuss how the functionality of the \pkg{scoringRules} package has been extended such that particular outcomes can be emphasised when using scoring rules to assess forecast performance. 
 
-Two approaches to target particular outcomes are available, which can be applied to probabilistic forecasts for both univariate and multivariate outcomes. These approaches are available for popular scoring rules including the LogS, CRPS, ES, VS, and MMDS, facilitating very flexible, user-oriented evaluation of probabilistic forecasts in a wide range of practical applications. In particular, functionality is available to calculate the conditional and censored likelihood scores proposed by \cite{DiksEtAl2011}; outcome-weighted versions of the CRPS, ES, VS, and MMDS, which can be constructed from the general framework outlined by \cite{HolzmannKlar2017}; and threshold-weighted versions of the CRPS, ES, VS, and MMDS \citep{MathesonWinkler1976, GneitingRanjan2011, AllenEtAl2022}.
+Two approaches to target particular outcomes are available, which can be applied to probabilistic forecasts for both univariate and multivariate outcomes. These approaches are available for popular scoring rules including the LogS, CRPS, ES, VS, and MMDS, facilitating very flexible, user-oriented evaluation of probabilistic forecasts in a wide range of practical applications. In particular, functionality is available to calculate the conditional and censored likelihood scores proposed by \cite{DiksEtAl2011}; outcome-weighted versions of the CRPS, ES, VS, and MMDS, which can be constructed from the general framework outlined by \cite{HolzmannKlar2017}; and threshold-weighted versions of the CRPS, ES, VS, and MMDS \citep{MathesonWinkler1976, GneitingRanjan2011, AllenEtAl2023}.
 
 While the \pkg{scoringRules} package contains analytical expressions for the LogS and CRPS for several parametric distributions, the weighted scoring rules discussed herein are only available for forecast distributions in the form of a simulated sample, or an ensemble. In this case, the weighted scoring rules can readily be calculated for arbitrary weight functions, which is generally not the case for forecasts in the form of parametric distributions. While this permits very flexible forecast evaluation, the \pkg{scoringRules} package could be extended further by incorporating weighted scoring rules for certain families of parametric distributions.
 
 
 \section*{Acknowledgements}
 
-Sam Allen was funded by the Swiss Federal Office for Meteorology and Climatology (MeteoSwiss) and the Oeschger Centre for Climate Change Research. Jonas Bhend and Jos{\'e} Carlos Araujo Acu{\~n}a are thanked for fruitful discussions.
+This work was funded by the Swiss Federal Office for Meteorology and Climatology (MeteoSwiss) and the Oeschger Centre for Climate Change Research. I am very grateful to Fabian Kr{\"u}ger, Sebastian Lerch, and Alexander Jordan for their contribution to this work. Jonas Bhend and Jos{\'e} Carlos Araujo Acu{\~n}a are thanked for their many fruitful suggestions, while comments from two anonymous reviewers have also improved the paper.
 
 
 \bibliography{bibliography_weighted}
