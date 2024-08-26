@@ -73,7 +73,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 %% -- Article metainformation (author, title, ...) -----------------------------
 
-\author{Sam Allen\\University of Bern\\Oeschger Centre for Climate Change Research}
+\author{Sam Allen\\ETH Zurich}
 \Plainauthor{Sam Allen}
 
 \title{Weighted \pkg{scoringRules}: Emphasising Particular Outcomes when Evaluating Probabilistic Forecasts}
@@ -90,13 +90,11 @@ and describe how they can readily be implemented in practice using \pkg{scoringR
 
 \Address{
   Sam Allen\\
-  University of Bern\\
-  Institute of Mathematical Statistics and Actuarial Science\\
-  Alpeneggstrasse 22\\
-  3012 Bern, Switzerland\\
-  E-Mail: \email{sam.allen@unibe.ch}\\
-  \emph{and}\\
-  Oeschger Centre for Climate Change Research\\
+  ETH Zurich\\
+  Seminar for Statistics\\
+  Ramistrasse 101\\
+  8092 Zurich, Switzerland\\
+  E-Mail: \email{sam.allen@stat.math.ethz.ch}\\
 }
 
 
@@ -104,7 +102,7 @@ and describe how they can readily be implemented in practice using \pkg{scoringR
 
 \section*{Preface}
 
-This vignette corresponds to an \emph{arXiv} pre-print of the same name \citep{Allen2023}. The two articles are close to identical at the time of writing (January 30$^{\text{th}}$, 2024).
+This vignette corresponds to an \emph{arXiv} pre-print of the same name \citep{Allen2023}. The two articles are close to identical at the time of writing (August 26$^{\text{th}}$, 2024).
 
 \section{Introduction: Weighted scoring rules}\label{sec:intro}
 
