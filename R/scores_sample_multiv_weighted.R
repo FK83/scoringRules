@@ -83,6 +83,12 @@
 #' Value of the score. \emph{A lower score indicates a better forecast.}
 #' 
 #' @references
+#' 
+#' Allen, S. (2024): 
+#' `Weighted scoringRules: Emphasising Particular Outcomes when Evaluating Probabilistic Forecasts', 
+#' \emph{Journal of Statistical Software}.
+#' \doi{10.18637/jss.v110.i08}
+#' 
 #' \emph{Threshold-weighted scores}
 #' 
 #' Allen, S., Ginsbourger, D. and J. Ziegel (2023): 

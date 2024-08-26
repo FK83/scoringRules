@@ -11,11 +11,14 @@ Authors@R: c(person(given = c("Alexander", "I."), family = "Jordan", role = "aut
                     comment = c(ORCID = "0000-0002-5112-9037")),
              person(given = "Sebastian", family = "Lerch", role = "aut",
                     comment = c(ORCID = "0000-0002-3467-4375")), 
-             person(given = "Sam", family = "Allen", role = "aut"),
+             person(given = "Sam", family = "Allen", role = "aut",
+                    comment = c(ORCID = "0000-0003-1971-8277")),
              person(given = "Maximiliane", family = "Graeter", role = "ctb"))
 Description: Dictionary-like reference for computing scoring rules in a wide
     range of situations. Covers both parametric forecast distributions (such as
-    mixtures of Gaussians) and distributions generated via simulation.
+    mixtures of Gaussians) and distributions generated via simulation. Further 
+    details can be found in the package vignettes <doi:10.18637/jss.v090.i12>, 
+    <doi:10.18637/jss.v110.i08>.
 URL: https://github.com/FK83/scoringRules
 License: GPL (>= 2)
 Imports:

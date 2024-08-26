@@ -263,6 +263,11 @@ twvs_sample(y = obs, dat = sample_fc, chain_func = chain_func)
 
 }
 \references{
+Allen, S. (2024): 
+`Weighted scoringRules: Emphasising Particular Outcomes when Evaluating Probabilistic Forecasts', 
+\emph{Journal of Statistical Software}.
+\doi{10.18637/jss.v110.i08}
+
 \emph{Threshold-weighted scores}
 
 Allen, S., Ginsbourger, D. and J. Ziegel (2023): 
