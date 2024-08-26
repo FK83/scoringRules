@@ -24,7 +24,7 @@
 #'
 #' Application example (see esp. Section 4 for comments on the RPS' ordinal interpretation)
 #'
-#' Krüger, F., and L. Pavlova (2023): `Quantifying Subjective
+#' Krueger, F. and L. Pavlova (2024): `Quantifying Subjective
 #' Uncertainty in Survey Expectations', International Journal of Forecasting 40, 796-810, \doi{10.1016/j.ijforecast.2023.06.001}.
 #' @export
 rps_probs <- function(y, x){
