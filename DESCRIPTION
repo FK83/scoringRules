@@ -2,7 +2,7 @@ Package: scoringRules
 Type: Package
 Title: Scoring Rules for Parametric and Simulated Distribution Forecasts
 Version: 1.1.2
-Date: 2023-05-22
+Date: 2024-08-26
 Authors@R: c(person(given = c("Alexander", "I."), family = "Jordan", role = "aut",
                     comment = c(ORCID = "0000-0001-7423-1352")), 
              person(given = "Fabian", family = "Krueger", 
@@ -36,6 +36,6 @@ Suggests:
     crch, 
     ggplot2
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8

@@ -50,25 +50,29 @@ For a vector \code{y} of length n, \code{dat} should be given as a matrix
 with n rows. If \code{y} has length 1, then \code{dat} may be a vector.
 }
 \examples{
-# Interval score is proportional to sum of two quantile scores
+# Example 1: Illustrate that interval score is proportional to sum of two quantile scores
 target_coverage <- .8
 # corresponding quantile levels
 alpha_1 <- .5*(1-target_coverage)
 alpha_2 <- 1-.5*(1-target_coverage)
-# compute intervalsscore
+# compute interval score
 ints_quantiles(y = 1, x_lower = qnorm(alpha_1), 
 x_upper = qnorm(alpha_2), target_coverage = target_coverage)
 # compute sum of quantile scores (scaled by 2/(1-target_coverage))
 (2/(1-target_coverage))*(qs_quantiles(y = 1, x = qnorm(alpha_1), alpha = alpha_1) + 
 qs_quantiles(y = 1, x = qnorm(alpha_2), alpha = alpha_2))
-# Compare exact to simulated quantile forecast from standard normal distribution
+
+# Example 2: Compare exact to simulated quantile forecast from standard normal distribution
 qs_quantiles(y = 1, x = qnorm(.1), alpha = .1)
 qs_sample(y = 1, dat = rnorm(500), alpha = .1)
 }
 \references{
-Quantile score:
+Quantile score
+
 Koenker, R. and G. Bassett (1978): `Regression quantiles', Econometrica 46, 33-50. \doi{https://doi.org/10.2307/1913643}
-Interval score:
+
+Interval score
+
 Gneiting, T. and A.E. Raftery (2007):
 `Strictly proper scoring rules, prediction and estimation',
 Journal of the American Statistical Association 102, 359-378. \doi{10.1198/016214506000001437}
