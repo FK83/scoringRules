@@ -1,0 +1,30 @@
+bibentry(bibtype = "Article",
+  title        = "Evaluating Probabilistic Forecasts with {scoringRules}",
+  author       = c(person(given = "Alexander",
+                          family = "Jordan"),
+                   person(given = "Fabian",
+                          family = "Kr\\\"uger"),
+                   person(given = "Sebastian",
+                          family = "Lerch")),
+  journal      = "Journal of Statistical Software",
+  year         = "2019",
+  volume       = "90",
+  number       = "12",
+  pages        = "1--37",
+  doi          = "10.18637/jss.v090.i12",
+  header       = "To cite scoringRules in publications use:"
+)
+
+bibentry(bibtype = "Article",
+  title        = "Weighted {scoringRules}: Emphasizing Particular Outcomes When Evaluating Probabilistic Forecasts",
+  author       = person(given = "Sam",
+                        family = "Allen",
+                        email = "sam.allen@stat.math.ethz.ch"),
+  journal      = "Journal of Statistical Software",
+  year         = "2024",
+  volume       = "110",
+  number       = "8",
+  pages        = "1--26",
+  doi          = "10.18637/jss.v110.i08",
+  header       = "If you use weighted scores (see ?scores_sample_univ_weighted and ?scores_sample_multiv_weighted), please also cite:"
+)
