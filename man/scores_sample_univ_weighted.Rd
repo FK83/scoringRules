@@ -224,6 +224,11 @@ crps_sample(y = y, dat = sample_fc) - twcrps_sample(y = y, dat = sample_fc, a = 
 
 }
 \references{
+Allen, S. (2024): 
+`Weighted scoringRules: Emphasising Particular Outcomes when Evaluating Probabilistic Forecasts', 
+\emph{Journal of Statistical Software}.
+\doi{10.18637/jss.v110.i08}
+
 \emph{Threshold-weighted CRPS:}
 
 Gneiting, T. and R. Ranjan (2011): 

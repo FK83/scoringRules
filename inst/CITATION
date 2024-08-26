@@ -12,25 +12,19 @@ bibentry(bibtype = "Article",
   number       = "12",
   pages        = "1--37",
   doi          = "10.18637/jss.v090.i12",
-  textVersion  =
-  paste("Alexander Jordan, Fabian Krueger, Sebastian Lerch (2019).",
-        "Evaluating Probabilistic Forecasts with scoringRules.",
-        "Journal of Statistical Software, 90(12), 1-37.",
-        "DOI 10.18637/jss.v090.i12"),
-
   header       = "To cite scoringRules in publications use:"
 )
 
-bibentry(bibtype = "unpublished",
-  title        = "Weighted scoringRules: Emphasising particular outcomes when evaluating probabilistic forecasts",
-  author       = person(given = "Sam", family = "Allen"),
-  note      = "Preprint, arXiv:2305.07312",
-  year         = "2023",
-  textVersion  =
-  paste("Sam Allen (2023).",
-        "Weighted scoringRules: Emphasising particular outcomes when evaluating probabilistic forecasts.",
-        "Preprint, arXiv:2305.07312"),
-
+bibentry(bibtype = "Article",
+  title        = "Weighted {scoringRules}: Emphasizing Particular Outcomes When Evaluating Probabilistic Forecasts",
+  author       = person(given = "Sam",
+                        family = "Allen",
+                        email = "sam.allen@stat.math.ethz.ch"),
+  journal      = "Journal of Statistical Software",
+  year         = "2024",
+  volume       = "110",
+  number       = "8",
+  pages        = "1--26",
+  doi          = "10.18637/jss.v110.i08",
   header       = "If you use weighted scores (see ?scores_sample_univ_weighted and ?scores_sample_multiv_weighted), please also cite:"
 )
-
