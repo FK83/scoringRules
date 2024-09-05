@@ -15,7 +15,7 @@ test_that("computed values are correct", {
   expect_equal(ints_quantiles(y = 2, x_lower = -1, x_upper = 1, target_coverage = .5), 
                6)
   
-  dat <- rnorm(100)
+  dat <- qnorm(seq(from = .01, to = .99, by = .01))
   expect_equal(ints_sample(y = 1, dat = dat, target_coverage = .6), 
                5*(qs_sample(y = 1, dat = dat, alpha = .2) + 
                     qs_sample(y = 1, dat = dat, alpha = .8)))
