@@ -1,8 +1,8 @@
 Package: scoringRules
 Type: Package
 Title: Scoring Rules for Parametric and Simulated Distribution Forecasts
-Version: 1.1.2
-Date: 2024-08-26
+Version: 1.1.3
+Date: 2024-09-05
 Authors@R: c(person(given = c("Alexander", "I."), family = "Jordan", role = "aut",
                     comment = c(ORCID = "0000-0001-7423-1352")), 
              person(given = "Fabian", family = "Krueger", 
