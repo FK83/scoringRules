@@ -120,7 +120,7 @@ crps_ct <- function(y, df, location = 0, scale = 1,
   } else {
     scale[scale < 0] <- NaN
     if (!identical(lower, -Inf)) lower <- lower / scale
-    if (!identical(upper,  Inf)) upper <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
     if (all(scale > 0, na.rm = TRUE)) {
       scale * crps_ct(y / scale, df, lower = lower, upper = upper)
     } else {
@@ -195,7 +195,7 @@ crps_tt <- function(y, df, location = 0, scale = 1,
   } else {
     scale[scale < 0] <- NaN
     if (!identical(lower, -Inf)) lower <- lower / scale
-    if (!identical(upper,  Inf)) upper <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
     if (all(scale > 0, na.rm = TRUE)) {
       scale * crps_tt(y / scale, df, lower = lower, upper = upper)
     } else {
