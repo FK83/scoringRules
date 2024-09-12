@@ -8,7 +8,7 @@
 \alias{owmmds_sample}
 \alias{twvs_sample}
 \alias{owvs_sample}
-\title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions (experimental)}
+\title{Weighted Multivariate Scoring Rules for Simulated Forecast Distributions}
 \usage{
 twes_sample(y, dat, a = -Inf, b = Inf, chain_func = NULL, w = NULL)
 
@@ -78,9 +78,7 @@ proper scoring rule, \eqn{y} is a d-dimensional realization vector and
 particular outcomes of interest to be emphasised during forecast evaluation.
 Threshold-weighted and outcome-weighted versions of three multivariate scores are 
 available: the energy score, a score based on a Gaussian kernel (\link{mmds_sample}, 
-see details below) and the variogram score of order \eqn{p}. Note that the functions 
-documented here are a new experimental feature of the package, 
-and feedback is highly welcome.
+see details below) and the variogram score of order \eqn{p}.
 }
 \details{
 In the input matrix \code{dat} each column is expected to represent a sample

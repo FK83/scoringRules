@@ -4,7 +4,7 @@
 #' to the parameters of a location-scale transformed Student's
 #' \eqn{t}-distribution. Furthermore, the censoring transformation and
 #' the truncation transformation may be introduced on top of the
-#' location-scale transformed normal distribution.
+#' location-scale transformed \eqn{t}-distribution.
 #' 
 #' @usage
 #' ## score functions
@@ -120,7 +120,7 @@ crps_ct <- function(y, df, location = 0, scale = 1,
   } else {
     scale[scale < 0] <- NaN
     if (!identical(lower, -Inf)) lower <- lower / scale
-    if (!identical(upper,  Inf)) upper <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
     if (all(scale > 0, na.rm = TRUE)) {
       scale * crps_ct(y / scale, df, lower = lower, upper = upper)
     } else {
@@ -195,7 +195,7 @@ crps_tt <- function(y, df, location = 0, scale = 1,
   } else {
     scale[scale < 0] <- NaN
     if (!identical(lower, -Inf)) lower <- lower / scale
-    if (!identical(upper,  Inf)) upper <- lower / scale
+    if (!identical(upper,  Inf)) upper <- upper / scale
     if (all(scale > 0, na.rm = TRUE)) {
       scale * crps_tt(y / scale, df, lower = lower, upper = upper)
     } else {

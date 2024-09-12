@@ -5,7 +5,7 @@
 \alias{twcrps_sample}
 \alias{owcrps_sample}
 \alias{clogs_sample}
-\title{Weighted Scoring Rules for Simulated Forecast Distributions (experimental)}
+\title{Weighted Scoring Rules for Simulated Forecast Distributions}
 \usage{
 twcrps_sample(
   y,
@@ -72,8 +72,7 @@ Value of the score. \emph{A lower score indicates a better forecast.}
 \description{
 Calculate weighted scores given observations and draws from univariate predictive distributions.
 The weighted scoring rules that are available are the threshold-weighted CRPS, outcome-weighted CRPS, 
-and conditional and censored likelihood scores. Note that the functions 
-documented here are a new experimental feature of the package, and feedback is highly welcome.
+and conditional and censored likelihood scores.
 }
 \details{
 For a vector \code{y} of length n, \code{dat} should be given as a matrix

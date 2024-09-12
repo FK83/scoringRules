@@ -66,3 +66,32 @@ distribution. Furthermore, the censoring transformation and
 the truncation transformation may be introduced on top of the
 location-scale transformed normal distribution.
 }
+\examples{
+\dontrun{
+# Illustrations: Compare CRPS of analytical distribution to 
+# CRPS of a large sample drawn from this distribution 
+# (expect scores to be similar)
+
+# First illustration: Standard normal 
+# Consider CRPS at arbitrary evaluation point (value of outcome)
+y <- 0.3
+crps_norm(y = y) # score of analytical dist.
+# draw standard normal sample of size 10000
+dat <- rnorm(1e4)
+crps_sample(y = y, dat = dat) # score of sample
+
+# Second illustration: Truncated standard normal
+# truncation point
+upper <- 1
+crps_tnorm(y = y, upper = upper) # score of analytical dist.
+# sample from truncated normal 
+dat_trunc <- dat[dat <= upper] 
+crps_sample(y = y, dat = dat_trunc) # score of sample
+
+# Third illustration: Censored standard normal (censoring at \code{upper})
+crps_cnorm(y = y, upper = upper) # score of analytical dist.
+# sample from censored normal 
+dat_cens <- ifelse(dat <= upper, dat, upper)
+crps_sample(y = y, dat = dat_cens) # score of sample
+}
+}

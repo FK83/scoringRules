@@ -1,9 +1,8 @@
-#' Weighted Scoring Rules for Simulated Forecast Distributions (experimental)
+#' Weighted Scoring Rules for Simulated Forecast Distributions
 #' 
 #' Calculate weighted scores given observations and draws from univariate predictive distributions.
 #' The weighted scoring rules that are available are the threshold-weighted CRPS, outcome-weighted CRPS, 
-#' and conditional and censored likelihood scores. Note that the functions 
-#' documented here are a new experimental feature of the package, and feedback is highly welcome.
+#' and conditional and censored likelihood scores. 
 #' 
 #' @param y vector of realized values.
 #' @param dat vector or matrix (depending on \code{y}; see details)

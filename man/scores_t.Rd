@@ -61,5 +61,5 @@ These functions calculate scores (CRPS, logarithmic score) and their gradient an
 to the parameters of a location-scale transformed Student's
 \eqn{t}-distribution. Furthermore, the censoring transformation and
 the truncation transformation may be introduced on top of the
-location-scale transformed normal distribution.
+location-scale transformed \eqn{t}-distribution.
 }
