@@ -4,12 +4,14 @@
 \alias{rps_probs}
 \title{Ranked Probability Score}
 \usage{
-rps_probs(y, x)
+rps_probs(y, x, tol = .Machine$double.eps)
 }
 \arguments{
 \item{y}{vector of realizations, taking integer values between 1 and K. For the RPS, outcomes have an ordinal interpretation only (see details).}
 
-\item{x}{vector or matrix (depending on \code{y}; see details) of probabilities}
+\item{x}{vector or matrix (depending on \code{y}; see details) of probabilities.}
+
+\item{tol}{non-negative numeric value specifying the allowed deviation from 1 of the total (row-wise) probability in \code{x}.}
 }
 \description{
 Computes the Ranked Probability Score (RPS) for a given vector or matrix of probabilities.

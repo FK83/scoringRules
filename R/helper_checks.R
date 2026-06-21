@@ -147,28 +147,45 @@ checkMatrix <- function(input) {
   }
 }
 
+is_scalar <- function(x) {
+  is.vector(x) && identical(length(x), 1L)
+}
+
 check_sizes_VecMat <- function(input, types) {
-  stopifnot(all(types %in% c("vec", "mat")))
+  stopifnot(all(types %in% c("vector", "matrix", "scalar")))
   stopifnot(identical(length(input), length(types)))
   
-  input_isvector <- sapply(input[types == "vec"], is.vector)
-  input_ismatrix <- sapply(input[types == "mat"], is.matrix)
-  input_dim1 <- sapply(input, function(x) {
+  input_matches_types <- 
+    all(sapply(input[types == "vector"], is.vector)) &&
+    all(sapply(input[types == "matrix"], is.matrix)) &&
+    all(sapply(input[types == "scalar"], is_scalar))
+  
+  input_dim1 <- sapply(input[types %in% c("vector", "matrix")], function(x) {
     if (is.vector(x)) length(x) else dim(x)[1L]
   })
-  input_dim2 <- sapply(input[types == "mat"], function(x) {
+  input_dim2 <- sapply(input[types == "matrix"], function(x) {
     if (is.matrix(x)) dim(x)[2L]
   })
+  input_dims_match <- c(
+    identical(length(unique(input_dim1)), 1L),
+    if ("matrix" %in% types) identical(length(unique(input_dim2)), 1L)
+  )
   
-  if (!all(input_isvector) ||
-      !all(input_ismatrix) ||
-      !identical(length(unique(input_dim1)), 1L) ||
-      !identical(length(unique(input_dim2)), 1L)) {
+  if (!input_matches_types || !all(input_dims_match)) {
     
-    reference_formats <- ifelse(types == "vec", "vector[1:n]", "matrix[1:n, 1:m]")
+    reference_formats <- sapply(types, function(x) {
+      switch(
+        x,
+        vector = "vector[1:n]",
+        matrix = "matrix[1:n, 1:m]",
+        scalar = "scalar[1]"
+      )
+    })
     
     input_formats <- sapply(input, function(x) {
-      if (is.vector(x)) {
+      if (is_scalar(x)) {
+        "scalar[1]"
+      } else if (is.vector(x)) {
         sprintf("vector[1:%i]", length(x))
       } else if (is.matrix(x)) {
         sprintf("matrix[1:%i, 1:%i]", dim(x)[1L], dim(x)[2L])

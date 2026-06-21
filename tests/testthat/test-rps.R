@@ -5,7 +5,14 @@ test_that("function works as expected", {
   expect_error(rps_probs(y = 5, x = c(.1, .5, .5)))
   expect_error(rps_probs(y = 3.1, x = c(.1, .5, .4)))
   expect_error(rps_probs(y = c(2, 3), x = c(.1, .5, .5)))
+  expect_error(rps_probs(y = 1, x = c(.5, .5 - 1e-15)))
+  expect_error(rps_probs(y = 1, x = c(.5, .5), tol = c(.1, .1)))
+  expect_error(rps_probs(y = 1, x = c(.5, .5), tol = NA))
   # Correct inputs
+  expect_gt(
+    rps_probs(y = 1, x = c(.5, .5 - 1e-7), tol = 1e-6),
+    rps_probs(y = 1, x = c(.5, .5))
+  )
   y <- 5
   x1 <- c(rep(0, y-1), 1)
   x2 <- rep(1/y, y)
