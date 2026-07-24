@@ -35,7 +35,7 @@ dss_llogis <- function(y, locationlog, scalelog) {
   sb <- sin(b)
   ell <- exp(locationlog)
   m <- ell * b / sb
-  v <- ell^2 * 2 * b / sin(2 * b) - b^2 / sb^2
+  v <- ell^2 * (2 * b / sin(2 * b) - b^2 / sb^2)
   (y - m)^2 / v + log(v)
 }
 
